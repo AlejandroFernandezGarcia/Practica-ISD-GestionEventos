@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>es.udc.ws.events</groupId>
+        <artifactId>ws-events</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <artifactId>ws-events-client</artifactId>
+    <packaging>jar</packaging>
+    <name>WS Events Client Subsystem</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>es.udc.ws</groupId>
+            <artifactId>ws-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>es.udc.ws.events</groupId>
+            <artifactId>ws-events-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-rt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>${jaxwsMavenPlugin}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <wsdlDirectory>../ws-events-service/target/jaxws/wsgen/wsdl/</wsdlDirectory>
+                    <sourceDestDir>src/main/java</sourceDestDir>
+                    <packageName>es.udc.ws.events.client.service.soap.wsdl</packageName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
