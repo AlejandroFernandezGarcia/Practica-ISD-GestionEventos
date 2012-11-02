@@ -21,11 +21,11 @@ DROP TABLE Event;
 CREATE TABLE Event ( eventId BIGINT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) COLLATE latin1_bin NOT NULL,
     description VARCHAR(1024) COLLATE latin1_bin,
-    fechaIni DATE,
-    fechaFin DATE,
-    interno ("TRUE"/"FALSE"),
-    direccion VARCHAR(255),
-    aforo INTEGER, 
+    dateSt TIMESTAMP NOT NULL,
+    dateEnd TIMESTAMP NOT NULL,
+    intern BIT NOT NULL,
+    adress VARCHAR(255) NOT NULL,
+    capacity SMALLINT NOT NULL, 
     CONSTRAINT EventPK PRIMARY KEY(eventId)) ENGINE = InnoDB;
 
 CREATE INDEX EventIndexByEventId ON Event (eventId);
