@@ -7,23 +7,23 @@ public class Event {
     private Long eventId;
     private String name;
     private String description;
-    private Calendar fechaIni;
-    private Calendar fechaFin;
-    private boolean interno = true;
-    private String direccion;
-    private int aforo;
+    private Calendar dateSt;
+    private Calendar dateEnd;
+    private boolean intern = true;
+    private String adress;
+    private short capacity;
 
-    public Event(String name, String description,Calendar fechaIni,Calendar fechaFin,boolean interno, String direccion, int aforo) {
+    public Event(String name, String description,Calendar fechaIni,Calendar fechaFin,boolean interno, String direccion, short aforo) {
         this.name = name;
         this.description = description;
-        this.fechaIni = fechaIni;
-        this.fechaFin = fechaFin;
-        this.interno = interno;
-        this.direccion = direccion;
-        this.aforo = aforo;
+        this.dateSt = fechaIni;
+        this.dateEnd = fechaFin;
+        this.intern = interno;
+        this.adress = direccion;
+        this.capacity = aforo;
     }
 
-    public Event(Long eventId, String name, String description, Calendar fechaIni,Calendar fechaFin,boolean interno, String direccion, int aforo) {
+    public Event(Long eventId, String name, String description, Calendar fechaIni,Calendar fechaFin,boolean interno, String direccion, short aforo) {
         this(name, description, fechaIni, fechaFin, interno,  direccion, aforo);
         this.eventId = eventId;
     }
@@ -52,61 +52,58 @@ public class Event {
         this.description = description;
     }
 
-    public Calendar getFechaIni() {
-		return fechaIni;
+	public Calendar getDateSt() {
+		return dateSt;
 	}
 
-	public void setFechaIni(Calendar fechaIni) {
-		this.fechaIni = fechaIni;
+	public void setDateSt(Calendar dateSt) {
+		this.dateSt = dateSt;
 	}
 
-	public Calendar getFechaFin() {
-		return fechaFin;
+	public Calendar getDateEnd() {
+		return dateEnd;
 	}
 
-	public void setFechaFin(Calendar fechaFin) {
-		this.fechaFin = fechaFin;
+	public void setDateEnd(Calendar dateEnd) {
+		this.dateEnd = dateEnd;
 	}
 
-	public boolean isInterno() {
-		return interno;
+	public boolean isIntern() {
+		return intern;
 	}
 
-	public void setInterno(boolean interno) {
-		this.interno = interno;
+	public void setIntern(boolean intern) {
+		this.intern = intern;
 	}
 
-	public String getDireccion() {
-		return direccion;
+	public String getAdress() {
+		return adress;
 	}
 
-	public void setDireccion(String direccion) {
-		this.direccion = direccion;
+	public void setAdress(String adress) {
+		this.adress = adress;
 	}
 
-	public int getAforo() {
-		return aforo;
+	public short getCapacity() {
+		return capacity;
 	}
 
-	public void setAforo(int aforo) {
-		this.aforo = aforo;
+	public void setCapacity(short capacity) {
+		this.capacity = capacity;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + aforo;
+		result = prime * result + ((adress == null) ? 0 : adress.hashCode());
+		result = prime * result + capacity;
+		result = prime * result + ((dateEnd == null) ? 0 : dateEnd.hashCode());
+		result = prime * result + ((dateSt == null) ? 0 : dateSt.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result
-				+ ((direccion == null) ? 0 : direccion.hashCode());
 		result = prime * result + ((eventId == null) ? 0 : eventId.hashCode());
-		result = prime * result
-				+ ((fechaFin == null) ? 0 : fechaFin.hashCode());
-		result = prime * result
-				+ ((fechaIni == null) ? 0 : fechaIni.hashCode());
-		result = prime * result + (interno ? 1231 : 1237);
+		result = prime * result + (intern ? 1231 : 1237);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -120,34 +117,34 @@ public class Event {
 		if (getClass() != obj.getClass())
 			return false;
 		Event other = (Event) obj;
-		if (aforo != other.aforo)
+		if (adress == null) {
+			if (other.adress != null)
+				return false;
+		} else if (!adress.equals(other.adress))
+			return false;
+		if (capacity != other.capacity)
+			return false;
+		if (dateEnd == null) {
+			if (other.dateEnd != null)
+				return false;
+		} else if (!dateEnd.equals(other.dateEnd))
+			return false;
+		if (dateSt == null) {
+			if (other.dateSt != null)
+				return false;
+		} else if (!dateSt.equals(other.dateSt))
 			return false;
 		if (description == null) {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (direccion == null) {
-			if (other.direccion != null)
-				return false;
-		} else if (!direccion.equals(other.direccion))
-			return false;
 		if (eventId == null) {
 			if (other.eventId != null)
 				return false;
 		} else if (!eventId.equals(other.eventId))
 			return false;
-		if (fechaFin == null) {
-			if (other.fechaFin != null)
-				return false;
-		} else if (!fechaFin.equals(other.fechaFin))
-			return false;
-		if (fechaIni == null) {
-			if (other.fechaIni != null)
-				return false;
-		} else if (!fechaIni.equals(other.fechaIni))
-			return false;
-		if (interno != other.interno)
+		if (intern != other.intern)
 			return false;
 		if (name == null) {
 			if (other.name != null)
