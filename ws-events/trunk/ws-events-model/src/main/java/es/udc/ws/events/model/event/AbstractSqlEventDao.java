@@ -5,8 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+
 
 
 
@@ -63,7 +66,25 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
 	@Override
 	public void delete(Connection connection, Long eventId)
 			throws InstanceNotFoundException {
-		// TODO Auto-generated method stub
+		String queryString = "DELETE FROM Event WHERE eventId = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+
+            /* Fill "preparedStatement". */
+            int i = 1;
+            preparedStatement.setLong(i++, eventId);
+
+            /* Execute query. */
+            int removedRows = preparedStatement.executeUpdate();
+
+            if (removedRows == 0) {
+                throw new InstanceNotFoundException(eventId,
+                        Event.class.getName());
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
 	}
 
@@ -110,11 +131,67 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
 	}
 
 	@Override
-	public List<Event> findByKeyword(Connection connection, String clave,
+	public List<Event> findByKeyword(Connection connection, String keywords,
 			Calendar fechaIni, Calendar fechaFin)
 			throws InstanceNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		/* Create "queryString". */
+		//areglar consulta
+        String[] words = keywords != null ? keywords.split(" ") : null;
+        String queryString = "SELECT eventId, name, description,"
+                + " dateSt, dateEnd, intern, adress, capacity FROM Event";
+        if (words != null && words.length > 0) {
+            queryString += " WHERE";
+            for (int i = 0; i < words.length; i++) {
+            	queryString = " "+words[i];
+                if (i > 0) {
+                    queryString += " AND";
+                }
+                queryString += " LOWER(name) LIKE LOWER(?)";
+            }
+        }
+        queryString += " ORDER BY name";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+
+            if (words != null) {
+                /* Fill "preparedStatement". */
+                for (int i = 0; i < words.length; i++) {
+                    preparedStatement.setString(i + 1, "%" + words[i] + "%");
+                }
+            }
+
+            /* Execute query. */
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            /* Read movies. */
+            List<Event> events = new ArrayList<Event>();
+
+            while (resultSet.next()) {
+
+                int i = 1;
+                Long eventId = new Long(resultSet.getLong(i++));
+                String name = resultSet.getString(i++);
+                String description = resultSet.getString(i++);
+                Calendar dateSt = Calendar.getInstance();
+                dateSt.setTime(resultSet.getTimestamp(i++));
+                Calendar dateEnd = Calendar.getInstance();
+                dateEnd.setTime(resultSet.getTimestamp(i++));
+                Boolean intern = resultSet.getBoolean(i++);
+                String adress = resultSet.getString(i++);
+                Short capacity = resultSet.getShort(i++);
+                
+                
+
+                events.add(new Event(eventId, name, description, dateSt, dateEnd, intern, adress, capacity));
+
+            }
+
+            /* Return movies. */
+            return events;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 	}
 
 }
