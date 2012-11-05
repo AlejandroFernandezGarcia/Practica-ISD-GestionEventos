@@ -142,7 +142,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
         if (words != null && words.length > 0) {
             queryString += " WHERE";
             for (int i = 0; i < words.length; i++) {
-            	queryString = " "+words[i];
+            	//queryString = " "+words[i];
                 if (i > 0) {
                     queryString += " AND";
                 }
