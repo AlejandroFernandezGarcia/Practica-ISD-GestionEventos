@@ -1,8 +1,8 @@
 package es.udc.ws.events.client.service;
 
 import es.udc.ws.events.dto.EventDto;
-import es.udc.ws.util.exceptions.InputValidationException;
-import es.udc.ws.util.exceptions.InstanceNotFoundException;
+import es.udc.ws.events.exceptions.InputValidationException;
+import es.udc.ws.events.exceptions.InstanceNotFoundException;
 
 public interface ClientEventService {
 

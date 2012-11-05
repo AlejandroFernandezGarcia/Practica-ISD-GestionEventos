@@ -3,7 +3,7 @@ package es.udc.ws.events.client.ui;
 import es.udc.ws.events.client.service.ClientEventService;
 import es.udc.ws.events.client.service.MockClientEventService;
 import es.udc.ws.events.dto.EventDto;
-import es.udc.ws.util.exceptions.InputValidationException;
+import es.udc.ws.events.exceptions.InputValidationException;
 
 public class EventServiceClient {
 

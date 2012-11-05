@@ -12,7 +12,7 @@ public interface EventService {
 
     public Event addEvent(Event event) throws InputValidationException;
 
-    public void updateEvent(Event event) throws InputValidationException;
+    public void updateEvent(Event event) throws InputValidationException, InstanceNotFoundException;
     
     public void deleteEvent(Long eventId) throws InstanceNotFoundException;
     
@@ -20,5 +20,6 @@ public interface EventService {
     
     public List<Event> findEventByKeyword(String clave, Calendar fechaIni, Calendar fechaFin)
     		throws InstanceNotFoundException;
+    
     //faltan los de response
 }
