@@ -11,7 +11,7 @@ public class Event {
     private Calendar dateEnd;
     private boolean intern = true;
     private String adress;
-    private short capacity;
+    private short capacity = 0;
 
     public Event(String name, String description,Calendar fechaIni,Calendar fechaFin,boolean interno, String direccion, short aforo) {
         this.name = name;
