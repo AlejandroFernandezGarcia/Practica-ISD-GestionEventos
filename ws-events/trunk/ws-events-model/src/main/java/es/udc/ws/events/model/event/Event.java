@@ -10,7 +10,7 @@ public class Event {
     private Calendar dateSt;
     private Calendar dateEnd;
     private boolean intern = true;
-    private String adress;
+    private String address;
     private short capacity = 0;
 
     public Event(String name, String description,Calendar fechaIni,Calendar fechaFin,boolean interno, String direccion, short aforo) {
@@ -19,7 +19,7 @@ public class Event {
         this.dateSt = fechaIni;
         this.dateEnd = fechaFin;
         this.intern = interno;
-        this.adress = direccion;
+        this.address = direccion;
         this.capacity = aforo;
     }
 
@@ -76,12 +76,12 @@ public class Event {
 		this.intern = intern;
 	}
 
-	public String getAdress() {
-		return adress;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setAdress(String adress) {
-		this.adress = adress;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public short getCapacity() {
@@ -96,7 +96,7 @@ public class Event {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((adress == null) ? 0 : adress.hashCode());
+		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result + capacity;
 		result = prime * result + ((dateEnd == null) ? 0 : dateEnd.hashCode());
 		result = prime * result + ((dateSt == null) ? 0 : dateSt.hashCode());
@@ -117,10 +117,10 @@ public class Event {
 		if (getClass() != obj.getClass())
 			return false;
 		Event other = (Event) obj;
-		if (adress == null) {
-			if (other.adress != null)
+		if (address == null) {
+			if (other.address != null)
 				return false;
-		} else if (!adress.equals(other.adress))
+		} else if (!address.equals(other.address))
 			return false;
 		if (capacity != other.capacity)
 			return false;

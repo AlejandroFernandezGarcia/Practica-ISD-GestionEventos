@@ -39,7 +39,7 @@ public class EventServiceImpl implements EventService {
 	public Event addEvent(Event event) throws InputValidationException {
 		
 		validateEvent(event);
-		if((event.getName()!=null)&&(event.getDateSt()!=null)&&(event.getDateEnd()!=null)&&(event.getAdress()!=null)&&(event.getCapacity()>0)){
+		if((event.getName()!=null)&&(event.getDateSt()!=null)&&(event.getDateEnd()!=null)&&(event.getaddress()!=null)&&(event.getCapacity()>0)){
 			if (event.getDateSt().before(Calendar.getInstance())){
 				throw new InputValidationException("The event start date cannot be earlier than the current date");
 			}else if (event.getDateEnd().before(Calendar.getInstance())){
@@ -82,7 +82,7 @@ public class EventServiceImpl implements EventService {
 	public void updateEvent(Event event) throws InputValidationException,InstanceNotFoundException {
 		//falta comprobacion: eventos en los que no haya nadie registrado
 		validateEvent(event);
-		if((event.getName()!=null)&&(event.getDateSt()!=null)&&(event.getDateEnd()!=null)&&(event.getAdress()!=null)&&(event.getCapacity()>0)){
+		if((event.getName()!=null)&&(event.getDateSt()!=null)&&(event.getDateEnd()!=null)&&(event.getaddress()!=null)&&(event.getCapacity()>0)){
 			if (event.getDateSt().before(Calendar.getInstance())){
 				throw new InputValidationException("The event start date cannot be earlier than the current date");
 			}else if (event.getDateEnd().before(Calendar.getInstance())){
