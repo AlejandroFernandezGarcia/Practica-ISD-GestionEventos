@@ -16,7 +16,7 @@ CREATE TABLE PingTable (foo CHAR(1));
 -- could not be done).
 
 DROP TABLE Event;
-
+DROP TABLE Response;
 -- --------------------------------- Event -------------------------------------
 CREATE TABLE Event ( eventId BIGINT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) COLLATE latin1_bin NOT NULL,
@@ -24,9 +24,20 @@ CREATE TABLE Event ( eventId BIGINT NOT NULL AUTO_INCREMENT,
     dateSt TIMESTAMP NOT NULL,
     dateEnd TIMESTAMP NOT NULL,
     intern BIT NOT NULL,
-    adress VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
     capacity SMALLINT NOT NULL, 
     CONSTRAINT EventPK PRIMARY KEY(eventId)) ENGINE = InnoDB;
 
 CREATE INDEX EventIndexByEventId ON Event (eventId);
+
+-- --------------------------------- Response ----------------------------------
+CREATE TABLE Response (responseId BIGINT NOT NULL AUTO_INCREMENT,
+    userId VARCHAR(255) COLLATE latin1_bin NOT NULL,
+    eventId BIGINT NOT NULL REFERENCES Event(eventId),
+    date TIMESTAMP NOT NULL,
+    assists BIT NOT NULL, 
+    CONSTRAINT ResponsePK PRIMARY KEY(responseId)) ENGINE = InnoDB;
+
+CREATE INDEX EventIndexByResponseId ON Response (responseId);
+
 

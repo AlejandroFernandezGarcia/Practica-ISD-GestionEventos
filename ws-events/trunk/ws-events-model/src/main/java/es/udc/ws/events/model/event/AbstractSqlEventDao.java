@@ -26,7 +26,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
 		/* Create "queryString". */
         String queryString = "UPDATE Event"
                 + " SET name = ?, description = ?, dateSt = ?, "
-                + "dateEnd = ?,intern = ?, adress = ?, capacity = ? WHERE eventId = ?";
+                + "dateEnd = ?,intern = ?, address = ?, capacity = ? WHERE eventId = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
@@ -41,7 +41,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
                     .getTime());
             preparedStatement.setTimestamp(i++, dateEnd);
             preparedStatement.setBoolean(i++, event.isIntern());
-            preparedStatement.setString(i++, event.getAdress());
+            preparedStatement.setString(i++, event.getAddress());
             preparedStatement.setShort(i++, event.getCapacity());
             
             /* Execute query. */
@@ -93,7 +93,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
 			throws InstanceNotFoundException {
         /* Create "queryString". */
         String queryString = "SELECT name, description, "
-                + " dateSt, dateEnd, intern, adress, capacity FROM Event WHERE eventId = ?";
+                + " dateSt, dateEnd, intern, address, capacity FROM Event WHERE eventId = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
@@ -118,12 +118,12 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
             Calendar dateEnd = Calendar.getInstance();
             dateEnd.setTime(resultSet.getTimestamp(i++));
             Boolean intern = resultSet.getBoolean(i++);
-            String adress = resultSet.getString(i++);
+            String address = resultSet.getString(i++);
             Short capacity = resultSet.getShort(i++);
 
             /* Return movie. */
             return new Event(eventId, name, description, dateSt, dateEnd,
-                    intern, adress, capacity);
+                    intern, address, capacity);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -138,7 +138,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
 		//areglar consulta
         String[] words = keywords != null ? keywords.split(" ") : null;
         String queryString = "SELECT eventId, name, description,"
-                + " dateSt, dateEnd, intern, adress, capacity FROM Event";
+                + " dateSt, dateEnd, intern, address, capacity FROM Event";
         if (words != null && words.length > 0) {
             queryString += " WHERE";
             for (int i = 0; i < words.length; i++) {
@@ -177,12 +177,12 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
                 Calendar dateEnd = Calendar.getInstance();
                 dateEnd.setTime(resultSet.getTimestamp(i++));
                 Boolean intern = resultSet.getBoolean(i++);
-                String adress = resultSet.getString(i++);
+                String address = resultSet.getString(i++);
                 Short capacity = resultSet.getShort(i++);
                 
                 
 
-                events.add(new Event(eventId, name, description, dateSt, dateEnd, intern, adress, capacity));
+                events.add(new Event(eventId, name, description, dateSt, dateEnd, intern, address, capacity));
 
             }
 
