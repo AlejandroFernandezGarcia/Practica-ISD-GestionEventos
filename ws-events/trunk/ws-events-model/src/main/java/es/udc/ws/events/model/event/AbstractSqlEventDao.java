@@ -121,7 +121,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
             String address = resultSet.getString(i++);
             Short capacity = resultSet.getShort(i++);
 
-            /* Return movie. */
+            /* Return events. */
             return new Event(eventId, name, description, dateSt, dateEnd,
                     intern, address, capacity);
 
@@ -163,7 +163,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
             /* Execute query. */
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            /* Read movies. */
+            /* Read events. */
             List<Event> events = new ArrayList<Event>();
 
             while (resultSet.next()) {
@@ -186,7 +186,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
 
             }
 
-            /* Return movies. */
+            /* Return events. */
             return events;
 
         } catch (SQLException e) {

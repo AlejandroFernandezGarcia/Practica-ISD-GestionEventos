@@ -2,7 +2,6 @@ package es.udc.ws.events.model.response;
 
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
