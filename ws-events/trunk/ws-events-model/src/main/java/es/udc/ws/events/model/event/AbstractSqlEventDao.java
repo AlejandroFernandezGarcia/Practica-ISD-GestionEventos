@@ -132,10 +132,9 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
 
 	@Override
 	public List<Event> findByKeyword(Connection connection, String keywords,
-			Calendar fechaIni, Calendar fechaFin)
+			Calendar datesSt, Calendar datesEnd)
 			throws InstanceNotFoundException {
 		/* Create "queryString". */
-		//areglar consulta
         String[] words = keywords != null ? keywords.split(" ") : null;
         String queryString = "SELECT eventId, name, description,"
                 + " dateSt, dateEnd, intern, address, capacity FROM Event";
@@ -149,6 +148,13 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
                 queryString += " LOWER(name) LIKE LOWER(?)";
             }
         }
+        
+        Timestamp timeSt = datesSt != null ? new Timestamp(datesSt.getTime().getTime()) : null;
+        Timestamp timeEnd = datesEnd != null ? new Timestamp(datesEnd.getTime().getTime()) : null;
+		if ((timeSt !=null)&&(timeEnd != null)){
+			queryString += "AND dateSt between "+datesSt+"and"+datesEnd;
+		}
+        
         queryString += " ORDER BY name";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {

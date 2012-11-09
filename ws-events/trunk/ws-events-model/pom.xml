@@ -18,6 +18,10 @@
             <artifactId>ws-util</artifactId>
         </dependency>
         <dependency>
+            <groupId>es.udc.ws.events</groupId>
+            <artifactId>ws-events-util</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
