@@ -11,7 +11,7 @@ public class Response {
 	
 	
 	public Response(String username,Long eventId, boolean response, Calendar respDate) {
-		super();
+		//super();
 		this.username = username;
 		this.assists = response;
 		this.respDate = respDate;

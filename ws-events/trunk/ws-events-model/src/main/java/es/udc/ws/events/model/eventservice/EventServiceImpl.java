@@ -4,23 +4,25 @@ import static es.udc.ws.events.model.util.ModelConstants.TEMPLATE_DATA_SOURCE;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.sql.DataSource;
 
+import es.udc.ws.events.exceptions.EventRegisterUsersError;
+import es.udc.ws.events.exceptions.InputDateError;
+import es.udc.ws.events.exceptions.OverCapacityError;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.event.SqlEventDao;
 import es.udc.ws.events.model.event.SqlEventDaoFactory;
 import es.udc.ws.events.model.response.Response;
 import es.udc.ws.events.model.response.SqlResponseDao;
 import es.udc.ws.events.model.response.SqlResponseDaoFactory;
+import es.udc.ws.events.validator.PropertyValidatorEvent;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.sql.DataSourceLocator;
-import es.udc.ws.events.exceptions.InputValidationException;
 
 
 public class EventServiceImpl implements EventService {
@@ -35,25 +37,18 @@ public class EventServiceImpl implements EventService {
         responseDao = SqlResponseDaoFactory.getDao();
 	}
 	
-	private void validateEvent(Event event){
-		//como esta hecha la comprobacion anterior?
-		// no puedo importar clase de ws-events-util
-		
+	private void validateEvent(Event event) throws InputValidationException, InputDateError{
+		PropertyValidatorEvent.validateMandatoryString("name",event.getName()) ;
+		PropertyValidatorEvent.validateDate("dates", event.getDateSt(),event.getDateEnd());
+		PropertyValidatorEvent.validateMandatoryString("address", event.getAddress());
+		PropertyValidatorEvent.validateIntern("intern", event.isIntern());
+		PropertyValidatorEvent.validateShort("capacity", event.getCapacity());
 	}
 	
-	@Override /*devolver event??*/
-	public Event addEvent(Event event) throws InputValidationException {
+	@Override
+	public Event addEvent(Event event) throws InputValidationException,InputDateError {
 		
 		validateEvent(event);
-		if((event.getName()!=null)&&(event.getDateSt()!=null)&&(event.getDateEnd()!=null)&&(event.getAddress()!=null)&&(event.getCapacity()>0)){
-			if (event.getDateSt().before(Calendar.getInstance())){
-				throw new InputValidationException("The event start date cannot be earlier than the current date");
-			}else if (event.getDateEnd().before(Calendar.getInstance())){
-				throw new InputValidationException("The event end date cannot be earlier than the current date");
-			}else if (event.getDateSt().after(event.getDateEnd())){
-				throw new InputValidationException("The event end date cannot be earlier than the start date of the event");
-			}
-		}
 		try (Connection connection = dataSource.getConnection()) {
 
             try {
@@ -85,24 +80,15 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public void updateEvent(Event event) throws InputValidationException,InstanceNotFoundException,OperationAborted {
+	public void updateEvent(Event event) throws InputValidationException,InstanceNotFoundException, EventRegisterUsersError, InputDateError {
 		ArrayList<Response> listaRespuestas;
 		try (Connection connection2 = dataSource.getConnection()) {
 			listaRespuestas = responseDao.find(connection2, event, null);
 		} catch (SQLException e) {
             throw new RuntimeException(e);
         }
-		if (listaRespuestas.size()!=0) {throw new OperationAborted("Cannot update an event that have register users");}
+		if (listaRespuestas.size()!=0) {throw new EventRegisterUsersError("Cannot update an event that have register users");}
 		validateEvent(event);
-		if((event.getName()!=null)&&(event.getDateSt()!=null)&&(event.getDateEnd()!=null)&&(event.getAddress()!=null)&&(event.getCapacity()>0)){
-			if (event.getDateSt().before(Calendar.getInstance())){
-				throw new InputValidationException("The event start date cannot be earlier than the current date");
-			}else if (event.getDateEnd().before(Calendar.getInstance())){
-				throw new InputValidationException("The event end date cannot be earlier than the current date");
-			}else if (event.getDateSt().after(event.getDateEnd())){
-				throw new InputValidationException("The event end date cannot be earlier than the start date of the event");
-			}
-		}
         try (Connection connection = dataSource.getConnection()) {
 
             try {
@@ -137,19 +123,15 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public void deleteEvent(Long eventId) throws InstanceNotFoundException,OperationAborted {
+	public void deleteEvent(Long eventId) throws InstanceNotFoundException,EventRegisterUsersError {
 		ArrayList<Response> listaRespuestas;
-		try (Connection connection2 = dataSource.getConnection()) {
-			Event event = eventDao.find(connection2, eventId);
-			listaRespuestas = responseDao.find(connection2, event, null);
-		} catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-		if (listaRespuestas.size()!=0) {throw new OperationAborted("Cannot delete an event that have register users");}
+		
 		try (Connection connection = dataSource.getConnection()) {
 
             try {
-
+            	Event event = eventDao.find(connection, eventId);
+    			listaRespuestas = responseDao.find(connection, event, null);
+    			if (listaRespuestas.size()!=0) {throw new EventRegisterUsersError("Cannot delete an event that have register users");}
                 /* Prepare connection. */
                 connection
                         .setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
@@ -198,16 +180,16 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public Long responseToEvent(String username, Long eventId, Boolean code)
-			throws InstanceNotFoundException {
+			throws InstanceNotFoundException, OverCapacityError, InputDateError {
 		List<Response> lista;
 		try (Connection connection = dataSource.getConnection()) {
 
             try {
             	Event event = eventDao.find(connection, eventId);
-            	if (event.getDateEnd().before(Calendar.getInstance())) throw new OperationAborted("The event expired");
+            	if (event.getDateEnd().before(Calendar.getInstance())) throw new InputDateError("The event expired");
             	if (code){
             		lista = responseDao.find(connection, event, true);
-            		if ((lista.size()+1) >= event.getCapacity()) throw new OperationAborted("Full capacity");
+            		if ((lista.size()+1) >= event.getCapacity()) throw new OverCapacityError("Full capacity");
             	}
             	/* Prepare connection. */
                 connection
