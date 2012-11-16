@@ -82,14 +82,13 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public void updateEvent(Event event) throws InputValidationException,InstanceNotFoundException, EventRegisterUsersError, InputDateError {
 		ArrayList<Response> listaRespuestas;
-		try (Connection connection2 = dataSource.getConnection()) {
-			listaRespuestas = responseDao.find(connection2, event, null);
-		} catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-		if (listaRespuestas.size()!=0) {throw new EventRegisterUsersError("Cannot update an event that have register users");}
-		validateEvent(event);
-        try (Connection connection = dataSource.getConnection()) {
+		try (Connection connection = dataSource.getConnection()) {
+			connection
+            .setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+    connection.setAutoCommit(false);
+			listaRespuestas = responseDao.find(connection, event.getEventId(), null);
+			if (listaRespuestas.size()!=0) {throw new EventRegisterUsersError("Cannot update an event that have register users");}
+			validateEvent(event);
 
             try {
 
@@ -129,13 +128,14 @@ public class EventServiceImpl implements EventService {
 		try (Connection connection = dataSource.getConnection()) {
 
             try {
+            	connection
+                .setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            	connection.setAutoCommit(false);
             	Event event = eventDao.find(connection, eventId);
-    			listaRespuestas = responseDao.find(connection, event, null);
+    			listaRespuestas = responseDao.find(connection, event.getEventId(), null);
     			if (listaRespuestas.size()!=0) {throw new EventRegisterUsersError("Cannot delete an event that have register users");}
                 /* Prepare connection. */
-                connection
-                        .setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-                connection.setAutoCommit(false);
+                
 
                 /* Do work. */
                 eventDao.delete(connection, eventId);
@@ -185,16 +185,17 @@ public class EventServiceImpl implements EventService {
 		try (Connection connection = dataSource.getConnection()) {
 
             try {
+            	connection
+                .setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            	connection.setAutoCommit(false);
             	Event event = eventDao.find(connection, eventId);
             	if (event.getDateEnd().before(Calendar.getInstance())) throw new InputDateError("The event expired");
             	if (code){
-            		lista = responseDao.find(connection, event, true);
+            		lista = responseDao.find(connection, event.getEventId(), true);
             		if ((lista.size()+1) >= event.getCapacity()) throw new OverCapacityError("Full capacity");
             	}
             	/* Prepare connection. */
-                connection
-                        .setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-                connection.setAutoCommit(false);
+                
 
                 /* Do work. */
                 Calendar respCal = Calendar.getInstance();
@@ -232,7 +233,7 @@ public class EventServiceImpl implements EventService {
 			throws InstanceNotFoundException {
 		try (Connection connection = dataSource.getConnection()) {
 			Event event = eventDao.find(connection, eventId);
-			return responseDao.find(connection, event, code);
+			return responseDao.find(connection, event.getEventId(), code);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
