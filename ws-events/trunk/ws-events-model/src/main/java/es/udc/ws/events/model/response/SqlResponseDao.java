@@ -17,7 +17,7 @@ public interface SqlResponseDao {
 			throws InstanceNotFoundException;
 	public void deleteByEventId(Connection connection, Long eventId)
 			throws InstanceNotFoundException;
-	public ArrayList<Response> find(Connection connection, Event event,
+	public ArrayList<Response> find(Connection connection, Long eventId,
 			Boolean response) throws InstanceNotFoundException;
 	public Response findById(Connection connection, Long responseId)
 			throws InstanceNotFoundException;
