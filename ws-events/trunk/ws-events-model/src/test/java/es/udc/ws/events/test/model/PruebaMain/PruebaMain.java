@@ -12,6 +12,7 @@ import es.udc.ws.events.exceptions.InputDateError;
 import es.udc.ws.events.exceptions.OverCapacityError;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.eventservice.EventService;
+import es.udc.ws.events.model.eventservice.EventServiceFactory;
 import es.udc.ws.events.model.eventservice.EventServiceImpl;
 import es.udc.ws.events.model.response.Response;
 import es.udc.ws.util.exceptions.InputValidationException;
@@ -42,8 +43,8 @@ public class PruebaMain {
          */
         DataSourceLocator.addDataSource(TEMPLATE_DATA_SOURCE, dataSource);
 		
-		EventService serv =  new EventServiceImpl();//EventServiceFactory.getService();
-		Calendar fechaIni1 = Calendar.getInstance();
+		EventService serv =  EventServiceFactory.getService();
+		/*Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1);
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3);
@@ -70,10 +71,20 @@ public class PruebaMain {
 		fechaFin4.set(2013, 1, 5);
 		Event event4 = new Event("Evento4","Evento4 descripcion",fechaIni4,fechaFin4,true,"Calle 4",(short) 5);
 		event4 = serv.addEvent(event4);
-		System.out.println(event4.getEventId()+" "+event4.getName());
-		/*event4.setCapacity((short) 2);
-		serv.updateEvent(event4);
+		System.out.println(event4.getEventId()+" "+event4.getName());*/
+		Event event1 = serv.findEvent((long) 1);
+		Event event2 = serv.findEvent((long) 2);
+		Event event3 = serv.findEvent((long) 3);
+		Event event4 = serv.findEvent((long) 4);
+		System.out.println(event1.toString());
+		System.out.println(event2.toString());
+		System.out.println(event3.toString());
+		System.out.println(event4.toString());
 		
+		event4.setCapacity((short)2);
+		System.out.println(event4.toString());
+		serv.deleteEvent(event4.getEventId());
+		/*
 		serv.deleteEvent(event2.getEventId());
 		
 		serv.findEvent(event.getEventId()).toString();
