@@ -36,21 +36,21 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (!resultSet.next()) {
-                throw new InstanceNotFoundException(eventId,
+            	throw new InstanceNotFoundException(eventId,
                         Response.class.getName());
+            	
             }
             
             /* Get results. */
             while (resultSet.next()) {
-            i = 1;
-            Long response = resultSet.getLong(i++);
-            String userId = resultSet.getString(i++);
-            eventId = resultSet.getLong(i++);
-            Calendar respDate = Calendar.getInstance();
-            respDate.setTime(resultSet.getTimestamp(i++));
-            Boolean confirm = resultSet.getBoolean(i++);
-            listResponses.add(new Response(response, userId, eventId
-            		, respDate,confirm));
+	            i = 1;
+	            Long response = resultSet.getLong(i++);
+	            String userId = resultSet.getString(i++);
+	            eventId = resultSet.getLong(i++);
+	            Calendar respDate = Calendar.getInstance();
+	            respDate.setTime(resultSet.getTimestamp(i++));
+	            Boolean confirm = resultSet.getBoolean(i++);
+	            listResponses.add(new Response(response, userId, eventId,respDate,confirm));
             }
             /* Return Responses. */
             return listResponses;

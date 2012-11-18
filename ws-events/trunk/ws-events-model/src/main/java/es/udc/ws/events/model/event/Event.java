@@ -153,4 +153,13 @@ public class Event {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Event [eventId=" + eventId + ", name=" + name
+				+ ", description=" + description + ", dateSt=" + dateSt.toString()
+				+ ", dateEnd=" + dateEnd.toString() + ", intern=" + intern + ", address="
+				+ address + ", capacity=" + capacity + "]";
+	}
+    
 }

@@ -54,8 +54,7 @@ public class EventServiceImpl implements EventService {
             try {
 
                 /* Prepare connection. */
-                connection
-                        .setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+                connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
                 connection.setAutoCommit(false);
 
                 /* Do work. */
@@ -83,9 +82,8 @@ public class EventServiceImpl implements EventService {
 	public void updateEvent(Event event) throws InputValidationException,InstanceNotFoundException, EventRegisterUsersError, InputDateError {
 		ArrayList<Response> listaRespuestas;
 		try (Connection connection = dataSource.getConnection()) {
-			connection
-            .setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-    connection.setAutoCommit(false);
+			connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+			connection.setAutoCommit(false);
 			listaRespuestas = responseDao.find(connection, event.getEventId(), null);
 			if (listaRespuestas.size()!=0) {throw new EventRegisterUsersError("Cannot update an event that have register users");}
 			validateEvent(event);
@@ -93,9 +91,7 @@ public class EventServiceImpl implements EventService {
             try {
 
                 /* Prepare connection. */
-                connection
-                        .setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-                connection.setAutoCommit(false);
+                
 
                 /* Do work. */
                 eventDao.update(connection, event);
