@@ -16,7 +16,7 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
 	protected AbstractSqlResponseDao(){}
 	@Override
 	public ArrayList<Response> find(Connection connection,
-			Long eventId, Boolean assists){
+			Long eventId, Boolean assists) throws InstanceNotFoundException{
 		ArrayList<Response> listResponses = new ArrayList<Response>();
 		/* Create "queryString". */
         String queryString = "SELECT responseId, userId, eventId, date," +
@@ -36,20 +36,20 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (!resultSet.next()) {
-            	listResponses.clear();
-            }else{
-            	/* Get results. */
-            	while (resultSet.next()) {
-            		i = 1;
-            		Long response = resultSet.getLong(i++);
-            		String userId = resultSet.getString(i++);
-            		eventId = resultSet.getLong(i++);
-            		Calendar respDate = Calendar.getInstance();
-            		respDate.setTime(resultSet.getTimestamp(i++));
-            		Boolean confirm = resultSet.getBoolean(i++);
-            		listResponses.add(new Response(response, userId, eventId,respDate,confirm));
-            	}
+            	throw new InstanceNotFoundException(eventId,Response.class.getName());
             }
+            	/* Get results. */
+        	while (resultSet.next()) {
+        		i = 1;
+        		Long response = resultSet.getLong(i++);
+        		String userId = resultSet.getString(i++);
+        		eventId = resultSet.getLong(i++);
+        		Calendar respDate = Calendar.getInstance();
+        		respDate.setTime(resultSet.getTimestamp(i++));
+        		Boolean confirm = resultSet.getBoolean(i++);
+        		listResponses.add(new Response(response, userId, eventId,respDate,confirm));
+        	}
+            
             /* Return Responses. */
             return listResponses;
 

@@ -2,6 +2,7 @@ package es.udc.ws.events.test.model.PruebaMain;
 
 import static es.udc.ws.events.model.util.ModelConstants.TEMPLATE_DATA_SOURCE;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -48,28 +49,28 @@ public class PruebaMain {
 		fechaIni1.set(2013, 1, 1);
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3);
-		Event event = new Event("Evento1","Evento1 descripcion",fechaIni1,fechaFin1,false,"Calle 1",(short) 20);
-		event = serv.addEvent(event);
+		Event event1 = new Event("tarea comer manzana","Evento1 descripcion",fechaIni1,fechaFin1,false,"Calle 1",(short) 20);
+		event1 = serv.addEvent(event1);
 		
 		Calendar fechaIni2 = Calendar.getInstance();
 		fechaIni2.set(2013, 1, 2);
 		Calendar fechaFin2 = Calendar.getInstance();
 		fechaFin2.set(2013, 1, 4);
-		Event event2 = new Event("Evento2","Evento2 descripcion",fechaIni2,fechaFin2,true,"Calle 2",(short) 25);
+		Event event2 = new Event("manzana de caramelo","Evento2 descripcion",fechaIni2,fechaFin2,true,"Calle 2",(short) 25);
 		event2 = serv.addEvent(event2);
 		
 		Calendar fechaIni3 = Calendar.getInstance();
 		fechaIni3.set(2013, 1, 3);
 		Calendar fechaFin3 = Calendar.getInstance();
 		fechaFin3.set(2013, 1, 5);
-		Event event3 = new Event("Evento3","Evento3 descripcion",fechaIni3,fechaFin3,true,"Calle 3",(short) 10);
+		Event event3 = new Event("caramelo","Evento3 descripcion",fechaIni3,fechaFin3,true,"Calle 3",(short) 10);
 		event3 = serv.addEvent(event3);
 		
 		Calendar fechaIni4 = Calendar.getInstance();
 		fechaIni4.set(2013, 1, 4);
 		Calendar fechaFin4 = Calendar.getInstance();
 		fechaFin4.set(2013, 1, 5);
-		Event event4 = new Event("Evento4","Evento4 descripcion",fechaIni4,fechaFin4,true,"Calle 4",(short) 5);
+		Event event4 = new Event("evento4","Evento4 descripcion",fechaIni4,fechaFin4,true,"Calle 4",(short) 5);
 		event4 = serv.addEvent(event4);
 		System.out.println(event4.getEventId()+" "+event4.getName());*/
 		Event event1 = serv.findEvent((long) 1);
@@ -81,9 +82,33 @@ public class PruebaMain {
 		System.out.println(event3.toString());
 		System.out.println(event4.toString());
 		
-		event4.setCapacity((short)2);
-		System.out.println(event4.toString());
-		serv.deleteEvent(event4.getEventId());
+		System.out.println("Busqueda de eventos by keywords (keywords)");
+		
+		ArrayList<Event> eventsFound = (ArrayList<Event>) serv.findEventByKeyword("caramelo", null, null);
+		int i = 0;
+		while(i < eventsFound.size()){
+			System.out.println(eventsFound.get(i).toString());
+			i++;
+		}
+		System.out.println("Busqueda de eventos by keywords(date)");
+		eventsFound.clear();
+		Calendar dateTest1 = Calendar.getInstance();
+		dateTest1.set(2013, 1, 2);
+		Calendar dateTest2 = Calendar.getInstance();
+		dateTest2.set(2013, 1, 4);
+		eventsFound = (ArrayList<Event>) serv.findEventByKeyword(null,dateTest1,dateTest2);
+		i = 0;
+		while(i < eventsFound.size()){
+			System.out.println(eventsFound.get(i).toString());
+			i++;
+		}
+		System.out.println("Busqueda de respuestas");
+		serv.responseToEvent("Alejandro", event4.getEventId(), true);
+
+		
+		//event4.setCapacity((short)2);
+		//System.out.println(event4.toString());
+		//serv.updateEvent(event4);
 		/*
 		serv.deleteEvent(event2.getEventId());
 		
