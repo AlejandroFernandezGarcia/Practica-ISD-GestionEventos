@@ -41,6 +41,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
             preparedStatement.setBoolean(i++, event.isIntern());
             preparedStatement.setString(i++, event.getAddress());
             preparedStatement.setShort(i++, event.getCapacity());
+            preparedStatement.setLong(i++, event.getEventId());
             /* Execute query. */
             int updatedRows = preparedStatement.executeUpdate();
 
@@ -51,7 +52,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
 
             if (updatedRows > 1) {
                 throw new SQLException("Duplicate row for identifier = '"
-                        + event.getEventId() + "' in table 'Movie'");
+                        + event.getEventId() + "' in table 'Event'");
             }
 
         } catch (SQLException e) {
@@ -151,12 +152,15 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
         Timestamp timeSt = datesSt != null ? new Timestamp(datesSt.getTime().getTime()) : null;
         Timestamp timeEnd = datesEnd != null ? new Timestamp(datesEnd.getTime().getTime()) : null;
 		if ((timeSt !=null)&&(timeEnd != null)){
+			if(keywords != null){
+				queryString += " AND ";
+			}
 			queryString += " dateSt between '"+timeSt+"' and '"+timeEnd+"'";
 		}
         
         queryString += " ORDER BY name";
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
-
+        	
             if (words != null) {
                 /* Fill "preparedStatement". */
                 for (int i = 0; i < words.length; i++) {

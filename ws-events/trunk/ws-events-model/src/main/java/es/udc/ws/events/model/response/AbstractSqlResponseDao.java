@@ -21,15 +21,14 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
 		/* Create "queryString". */
         String queryString = "SELECT responseId, userId, eventId, date," +
         		" assists FROM Response WHERE eventId = ?";
-
-        try (PreparedStatement preparedStatement = 
-        		connection.prepareStatement(queryString)) {
-
+        if(assists != null){
+        	queryString = queryString + " AND assists = ?";
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
             /* Fill "preparedStatement". */
             int i = 1;
-            preparedStatement.setLong(i++, eventId.longValue());
+            preparedStatement.setLong(i++, eventId);
             if(assists != null){
-            	queryString = queryString + " AND assists = ?";
             	preparedStatement.setBoolean(i++, assists);
             }
             /* Execute query. */
@@ -38,16 +37,24 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
             if (!resultSet.next()) {
             	throw new InstanceNotFoundException(eventId,Response.class.getName());
             }
+            i = 1;
+    		Long responseId = resultSet.getLong(i++);
+    		String userId = resultSet.getString(i++);
+    		eventId = resultSet.getLong(i++);
+    		Calendar respDate = Calendar.getInstance();
+    		respDate.setTime(resultSet.getTimestamp(i++));
+    		Boolean confirm = resultSet.getBoolean(i++);
+    		listResponses.add(new Response(responseId, userId, eventId,respDate,confirm));
             	/* Get results. */
         	while (resultSet.next()) {
         		i = 1;
-        		Long response = resultSet.getLong(i++);
-        		String userId = resultSet.getString(i++);
+        		responseId = resultSet.getLong(i++);
+        		userId = resultSet.getString(i++);
         		eventId = resultSet.getLong(i++);
-        		Calendar respDate = Calendar.getInstance();
+        		respDate = Calendar.getInstance();
         		respDate.setTime(resultSet.getTimestamp(i++));
-        		Boolean confirm = resultSet.getBoolean(i++);
-        		listResponses.add(new Response(response, userId, eventId,respDate,confirm));
+        		confirm = resultSet.getBoolean(i++);
+        		listResponses.add(new Response(responseId, userId, eventId,respDate,confirm));
         	}
             
             /* Return Responses. */

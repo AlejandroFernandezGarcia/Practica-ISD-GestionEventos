@@ -162,38 +162,46 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public Long responseToEvent(String username, Long eventId, Boolean code)
-			throws InstanceNotFoundException, OverCapacityError, InputDateError {
+			throws InstanceNotFoundException, OverCapacityError, InputDateError, EventRegisterUsersError {
 		List<Response> lista;
+		Response response = null;
 		try (Connection connection = dataSource.getConnection()) {
             try {
             	connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             	connection.setAutoCommit(false);
-            	Event event = eventDao.find(connection, eventId);
-            	if (event.getDateEnd().before(Calendar.getInstance())) throw new InputDateError("The event was expired");
+            	Event event;
+            	try{
+            		event = eventDao.find(connection, eventId);
+            	}catch (InstanceNotFoundException er){
+                	throw new InstanceNotFoundException(eventId,Event.class.getName());
+            	}
+            	//getDateSt o getDateEnd?
+            	if (event.getDateSt().before(Calendar.getInstance())) throw new InputDateError("The event was expired");
             	if (code){
             		lista = responseDao.find(connection, event.getEventId(), true);
             		if ((lista.size()+1) > event.getCapacity()) throw new OverCapacityError("Full capacity");
-            		event.setCapacity((short) (event.getCapacity()+1));
             	}
-                Calendar respCal = Calendar.getInstance();
-        		Response response = new Response(username,eventId,code,respCal);
+                Calendar respDate = Calendar.getInstance();
+        		response = new Response(username,eventId,code,respDate);
                 lista = getResponses(event.getEventId(), null);
                 int i = 0;
                 while(i<lista.size()){
-                	if(response.getUsername().compareTo(username)==0){
+                	if(lista.get(i).getUsername().compareTo(username)==0){
                 		return responseDao.update(connection, response);
                 	}
                 	i++;
                 }
-        		response = responseDao.create(connection, response);
-
-                /* Commit. */
+            	response = responseDao.create(connection, response);
                 connection.commit();
-
                 return response.getId();
-            } catch (InstanceNotFoundException er){
-            	connection.commit();
-            	throw new InstanceNotFoundException(eventId,Event.class.getName());
+        		
+            } catch (InstanceNotFoundException err){
+            	//connection.commit();
+            	Calendar respDate = Calendar.getInstance();
+            	response = new Response(username,eventId,code,respDate);
+            	response = responseDao.create(connection, response);
+                connection.commit();
+                return response.getId();
             } catch (SQLException e) {
                 connection.rollback();
                 throw new RuntimeException(e);
@@ -214,7 +222,7 @@ public class EventServiceImpl implements EventService {
 			eventDao.find(connection, eventId);
 			return responseDao.find(connection, eventId, code);
 		} catch (InstanceNotFoundException er){
-        	throw new InstanceNotFoundException(eventId,Event.class.getName());
+        	throw new InstanceNotFoundException(eventId,Response.class.getName());
 		} catch (SQLException e) {
             throw new RuntimeException(e);
         }
