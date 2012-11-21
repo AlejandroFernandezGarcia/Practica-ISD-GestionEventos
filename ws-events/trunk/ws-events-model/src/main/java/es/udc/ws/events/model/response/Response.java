@@ -101,6 +101,13 @@ public class Response {
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	}
+
+
+	@Override
+	public String toString() {
+		return "Response [responseId=" + responseId + ", eventId=" + eventId
+				+ ", username=" + username + ", assists=" + assists
+				+ ", respDate=" + respDate + "]";
+	}
 	
 }
-//similar a event
