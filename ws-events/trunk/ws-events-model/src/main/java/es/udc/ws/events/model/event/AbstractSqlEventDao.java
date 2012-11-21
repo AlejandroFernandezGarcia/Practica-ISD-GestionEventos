@@ -34,16 +34,13 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
             int i = 1;
             preparedStatement.setString(i++, event.getName());
             preparedStatement.setString(i++, event.getDescription());
-            Timestamp dateSt = new Timestamp(event.getDateSt().getTime()
-                    .getTime());
+            Timestamp dateSt = new Timestamp(event.getDateSt().getTime().getTime());
             preparedStatement.setTimestamp(i++, dateSt);
-            Timestamp dateEnd = new Timestamp(event.getDateEnd().getTime()
-                    .getTime());
+            Timestamp dateEnd = new Timestamp(event.getDateEnd().getTime().getTime());
             preparedStatement.setTimestamp(i++, dateEnd);
             preparedStatement.setBoolean(i++, event.isIntern());
             preparedStatement.setString(i++, event.getAddress());
             preparedStatement.setShort(i++, event.getCapacity());
-            
             /* Execute query. */
             int updatedRows = preparedStatement.executeUpdate();
 
@@ -138,8 +135,10 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
         String[] words = keywords != null ? keywords.split(" ") : null;
         String queryString = "SELECT eventId, name, description,"
                 + " dateSt, dateEnd, intern, address, capacity FROM Event";
+        if ((keywords != null) || (datesSt!=null) || (datesEnd != null)){
+        	queryString += " WHERE";
+        }
         if (words != null && words.length > 0) {
-            queryString += " WHERE";
             for (int i = 0; i < words.length; i++) {
             	//queryString = " "+words[i];
                 if (i > 0) {
@@ -152,11 +151,10 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
         Timestamp timeSt = datesSt != null ? new Timestamp(datesSt.getTime().getTime()) : null;
         Timestamp timeEnd = datesEnd != null ? new Timestamp(datesEnd.getTime().getTime()) : null;
 		if ((timeSt !=null)&&(timeEnd != null)){
-			queryString += "AND dateSt between "+datesSt+"and"+datesEnd;
+			queryString += " dateSt between '"+timeSt+"' and '"+timeEnd+"'";
 		}
         
         queryString += " ORDER BY name";
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
 
             if (words != null) {

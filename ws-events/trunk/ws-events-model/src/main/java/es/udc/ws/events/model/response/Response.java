@@ -18,8 +18,7 @@ public class Response {
 	}
 	
 	
-	public Response(Long responseId,String username, Long eventId,
-			Calendar respDate, boolean response) {
+	public Response(Long responseId,String username, Long eventId,Calendar respDate, boolean response) {
 		this(username,eventId,response,respDate);
 		this.responseId = responseId;
 	}
