@@ -15,8 +15,7 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
 	
 	protected AbstractSqlResponseDao(){}
 	@Override
-	public ArrayList<Response> find(Connection connection,
-			Long eventId, Boolean assists) throws InstanceNotFoundException{
+	public ArrayList<Response> find(Connection connection,Long eventId, Boolean assists){
 		ArrayList<Response> listResponses = new ArrayList<Response>();
 		/* Create "queryString". */
         String queryString = "SELECT responseId, userId, eventId, date," +
@@ -35,7 +34,7 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (!resultSet.next()) {
-            	throw new InstanceNotFoundException(eventId,Response.class.getName());
+            	return listResponses;
             }
             i = 1;
     		Long responseId = resultSet.getLong(i++);
@@ -67,8 +66,7 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
 	}
 
 	@Override
-	public Response findById(Connection connection,
-			Long responseId) throws InstanceNotFoundException {
+	public Response findById(Connection connection, Long responseId) throws InstanceNotFoundException {
 		/* Create "queryString". */
         String queryString = "SELECT responseId, userId, eventId, date," +
         		" assists FROM Response WHERE responseId = ?";
@@ -103,6 +101,14 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
             throw new RuntimeException(e);
         }
 
+	}
+	public Response findResponseByEventUser(Connection connection, String username, Long EventId){
+		//devuelve la respuesta de un usuario a un evento o null sino tiene
+		return null;
+	}
+	public Long numResponsesToEvent(Connection connection, Long eventId){
+		//devuelve el numero de respuestas a un evento
+		return ((long)1); 
 	}
 	@Override
 	public Long update(Connection connection, Response response) throws InstanceNotFoundException {
@@ -163,52 +169,5 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
         }
 
 	}
-	@Override
-	public void deleteByUserId(Connection connection, String userId)
-			throws InstanceNotFoundException{
-		String queryString = "DELETE FROM Response WHERE userId = ?";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
-
-            /* Fill "preparedStatement". */
-            int i = 1;
-            preparedStatement.setString(i++, userId);
-
-            /* Execute query. */
-            int removedRows = preparedStatement.executeUpdate();
-
-            if (removedRows == 0) {
-                throw new InstanceNotFoundException(userId,
-                        Response.class.getName());
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-	}
-	@Override
-	public void deleteByEventId(Connection connection, Long eventId)
-			throws InstanceNotFoundException{
-		String queryString = "DELETE FROM Response WHERE eventId = ?";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
-
-            /* Fill "preparedStatement". */
-            int i = 1;
-            preparedStatement.setLong(i++, eventId);
-
-            /* Execute query. */
-            int removedRows = preparedStatement.executeUpdate();
-
-            if (removedRows == 0) {
-                throw new InstanceNotFoundException(eventId,
-                        Response.class.getName());
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-	}
+	
 }

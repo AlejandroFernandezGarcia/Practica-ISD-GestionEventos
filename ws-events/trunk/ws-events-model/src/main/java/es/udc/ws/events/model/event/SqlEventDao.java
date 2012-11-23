@@ -15,6 +15,5 @@ public interface SqlEventDao {
     		throws InstanceNotFoundException;
     public Event find(Connection connection, Long eventId)
             throws InstanceNotFoundException;
-    public List<Event> findByKeyword(Connection connection, String clave, Calendar fechaIni, Calendar fechaFin)
-    		throws InstanceNotFoundException;
+    public List<Event> findByKeyword(Connection connection, String clave, Calendar fechaIni, Calendar fechaFin);
 }

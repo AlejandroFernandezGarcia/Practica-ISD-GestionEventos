@@ -39,27 +39,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SoapInstanceNotFoundExceptionInfo }
-     * 
-     */
-    public SoapInstanceNotFoundExceptionInfo createSoapInstanceNotFoundExceptionInfo() {
-        return new SoapInstanceNotFoundExceptionInfo();
-    }
-
-    /**
      * Create an instance of {@link AddEvent }
      * 
      */
     public AddEvent createAddEvent() {
         return new AddEvent();
-    }
-
-    /**
-     * Create an instance of {@link EventDto }
-     * 
-     */
-    public EventDto createEventDto() {
-        return new EventDto();
     }
 
     /**
@@ -71,11 +55,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SoapInstanceNotFoundExceptionInfo }
+     * 
+     */
+    public SoapInstanceNotFoundExceptionInfo createSoapInstanceNotFoundExceptionInfo() {
+        return new SoapInstanceNotFoundExceptionInfo();
+    }
+
+    /**
      * Create an instance of {@link FindEvent }
      * 
      */
     public FindEvent createFindEvent() {
         return new FindEvent();
+    }
+
+    /**
+     * Create an instance of {@link EventDto }
+     * 
+     */
+    public EventDto createEventDto() {
+        return new EventDto();
     }
 
     /**

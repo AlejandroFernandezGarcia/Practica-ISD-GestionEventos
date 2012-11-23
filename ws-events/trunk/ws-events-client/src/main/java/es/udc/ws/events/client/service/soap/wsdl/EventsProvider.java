@@ -25,23 +25,6 @@ public interface EventsProvider {
 
     /**
      * 
-     * @param eventId
-     * @return
-     *     returns es.udc.ws.events.client.service.soap.wsdl.EventDto
-     * @throws SoapInstanceNotFoundException
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "findEvent", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.events.client.service.soap.wsdl.FindEvent")
-    @ResponseWrapper(localName = "findEventResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.events.client.service.soap.wsdl.FindEventResponse")
-    public EventDto findEvent(
-        @WebParam(name = "eventId", targetNamespace = "")
-        Long eventId)
-        throws SoapInstanceNotFoundException
-    ;
-
-    /**
-     * 
      * @param eventDto
      * @return
      *     returns java.lang.Long
@@ -55,6 +38,23 @@ public interface EventsProvider {
         @WebParam(name = "eventDto", targetNamespace = "")
         EventDto eventDto)
         throws SoapInputValidationException
+    ;
+
+    /**
+     * 
+     * @param eventId
+     * @return
+     *     returns es.udc.ws.events.client.service.soap.wsdl.EventDto
+     * @throws SoapInstanceNotFoundException
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "findEvent", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.events.client.service.soap.wsdl.FindEvent")
+    @ResponseWrapper(localName = "findEventResponse", targetNamespace = "http://soap.ws.udc.es/", className = "es.udc.ws.events.client.service.soap.wsdl.FindEventResponse")
+    public EventDto findEvent(
+        @WebParam(name = "eventId", targetNamespace = "")
+        Long eventId)
+        throws SoapInstanceNotFoundException
     ;
 
 }
