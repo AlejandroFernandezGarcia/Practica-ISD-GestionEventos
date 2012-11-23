@@ -164,6 +164,7 @@ public class EventServiceImpl implements EventService {
 	public Long responseToEvent(String username, Long eventId, Boolean code)
 			throws InstanceNotFoundException, OverCapacityError, InputDateError, EventRegisterUsersError {
 		List<Response> lista;
+		//cambiar todo
 		Response response = null;
 		try (Connection connection = dataSource.getConnection()) {
             try {

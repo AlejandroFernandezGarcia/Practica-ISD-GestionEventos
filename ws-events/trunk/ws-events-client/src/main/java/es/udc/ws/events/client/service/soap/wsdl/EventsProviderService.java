@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.1
  * 
  */
-@WebServiceClient(name = "EventsProviderService", targetNamespace = "http://soap.ws.udc.es/", wsdlLocation = "file:/C:/FIC/Docencia/ISD/Practicas/ws-events-1.0.1/ws-events-service/target/jaxws/wsgen/wsdl/EventsProviderService.wsdl")
+@WebServiceClient(name = "EventsProviderService", targetNamespace = "http://soap.ws.udc.es/", wsdlLocation = "file:/home/alejandro/workspace/ws-events/ws-events-service/target/jaxws/wsgen/wsdl/EventsProviderService.wsdl")
 public class EventsProviderService
     extends Service
 {
@@ -30,9 +30,9 @@ public class EventsProviderService
         try {
             URL baseUrl;
             baseUrl = es.udc.ws.events.client.service.soap.wsdl.EventsProviderService.class.getResource(".");
-            url = new URL(baseUrl, "file:/C:/FIC/Docencia/ISD/Practicas/ws-events-1.0.1/ws-events-service/target/jaxws/wsgen/wsdl/EventsProviderService.wsdl");
+            url = new URL(baseUrl, "file:/home/alejandro/workspace/ws-events/ws-events-service/target/jaxws/wsgen/wsdl/EventsProviderService.wsdl");
         } catch (MalformedURLException e) {
-            logger.warning("Failed to create URL for the wsdl Location: 'file:/C:/FIC/Docencia/ISD/Practicas/ws-events-1.0.1/ws-events-service/target/jaxws/wsgen/wsdl/EventsProviderService.wsdl', retrying as a local file");
+            logger.warning("Failed to create URL for the wsdl Location: 'file:/home/alejandro/workspace/ws-events/ws-events-service/target/jaxws/wsgen/wsdl/EventsProviderService.wsdl', retrying as a local file");
             logger.warning(e.getMessage());
         }
         EVENTSPROVIDERSERVICE_WSDL_LOCATION = url;

@@ -13,12 +13,11 @@ public interface SqlResponseDao {
 			throws InstanceNotFoundException;
 	public void delete(Connection connection, Long responseId)
 			throws InstanceNotFoundException;
-	public void deleteByUserId(Connection connection, String userId)
-			throws InstanceNotFoundException;
-	public void deleteByEventId(Connection connection, Long eventId)
-			throws InstanceNotFoundException;
 	public ArrayList<Response> find(Connection connection, Long eventId,
 			Boolean response) throws InstanceNotFoundException;
 	public Response findById(Connection connection, Long responseId)
 			throws InstanceNotFoundException;
+	public Response findResponseByEventUser(Connection connection, String username, Long EventId);
+	public Long numResponsesToEvent(Connection connection, Long eventId);
+	
 }

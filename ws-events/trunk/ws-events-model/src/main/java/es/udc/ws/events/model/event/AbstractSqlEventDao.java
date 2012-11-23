@@ -129,9 +129,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
 	}
 
 	@Override
-	public List<Event> findByKeyword(Connection connection, String keywords,
-			Calendar datesSt, Calendar datesEnd)
-			throws InstanceNotFoundException {
+	public List<Event> findByKeyword(Connection connection, String keywords,Calendar datesSt, Calendar datesEnd){
 		/* Create "queryString". */
         String[] words = keywords != null ? keywords.split(" ") : null;
         String queryString = "SELECT eventId, name, description,"
