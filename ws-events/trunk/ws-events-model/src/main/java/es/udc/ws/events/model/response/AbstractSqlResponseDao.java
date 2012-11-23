@@ -102,13 +102,56 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
         }
 
 	}
-	public Response findResponseByEventUser(Connection connection, String username, Long EventId){
+	public Response findResponseByEventUser(Connection connection, String userName, Long eventId){
 		//devuelve la respuesta de un usuario a un evento o null sino tiene
-		return null;
+		/* Create "queryString". */
+        String queryString = "SELECT responseId, userId, eventId, date," +
+        		" assists FROM Response WHERE eventId = ?";
+        if(userName != null){
+        	queryString = queryString + " AND userId = ?";
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+            /* Fill "preparedStatement". */
+            int i = 1;
+            preparedStatement.setLong(i++, eventId);
+            if(userName != null){
+            	preparedStatement.setString(i++, userName);
+            }
+            /* Execute query. */
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (!resultSet.next()) {
+            	return null;
+            }
+            i = 1;
+    		Long responseId = resultSet.getLong(i++);
+    		String userId = resultSet.getString(i++);
+    		eventId = resultSet.getLong(i++);
+    		Calendar respDate = Calendar.getInstance();
+    		respDate.setTime(resultSet.getTimestamp(i++));
+    		Boolean confirm = resultSet.getBoolean(i++);
+    		return new Response(responseId, userId, eventId,respDate,confirm);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 	}
 	public Long numResponsesToEvent(Connection connection, Long eventId){
-		//devuelve el numero de respuestas a un evento
-		return ((long)1); 
+		/* Create "queryString". */
+        String queryString = "SELECT COUNT(*) FROM Response WHERE eventId = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
+            /* Fill "preparedStatement". */
+            int i = 1;
+            preparedStatement.setLong(i++, eventId);
+            /* Execute query. */
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next()) {
+            	return (long)0;
+            }
+            i = 1;
+    		return resultSet.getLong(i++);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 	}
 	@Override
 	public Long update(Connection connection, Response response) throws InstanceNotFoundException {
