@@ -17,7 +17,7 @@ public interface SqlResponseDao {
 			Boolean response) throws InstanceNotFoundException;
 	public Response findById(Connection connection, Long responseId)
 			throws InstanceNotFoundException;
-	public Response findResponseByEventUser(Connection connection, String username, Long EventId);
+	public Response findResponseByEventUser(Connection connection, String userName, Long eventId);
 	public Long numResponsesToEvent(Connection connection, Long eventId);
 	
 }
