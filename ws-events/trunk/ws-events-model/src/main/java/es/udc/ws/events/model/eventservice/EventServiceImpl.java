@@ -11,7 +11,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import es.udc.ws.events.exceptions.EventRegisterUsersError;
-import es.udc.ws.events.exceptions.InputDateError;
 import es.udc.ws.events.exceptions.OverCapacityError;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.event.SqlEventDao;
@@ -37,16 +36,18 @@ public class EventServiceImpl implements EventService {
         responseDao = SqlResponseDaoFactory.getDao();
 	}
 	
-	private void validateEvent(Event event) throws InputValidationException, InputDateError{
+	private void validateEvent(Event event) throws InputValidationException{
 		PropertyValidatorEvent.validateMandatoryString("name",event.getName()) ;
 		PropertyValidatorEvent.validateDate("dates", event.getDateSt(),event.getDateEnd());
 		PropertyValidatorEvent.validateMandatoryString("address", event.getAddress());
 		PropertyValidatorEvent.validateIntern("intern", event.isIntern());
 		PropertyValidatorEvent.validateShort("capacity", event.getCapacity());
+		PropertyValidatorEvent.validateDate2("currentDate", event.getDateSt(),Calendar.getInstance());
+		
 	}
 	
 	@Override
-	public Event addEvent(Event event) throws InputValidationException,InputDateError {
+	public Event addEvent(Event event) throws InputValidationException {
 		
 		validateEvent(event);
 		try (Connection connection = dataSource.getConnection()) {
@@ -79,22 +80,19 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public void updateEvent(Event event) throws InputValidationException,InstanceNotFoundException, EventRegisterUsersError, InputDateError {
+	public void updateEvent(Event event) throws InputValidationException,InstanceNotFoundException, EventRegisterUsersError{
 		try (Connection connection = dataSource.getConnection()) {
 			
             try {
             	connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
     			connection.setAutoCommit(false);
-    			ArrayList<Response> listaRespuestas = responseDao.find(connection, event.getEventId(), null);
-    			throw new EventRegisterUsersError("Error: Cannot be update, registered users");
-            } catch (InstanceNotFoundException e) {
-            	validateEvent(event);
-                try{
-            		eventDao.update(connection, event);
-                } catch(InstanceNotFoundException err){
-                	throw new InstanceNotFoundException(event.getEventId(),Event.class.getName());
-                }
+    			Long numResponses = responseDao.numResponsesToEvent(connection, event.getEventId(), null);
+    			if (numResponses != 0){throw new EventRegisterUsersError("Cannot update the event with registered users");}
+    			validateEvent(event);
+            	eventDao.update(connection, event);
                 connection.commit();
+            } catch (InstanceNotFoundException e){
+            	throw new InstanceNotFoundException(event.getEventId(),Event.class.getName());
             } catch (SQLException e) {
                 connection.rollback();
                 throw new RuntimeException(e);
@@ -114,28 +112,22 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public void deleteEvent(Long eventId) throws InstanceNotFoundException,EventRegisterUsersError {
 		try (Connection connection = dataSource.getConnection()) {
-            try {
-            	connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-            	connection.setAutoCommit(false);
-            	Event event = eventDao.find(connection, eventId);
-            	ArrayList<Response> listaRespuestas = responseDao.find(connection, event.getEventId(), null);
-            	throw new EventRegisterUsersError("Error: Cannot be deleted, registered users");
-            } catch (InstanceNotFoundException e) {
-            	try{
-            		eventDao.delete(connection, eventId);
-            	} catch (InstanceNotFoundException err){
-            		throw new InstanceNotFoundException(eventId,Event.class.getName());
-            	}
-                connection.commit();
-                //throw e;
-            } catch (SQLException e) {
-                connection.rollback();
-                throw new RuntimeException(e);
+			connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+        	connection.setAutoCommit(false);
+        	Event event = eventDao.find(connection, eventId);
+        	Long numResponses = responseDao.numResponsesToEvent(connection, event.getEventId(), null);
+        	if(numResponses != 0 ){throw new EventRegisterUsersError("Error: Cannot be deleted, registered users");}
+        	try{
+        		eventDao.delete(connection, eventId);
+        	} catch (InstanceNotFoundException err){
+        		throw new InstanceNotFoundException(eventId,Event.class.getName());
             } catch (RuntimeException | Error e) {
                 connection.rollback();
                 throw e;
             }
-
+            connection.commit();
+            //throw e;
+		
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -161,48 +153,32 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Long responseToEvent(String username, Long eventId, Boolean code)
-			throws InstanceNotFoundException, OverCapacityError, InputDateError, EventRegisterUsersError {
-		List<Response> lista;
-		//cambiar todo
-		Response response = null;
+	public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException, OverCapacityError, EventRegisterUsersError {
 		try (Connection connection = dataSource.getConnection()) {
             try {
             	connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             	connection.setAutoCommit(false);
-            	Event event;
-            	try{
-            		event = eventDao.find(connection, eventId);
-            	}catch (InstanceNotFoundException er){
-                	throw new InstanceNotFoundException(eventId,Event.class.getName());
+            	Event event = eventDao.find(connection, eventId);
+            	if((event.getDateSt()).before(Calendar.getInstance())){
+            		throw new EventRegisterUsersError("Event expired");
             	}
-            	//getDateSt o getDateEnd?
-            	if (event.getDateSt().before(Calendar.getInstance())) throw new InputDateError("The event was expired");
             	if (code){
-            		lista = responseDao.find(connection, event.getEventId(), true);
-            		if ((lista.size()+1) > event.getCapacity()) throw new OverCapacityError("Full capacity");
+            		Long num = responseDao.numResponsesToEvent(connection, eventId, true);
+            		if(num == event.getCapacity()){
+            			throw new OverCapacityError("Full event");
+            		}
             	}
-                Calendar respDate = Calendar.getInstance();
-        		response = new Response(username,eventId,code,respDate);
-                lista = getResponses(event.getEventId(), null);
-                int i = 0;
-                while(i<lista.size()){
-                	if(lista.get(i).getUsername().compareTo(username)==0){
-                		return responseDao.update(connection, response);
-                	}
-                	i++;
+            	Response response = responseDao.findResponseByEventUser(connection, username, eventId);
+                if (response != null){
+                	responseDao.update(connection, response);
+                }else{
+                	response = new Response(username, eventId,code,Calendar.getInstance());
+                	responseDao.create(connection, response);
                 }
-            	response = responseDao.create(connection, response);
-                connection.commit();
-                return response.getId();
-        		
-            } catch (InstanceNotFoundException err){
-            	//connection.commit();
-            	Calendar respDate = Calendar.getInstance();
-            	response = new Response(username,eventId,code,respDate);
-            	response = responseDao.create(connection, response);
-                connection.commit();
-                return response.getId();
+            	connection.commit();
+                return null;
+            } catch (InstanceNotFoundException e){
+            	throw new InstanceNotFoundException(eventId,Event.class.getName());
             } catch (SQLException e) {
                 connection.rollback();
                 throw new RuntimeException(e);

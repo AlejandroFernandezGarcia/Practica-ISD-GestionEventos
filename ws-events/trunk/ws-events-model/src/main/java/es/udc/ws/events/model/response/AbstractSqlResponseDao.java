@@ -135,13 +135,20 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
             throw new RuntimeException(e);
         }
 	}
-	public Long numResponsesToEvent(Connection connection, Long eventId){
+	public Long numResponsesToEvent(Connection connection, Long eventId, Boolean assists){
 		/* Create "queryString". */
+		//solo interesan los que han contestado que si
         String queryString = "SELECT COUNT(*) FROM Response WHERE eventId = ?";
+        if (assists != null){
+        	 queryString += " AND assists = ?";
+        }
         try (PreparedStatement preparedStatement = connection.prepareStatement(queryString)) {
             /* Fill "preparedStatement". */
             int i = 1;
             preparedStatement.setLong(i++, eventId);
+            if (assists != null){
+            	preparedStatement.setBoolean(i++, assists);
+            }
             /* Execute query. */
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
@@ -170,6 +177,8 @@ public abstract class AbstractSqlResponseDao implements SqlResponseDao {
                     .getTime());
             preparedStatement.setTimestamp(i++, date);
             preparedStatement.setBoolean(i++, response.isAssists());
+            preparedStatement.setLong(i++, response.getId());
+            
             
             /* Execute query. */
             int updatedRows = preparedStatement.executeUpdate();

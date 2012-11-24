@@ -7,17 +7,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.sql.DataSource;
 
 import es.udc.ws.events.exceptions.EventRegisterUsersError;
-import es.udc.ws.events.exceptions.InputDateError;
 import es.udc.ws.events.exceptions.OverCapacityError;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.eventservice.EventService;
 import es.udc.ws.events.model.eventservice.EventServiceFactory;
-import es.udc.ws.events.model.eventservice.EventServiceImpl;
 import es.udc.ws.events.model.response.Response;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
@@ -35,7 +32,7 @@ public class PruebaMain {
 	 * @throws OverCapacityError 
 	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws InputValidationException, InputDateError, InstanceNotFoundException, EventRegisterUsersError, OverCapacityError, IOException {
+	public static void main(String[] args) throws InputValidationException, InstanceNotFoundException, EventRegisterUsersError, OverCapacityError, IOException {
         /*
          * Create a simple data source and add it to "DataSourceLocator" (this
          * is needed to test
