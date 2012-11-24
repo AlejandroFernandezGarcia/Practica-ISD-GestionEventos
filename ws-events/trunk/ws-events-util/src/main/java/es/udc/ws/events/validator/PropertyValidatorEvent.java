@@ -2,7 +2,6 @@ package es.udc.ws.events.validator;
 
 import java.util.Calendar;
 
-import es.udc.ws.events.exceptions.InputDateError;
 import es.udc.ws.util.exceptions.InputValidationException;
 
 
@@ -21,16 +20,23 @@ public final class PropertyValidatorEvent{
         }
 
     }
-	public static void validateDate(String propertyName, Calendar dateSt, Calendar dateEnd) throws InputDateError{
+	public static void validateDate(String propertyName, Calendar dateSt, Calendar dateEnd) throws InputValidationException{
 			if (dateSt.before(Calendar.getInstance())){
-				throw new InputDateError("The event start date cannot be earlier than the current date");
+				throw new InputValidationException("The event start date cannot be earlier than the current date");
 			}else if (dateEnd.before(Calendar.getInstance())){
-				throw new InputDateError("The event end date cannot be earlier than the current date");
+				throw new InputValidationException("The event end date cannot be earlier than the current date");
 			}else if (dateSt.after(dateEnd)){
-				throw new InputDateError("The event end date cannot be earlier than the start date of the event");
+				throw new InputValidationException("The event end date cannot be earlier than the start date of the event");
 			}
 		
 	}
+	public static void validateDate2(String propertyName, Calendar dateSt, Calendar now) throws InputValidationException{
+		if (dateSt.before(now)){
+			throw new InputValidationException("The event start date cannot be after than the current date");
+		}
+	
+	}
+	
 	public static void validateIntern(String propertyName, Boolean value) throws InputValidationException{
 		if (value == null) {throw new InputValidationException("Invalid" + propertyName);}
 	}
