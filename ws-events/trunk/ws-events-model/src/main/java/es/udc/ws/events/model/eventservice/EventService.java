@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import es.udc.ws.events.exceptions.EventRegisterUsersError;
-import es.udc.ws.events.exceptions.InputDateError;
 import es.udc.ws.events.exceptions.OverCapacityError;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.response.Response;
@@ -14,9 +13,9 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
 public interface EventService {
 
-    public Event addEvent(Event event) throws InputValidationException, InputDateError;
+    public Event addEvent(Event event) throws InputValidationException;
 
-    public void updateEvent(Event event) throws InputValidationException, InstanceNotFoundException, EventRegisterUsersError, InputDateError;
+    public void updateEvent(Event event) throws InputValidationException, InstanceNotFoundException, EventRegisterUsersError;
     
     public void deleteEvent(Long eventId) throws InstanceNotFoundException, EventRegisterUsersError;
     
@@ -25,7 +24,7 @@ public interface EventService {
     public List<Event> findEventByKeyword(String clave, Calendar fechaIni, Calendar fechaFin)
     		throws InstanceNotFoundException;
     
-    public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException, OverCapacityError, InputDateError, EventRegisterUsersError;
+    public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException, OverCapacityError, EventRegisterUsersError;
     
     public List<Response> getResponses(Long eventId, Boolean code) throws InstanceNotFoundException;
     

@@ -23,11 +23,9 @@ public class Jdbc3CcSqlEventDao extends AbstractSqlEventDao {
 			int i = 1;
 			preparedStatement.setString(i++, event.getName());
 			preparedStatement.setString(i++, event.getDescription());
-			Timestamp dateSt = event.getDateSt() != null ? new Timestamp(event
-					.getDateEnd().getTime().getTime()) : null;
+			Timestamp dateSt = event.getDateSt() != null ? new Timestamp(event.getDateSt().getTime().getTime()) : null;
 			preparedStatement.setTimestamp(i++, dateSt);
-			Timestamp dateEnd = event.getDateEnd() != null ? new Timestamp(
-					event.getDateEnd().getTime().getTime()) : null;
+			Timestamp dateEnd = event.getDateEnd() != null ? new Timestamp(event.getDateEnd().getTime().getTime()) : null;
 			preparedStatement.setTimestamp(i++, dateEnd);
 			preparedStatement.setBoolean(i++, event.isIntern());
 			preparedStatement.setString(i++, event.getAddress());

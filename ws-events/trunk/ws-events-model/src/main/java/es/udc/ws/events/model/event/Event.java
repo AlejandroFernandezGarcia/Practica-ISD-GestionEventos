@@ -14,7 +14,9 @@ public class Event {
     private short capacity = 0;
 
     public Event(String name, String description,Calendar fechaIni,Calendar fechaFin,boolean interno, String direccion, short aforo) {
-        this.name = name;
+        fechaIni.set(Calendar.MILLISECOND,0);
+        fechaFin.set(Calendar.MILLISECOND,0);    	
+    	this.name = name;
         this.description = description;
         this.dateSt = fechaIni;
         this.dateEnd = fechaFin;
