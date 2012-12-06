@@ -5,6 +5,10 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 
 import es.udc.ws.events.dto.EventDto;
+import es.udc.ws.events.model.event.Event;
+import es.udc.ws.events.model.eventservice.EventServiceFactory;
+import es.udc.ws.events.util.EventToEventDtoConversor;
+import es.udc.ws.util.exceptions.InputValidationException;
 
 @WebService(
     name="EventsProvider",
@@ -16,9 +20,13 @@ public class SoapEventService {
     @WebMethod(
         operationName="addEvent"
     )
-    public Long addEvent(@WebParam(name="eventDto") EventDto eventDto) 
-            throws SoapInputValidationException {
-        return 0L;
+    public Long addEvent(@WebParam(name="eventDto") EventDto eventDto) throws SoapInputValidationException {
+        	Event event = EventToEventDtoConversor.toEvent(eventDto);
+        	try{
+        		return EventServiceFactory.getService().addEvent(event).getEventId();
+        	}catch(InputValidationException e){
+        		throw new SoapInputValidationException(e.getMessage());
+        	}
     }
 
     @WebMethod(

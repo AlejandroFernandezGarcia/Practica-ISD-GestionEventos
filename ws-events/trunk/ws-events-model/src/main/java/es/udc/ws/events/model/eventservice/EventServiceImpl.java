@@ -4,7 +4,6 @@ import static es.udc.ws.events.model.util.ModelConstants.TEMPLATE_DATA_SOURCE;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
