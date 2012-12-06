@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import es.udc.ws.events.model.event.Event;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
 public abstract class AbstractSqlResponseDao implements SqlResponseDao {
