@@ -1,11 +1,11 @@
 package es.udc.ws.events.util;
 
-import es.udc.ws.events.dto.EventDto;
-import es.udc.ws.events.model.event.Event;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import es.udc.ws.events.dto.EventDto;
+import es.udc.ws.events.model.event.Event;
 
 public class EventToEventDtoConversor {
 
