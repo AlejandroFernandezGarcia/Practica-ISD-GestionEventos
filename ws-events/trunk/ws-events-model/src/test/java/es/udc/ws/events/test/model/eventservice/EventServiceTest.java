@@ -40,8 +40,6 @@ public class EventServiceTest {
         DataSourceLocator.addDataSource(TEMPLATE_DATA_SOURCE, dataSource);
        
     }
-
-
     
 	@Test
     public void testAddEventAndFindEvent1() throws InputValidationException,

@@ -1,13 +1,18 @@
 package es.udc.ws.events.soapservice;
 
+import java.util.Calendar;
+import java.util.List;
+
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 
 import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.events.exceptions.EventRegisterUsersError;
+import es.udc.ws.events.exceptions.OverCapacityError;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.eventservice.EventServiceFactory;
+import es.udc.ws.events.model.response.Response;
 import es.udc.ws.events.util.EventToEventDtoConversor;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
@@ -67,9 +72,42 @@ public class SoapEventService {
     @WebMethod(
         operationName="findEvent"
     )        
-    public EventDto findEvent(@WebParam(name="eventId") Long eventId) 
-            throws SoapInstanceNotFoundException{
-        return null;
+    public EventDto findEvent(@WebParam(name="eventId") Long eventId) throws SoapInstanceNotFoundException{
+        try{
+        	Event event = EventServiceFactory.getService().findEvent(eventId);
+        	return EventToEventDtoConversor.toEventDto(event);
+        }catch(InstanceNotFoundException e){
+        	throw new 
+        }
+    }
+    
+    @WebMethod(
+            operationName="findEventByKeyword"
+        )
+    public List<Event> findEventByKeyword(String clave, Calendar fechaIni, Calendar fechaFin)
+    		throws InstanceNotFoundException{
+    	return null;
+    }
+    
+    @WebMethod(
+            operationName="responseToEvent"
+        )
+    public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException, OverCapacityError, EventRegisterUsersError{
+    	return null;
+    }
+    
+    @WebMethod(
+            operationName="getResponses"
+        )
+    public List<Response> getResponses(Long eventId, Boolean code) throws InstanceNotFoundException{
+    	return null;
+    }
+    
+    @WebMethod(
+            operationName="getResponsesByID"
+        )
+    public Response getResponsesByID(Long responseId) throws InstanceNotFoundException{
+    	return null;
     }
 
 }
