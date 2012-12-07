@@ -11,6 +11,7 @@ import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.events.exceptions.EventRegisterUsersError;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.eventservice.EventServiceFactory;
+import es.udc.ws.events.model.response.Response;
 import es.udc.ws.events.util.EventToEventDtoConversor;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
@@ -82,14 +83,14 @@ public class SoapEventService {
     @WebMethod(
             operationName="findEventByKeyword"
         )
-    public List<Event> findEventByKeyword(String clave, Calendar fechaIni, Calendar fechaFin)throws InstanceNotFoundException{
+    public List<EventDto> findEventByKeyword(String clave, Calendar fechaIni, Calendar fechaFin)throws InstanceNotFoundException{
     	return null;
     }
     
     @WebMethod(
             operationName="responseToEvent"
         )
-    public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException, OverCapacityError, EventRegisterUsersError{
+    public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException{
     	return null;
     }
     
