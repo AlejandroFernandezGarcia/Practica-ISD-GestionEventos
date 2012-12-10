@@ -8,12 +8,14 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 
 import es.udc.ws.events.dto.EventDto;
+import es.udc.ws.events.dto.ResponseDto;
 import es.udc.ws.events.exceptions.EventRegisterUsersError;
 import es.udc.ws.events.exceptions.OverCapacityError;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.eventservice.EventServiceFactory;
 import es.udc.ws.events.model.response.Response;
 import es.udc.ws.events.util.EventToEventDtoConversor;
+import es.udc.ws.events.util.ResponseToResponseDtoConversor;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
@@ -114,15 +116,25 @@ public class SoapEventService {
     @WebMethod(
             operationName="getResponses"
         )
-    public List<Response> getResponses(Long eventId, Boolean code){
-    	return null;
+    public List<ResponseDto> getResponses(@WebParam(name="eventId")Long eventId,@WebParam(name="code")Boolean code) throws SoapInstanceNotFoundException{
+    	try{
+    		List<Response> responsesList = EventServiceFactory.getService().getResponses(eventId, code);
+    		return ResponseToResponseDtoConversor.toResponseDtos(responsesList);
+    	}catch(InstanceNotFoundException e){
+    		throw new SoapInstanceNotFoundException(new SoapInstanceNotFoundExceptionInfo(e.getInstanceId(), e.getInstanceType()));
+    	}
     }
     
     @WebMethod(
             operationName="getResponsesByID"
         )
-    public Response getResponsesByID(Long responseId){
-    	return null;
+    public ResponseDto getResponsesByID(@WebParam(name="responseId") Long responseId) throws SoapInstanceNotFoundException{
+    	try{
+    		Response response = EventServiceFactory.getService().getResponsesByID(responseId);
+    		return ResponseToResponseDtoConversor.toResponseDto(response);
+    	}catch(InstanceNotFoundException e){
+    		throw new SoapInstanceNotFoundException(new SoapInstanceNotFoundExceptionInfo(e.getInstanceId(), e.getInstanceType()));
+    	}
     }
 
 }
