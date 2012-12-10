@@ -3,7 +3,7 @@ package es.udc.ws.events.soapservice;
 import javax.xml.ws.WebFault;
 
 @SuppressWarnings("serial")
-@WebFault(name = "SoapInputValidationException", targetNamespace = "http://soap.ws.udc.es/")
+@WebFault(name = "SoapEventRegisterUsersError", targetNamespace = "http://soap.ws.udc.es/")
 public class SoapEventRegisterUsersError extends Exception {
 
     public SoapEventRegisterUsersError(String message) {
