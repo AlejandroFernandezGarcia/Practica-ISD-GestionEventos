@@ -9,6 +9,7 @@ import javax.jws.WebService;
 
 import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.events.exceptions.EventRegisterUsersError;
+import es.udc.ws.events.exceptions.OverCapacityError;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.eventservice.EventServiceFactory;
 import es.udc.ws.events.model.response.Response;
@@ -83,28 +84,44 @@ public class SoapEventService {
     @WebMethod(
             operationName="findEventByKeyword"
         )
-    public List<EventDto> findEventByKeyword(String clave, Calendar fechaIni, Calendar fechaFin)throws InstanceNotFoundException{
-    	return null;
+    public List<EventDto> findEventByKeyword(@WebParam(name="clave")String clave,@WebParam(name="dateSt") Calendar dateSt,@WebParam(name="duracion") Integer duration)throws SoapInstanceNotFoundException{
+    	try{
+            Long dateEndMilis = dateSt.getTimeInMillis() + (duration*60000);
+            Calendar dateEnd = Calendar.getInstance();
+            dateEnd.setTimeInMillis(dateEndMilis);
+            List<Event> eventList= EventServiceFactory.getService().findEventByKeyword(clave, dateSt, dateEnd);
+    		return EventToEventDtoConversor.toEventDtos(eventList);
+    	}catch(InstanceNotFoundException e){
+    		throw new SoapInstanceNotFoundException(new SoapInstanceNotFoundExceptionInfo(e.getInstanceId(), e.getInstanceType()));
+    	}
     }
     
     @WebMethod(
             operationName="responseToEvent"
         )
-    public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException{
-    	return null;
+    public Long responseToEvent(@WebParam(name="username")String username,@WebParam(name="eventId") Long eventId,@WebParam(name="code") Boolean code) throws SoapInstanceNotFoundException, SoapEventRegisterUsersError, SoapOverCapacityError{
+    	try{
+    		return EventServiceFactory.getService().responseToEvent(username, eventId, code);
+    	}catch(InstanceNotFoundException e){
+    		throw new SoapInstanceNotFoundException(new SoapInstanceNotFoundExceptionInfo(e.getInstanceId(), e.getInstanceType()));
+    	} catch (OverCapacityError e) {
+			throw new SoapOverCapacityError(e.getMessage());
+		} catch (EventRegisterUsersError e) {
+			throw new SoapEventRegisterUsersError(e.getMessage());
+		}
     }
     
     @WebMethod(
             operationName="getResponses"
         )
-    public List<Response> getResponses(Long eventId, Boolean code) throws InstanceNotFoundException{
+    public List<Response> getResponses(Long eventId, Boolean code){
     	return null;
     }
     
     @WebMethod(
             operationName="getResponsesByID"
         )
-    public Response getResponsesByID(Long responseId) throws InstanceNotFoundException{
+    public Response getResponsesByID(Long responseId){
     	return null;
     }
 
