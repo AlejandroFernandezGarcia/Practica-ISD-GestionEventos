@@ -51,7 +51,6 @@ public class EventServiceTest {
 
 	}
 	
-	// Aun no esta acabado, pero lo acabo mañana casi seguro.
 	
 	@Test
     public void testAddEventAndFindEvent() throws InputValidationException,
@@ -196,25 +195,6 @@ public class EventServiceTest {
 		
 	}
 	
-	@Test
-    public void testAddEvent6() throws InputValidationException,
-            InstanceNotFoundException {
-    	EventService serv =  EventServiceFactory.getService();
-		Calendar fechaIni6 = Calendar.getInstance();
-		fechaIni6.set(2013, 1, 6,0,0,0);
-		
-		Calendar fechaFin6 = Calendar.getInstance();
-		fechaFin6.set(2013, 1, 3,0,0,0);
-		Event event6 = new Event("evento6","Evento6 descripcion",fechaIni6,fechaFin6,true,"Calle 6",(short) 15);
-		
-		try{
-			event6 = serv.addEvent(event6);
-			fail("---->testAddEvent6 error<----");
-		} catch (InputValidationException e) {
-			throw new InputValidationException("test ok");
-		}
-	}
-	
 	/*	
 	@Test
 	public void eventTest() throws InputValidationException, InstanceNotFoundException{
@@ -320,8 +300,8 @@ public class EventServiceTest {
 
 	}		
 
-		// Actualizar evento con usuarios registrados
-		@Test(expected = InputValidationException.class)
+		// Update event with registered users
+		@Test(expected = EventRegisterUsersError.class)
 	    public void testUpdateEvent2() throws InputValidationException,
 	            InstanceNotFoundException, EventRegisterUsersError, OverCapacityError {	
 	    	EventService serv =  EventServiceFactory.getService();
@@ -367,49 +347,83 @@ public class EventServiceTest {
 		}			
 		
 		// Borrar evento
-		@Test
+		@Test(expected = InstanceNotFoundException.class)
 	    public void testDeleteEvent1() throws InputValidationException,
 	            InstanceNotFoundException, EventRegisterUsersError {	
 	    	EventService serv =  EventServiceFactory.getService();
-			Calendar fechaIni5 = Calendar.getInstance();
-			fechaIni5.set(2013, 1, 1,0,0,0);
+			Calendar fechaIni1 = Calendar.getInstance();
+			fechaIni1.set(2013, 1, 1,0,0,0);
 			
-			Calendar fechaFin5 = Calendar.getInstance();
-			fechaFin5.set(2013, 1, 3,0,0,0);
-			Event event5 = new Event("tarea comer manzana","Evento1 descripcion",fechaIni5,fechaFin5,false,"Calle 1",(short) 20);
-			event5 = serv.addEvent(event5);
+			Calendar fechaFin1 = Calendar.getInstance();
+			fechaFin1.set(2013, 1, 3,0,0,0);
+			Event event1 = new Event("tarea comer manzana","Evento1 descripcion",fechaIni1,fechaFin1,false,"Calle 1",(short) 20);
+			event1 = serv.addEvent(event1);
 
-			serv.deleteEvent(event5.getEventId());
-			event5 = serv.findEvent((long) 5);
-	    	assertNull("---->testDeleteEvent1 error<----",event5);	
+			boolean exceptionCatched = false;
+			try {
+				serv.deleteEvent(event1.getEventId());
+			} catch (InstanceNotFoundException e) {
+				exceptionCatched = true;
+			}
+			assertTrue(!exceptionCatched);
+
+			serv.findEvent(event1.getEventId());
 		}
-
-		@Test
-		// Borrar eventos con gente registrada
+		
+		
+		@Test(expected = EventRegisterUsersError.class)
+		// Delete event with registered users
 	    public void testDeleteEvent2() throws InputValidationException,
 	            InstanceNotFoundException, EventRegisterUsersError, OverCapacityError {	
 	    	EventService serv =  EventServiceFactory.getService();
 			Calendar fechaIni5 = Calendar.getInstance();
 			fechaIni5.set(2013, 1, 1,0,0,0);
-			
 			Calendar fechaFin5 = Calendar.getInstance();
 			fechaFin5.set(2013, 1, 3,0,0,0);
-			Event event5 = new Event("tarea comer manzana","Evento1 descripcion",fechaIni5,fechaFin5,false,"Calle 1",(short) 20);
+			Event event5 = new Event("tarea comer manzana","Evento1 descripcion",fechaIni5,fechaFin5,false,"Calle 5",(short) 20);
 			event5 = serv.addEvent(event5);
+			
 			serv.responseToEvent("Alejandro", event5.getEventId(), true);
 			serv.responseToEvent("Francisco", event5.getEventId(), true);
+			
+			boolean exceptionCatched = false;
 			try {
 				serv.deleteEvent(event5.getEventId());
-				fail("---->testDeleteEvent2 error<----");
 			} catch(EventRegisterUsersError e) {
-				throw new EventRegisterUsersError("test ok");
+				exceptionCatched = true;
 			}
+			assertTrue(!exceptionCatched);
 		}		
 		
-		// Buscar evento por palabra clave
+		// Delete an event and try to find it
+		@Test(expected = InstanceNotFoundException.class)
+		public void testDeleteEvent3() throws InstanceNotFoundException, InputValidationException, EventRegisterUsersError {
+
+	    	EventService serv =  EventServiceFactory.getService();
+			Calendar fechaIni1 = Calendar.getInstance();
+			fechaIni1.set(2013, 1, 1,0,0,0);
+			Calendar fechaFin1 = Calendar.getInstance();
+			fechaFin1.set(2013, 1, 3,0,0,0);
+			Event event1 = new Event("tarea comer manzana","Evento1 descripcion",fechaIni1,fechaFin1,false,"Calle 1",(short) 20);
+			event1 = serv.addEvent(event1);
+			
+			boolean exceptionCatched = false;
+			try {
+				serv.deleteEvent(event1.getEventId());
+			} catch (InstanceNotFoundException e) {
+				exceptionCatched = true;
+			}
+			assertTrue(!exceptionCatched);
+
+			serv.findEvent(event1.getEventId());
+
+		}
+		
+		
+		// Find event by keyword
 		@Test
 	    public void testFindEventByKeyword1() throws InputValidationException,
-	            InstanceNotFoundException {
+	            InstanceNotFoundException, EventRegisterUsersError {
 			EventService serv =  EventServiceFactory.getService();
 			Calendar fechaIni1 = Calendar.getInstance();
 			fechaIni1.set(2013, 1, 1);
@@ -442,16 +456,21 @@ public class EventServiceTest {
 			ArrayList<Event> eventsFound = (ArrayList<Event>) serv.findEventByKeyword("caramelo", null, null);
 			int i = 0;
 			while(i < eventsFound.size()){
-				System.out.println(eventsFound.get(i).toString());
 				i++;
 			}			
-	    	assertEquals("---->testFindEventByKeyword1 error<----",eventsFound.size(),(short) 2);
+	    	assertEquals(eventsFound.size(),(short) 2);
+	    	
+			// Clear Database
+			removeEvent(event1.getEventId());
+			removeEvent(event2.getEventId());
+			removeEvent(event3.getEventId());
+			removeEvent(event4.getEventId());
 		}		
 		
-		// Buscar evento entre fechas
+		// Find event between dates
 		@Test
 		public void testFindEventByKeyword2() throws InputValidationException,
-        InstanceNotFoundException {
+        InstanceNotFoundException, EventRegisterUsersError {
 			EventService serv =  EventServiceFactory.getService();
 			Calendar fechaIni1 = Calendar.getInstance();
 			fechaIni1.set(2013, 1, 1);
@@ -475,16 +494,16 @@ public class EventServiceTest {
 			event3 = serv.addEvent(event3);
 			
 			Calendar fechaIni4 = Calendar.getInstance();
-			fechaIni4.set(2013, 1, 4);
+			fechaIni4.set(2013, 7, 7);
 			Calendar fechaFin4 = Calendar.getInstance();
-			fechaFin4.set(2013, 1, 5);
+			fechaFin4.set(2013, 8, 8);
 			Event event4 = new Event("evento4","Evento4 descripcion",fechaIni4,fechaFin4,true,"Calle 4",(short) 5);
 			event4 = serv.addEvent(event4);		
 			
 			Calendar dateTest1 = Calendar.getInstance();
-			dateTest1.set(2013, 1, 3);
+			dateTest1.set(2013, 1, 1);
 			Calendar dateTest2 = Calendar.getInstance();
-			dateTest2.set(2013, 1, 5);
+			dateTest2.set(2013, 6, 6);
 			ArrayList<Event> eventsFound = (ArrayList<Event>) serv.findEventByKeyword(null,dateTest1,dateTest2);
 			int i = 0;
 			while(i < eventsFound.size()){
@@ -492,12 +511,18 @@ public class EventServiceTest {
 				i++;
 			}
 			assertEquals("---->testFindEventByKeyword2 error<----",eventsFound.size(),(short) 3);
+			
+			// Clear Database
+			removeEvent(event1.getEventId());
+			removeEvent(event2.getEventId());
+			removeEvent(event3.getEventId());
+			removeEvent(event4.getEventId());
 		}
 
-		// Buscar evento por palabra clave y fechas	
+		// Find event by keyword and dates	
 		@Test
 		public void testFindEventByKeyword3() throws InputValidationException,
-        InstanceNotFoundException {
+        InstanceNotFoundException, EventRegisterUsersError {
 			EventService serv =  EventServiceFactory.getService();
 			Calendar fechaIni1 = Calendar.getInstance();
 			fechaIni1.set(2013, 1, 1);
@@ -521,167 +546,126 @@ public class EventServiceTest {
 			event3 = serv.addEvent(event3);
 			
 			Calendar fechaIni4 = Calendar.getInstance();
-			fechaIni4.set(2013, 1, 4);
+			fechaIni4.set(2013, 7, 7);
 			Calendar fechaFin4 = Calendar.getInstance();
-			fechaFin4.set(2013, 1, 5);
+			fechaFin4.set(2013, 8, 8);
 			Event event4 = new Event("evento4","Evento4 descripcion",fechaIni4,fechaFin4,true,"Calle 4",(short) 5);
 			event4 = serv.addEvent(event4);		
 			
 			Calendar dateTest1 = Calendar.getInstance();
-			dateTest1.set(2013, 1, 3);
+			dateTest1.set(2013, 1, 1);
 			Calendar dateTest2 = Calendar.getInstance();
-			dateTest2.set(2013, 1, 5);
+			dateTest2.set(2013, 6, 6);
 			ArrayList<Event> eventsFound = (ArrayList<Event>) serv.findEventByKeyword("caramelo",dateTest1,dateTest2);
 			int i = 0;
 			while(i < eventsFound.size()){
-				System.out.println(eventsFound.get(i).toString());
 				i++;
 			}
-			assertEquals("---->testFindEventByKeyword3 error<----",eventsFound.size(),(short) 1);
+			assertEquals(eventsFound.size(),(short) 2);
+			
+			// Clear Database
+			removeEvent(event1.getEventId());
+			removeEvent(event2.getEventId());
+			removeEvent(event3.getEventId());
+			removeEvent(event4.getEventId());
 		}		
 		
-		// Respuestas afirmativas al evento 3
+		// Positive response to the event 6
 		@Test
 		public void testResponseToEvent1() throws InputValidationException,
         InstanceNotFoundException, OverCapacityError, EventRegisterUsersError {
 			EventService serv =  EventServiceFactory.getService();
-			Calendar fechaIni1 = Calendar.getInstance();
-			fechaIni1.set(2013, 1, 1);
-			Calendar fechaFin1 = Calendar.getInstance();
-			fechaFin1.set(2013, 1, 3);
-			Event event1 = new Event("tarea comer manzana","Evento1 descripcion",fechaIni1,fechaFin1,false,"Calle 1",(short) 20);
-			event1 = serv.addEvent(event1);
-			
-			Calendar fechaIni3 = Calendar.getInstance();
-			fechaIni3.set(2013, 1, 3);
-			Calendar fechaFin3 = Calendar.getInstance();
-			fechaFin3.set(2013, 1, 5);
-			Event event3 = new Event("caramelo","Evento3 descripcion",fechaIni3,fechaFin3,true,"Calle 3",(short) 10);
-			event3 = serv.addEvent(event3);
+			Calendar fechaIni6 = Calendar.getInstance();
+			fechaIni6.set(2013, 1, 1);
+			Calendar fechaFin6 = Calendar.getInstance();
+			fechaFin6.set(2013, 1, 3);
+			Event event6 = new Event("tarea comer mandarina","Evento6 descripcion",fechaIni6,fechaFin6,false,"Calle 6",(short) 2);
+			event6 = serv.addEvent(event6);
 
-			serv.responseToEvent("Alejandro", event1.getEventId(), true);
-			serv.responseToEvent("Francisco", event1.getEventId(), true);
-			serv.responseToEvent("Pepe", event3.getEventId(), true);
-			serv.responseToEvent("Xacobe", event3.getEventId(), false);
-			serv.responseToEvent("Daniel", event3.getEventId(), true);
-			serv.responseToEvent("Maria", event3.getEventId(), false);
-			serv.responseToEvent("Alex", event3.getEventId(), true);
-			serv.responseToEvent("Juan Carlos", event3.getEventId(), true);
-			
-			System.out.println("Obtener respuestas para evento");
-			System.out.println("Respuestas afirmativas al evento 3");
+			serv.responseToEvent("Alejandro", event6.getEventId(), true);
+			serv.responseToEvent("Francisco", event6.getEventId(), true);
+			serv.responseToEvent("Pepe", event6.getEventId(), false);
 
-			ArrayList <Response> listResp = (ArrayList<Response>) serv.getResponses(event3.getEventId(), true);
+			ArrayList <Response> listResp = (ArrayList<Response>) serv.getResponses(event6.getEventId(), true);
 			int i = 0;
 			while(i < listResp.size()){
-				System.out.println(listResp.get(i).toString());
 				i++;
 			}
-			assertEquals("---->testResponseToEvent1 error<----",listResp.size(),(short) 4);
-
+			assertEquals(listResp.size(),(short) 2);
 
 		}
 		
-		//Respuestas negativas al evento 3
+		// Positive response to the event 7
 		@Test
 		public void testResponseToEvent2() throws InputValidationException,
         InstanceNotFoundException, OverCapacityError, EventRegisterUsersError {
 			EventService serv =  EventServiceFactory.getService();
-			Calendar fechaIni1 = Calendar.getInstance();
-			fechaIni1.set(2013, 1, 1);
-			Calendar fechaFin1 = Calendar.getInstance();
-			fechaFin1.set(2013, 1, 3);
-			Event event1 = new Event("tarea comer manzana","Evento1 descripcion",fechaIni1,fechaFin1,false,"Calle 1",(short) 20);
-			event1 = serv.addEvent(event1);
-			
-			Calendar fechaIni3 = Calendar.getInstance();
-			fechaIni3.set(2013, 1, 3);
-			Calendar fechaFin3 = Calendar.getInstance();
-			fechaFin3.set(2013, 1, 5);
-			Event event3 = new Event("caramelo","Evento3 descripcion",fechaIni3,fechaFin3,true,"Calle 3",(short) 10);
-			event3 = serv.addEvent(event3);
+			Calendar fechaIni7 = Calendar.getInstance();
+			fechaIni7.set(2013, 1, 1);
+			Calendar fechaFin7 = Calendar.getInstance();
+			fechaFin7.set(2013, 1, 3);
+			Event event7 = new Event("comer kit-kat","Evento7 descripcion",fechaIni7,fechaFin7,false,"Calle 1",(short) 20);
+			event7 = serv.addEvent(event7);
 
-			serv.responseToEvent("Alejandro", event1.getEventId(), true);
-			serv.responseToEvent("Francisco", event1.getEventId(), true);
-			serv.responseToEvent("Pepe", event3.getEventId(), true);
-			serv.responseToEvent("Xacobe", event3.getEventId(), false);
-			serv.responseToEvent("Daniel", event3.getEventId(), true);
-			serv.responseToEvent("Maria", event3.getEventId(), false);
-			serv.responseToEvent("Alex", event3.getEventId(), true);
-			serv.responseToEvent("Juan Carlos", event3.getEventId(), true);
+			serv.responseToEvent("Alejandro", event7.getEventId(), true);
+			serv.responseToEvent("Francisco", event7.getEventId(), true);
+			serv.responseToEvent("Pepe", event7.getEventId(), false);
 			
-			System.out.println("Respuestas negativas al evento 3");
-
-			ArrayList <Response> listResp = (ArrayList<Response>) serv.getResponses(event3.getEventId(), false);
+			ArrayList <Response> listResp = (ArrayList<Response>) serv.getResponses(event7.getEventId(), false);
 			int i = 0;
 			while(i < listResp.size()){
-				System.out.println(listResp.get(i).toString());
 				i++;
 			}
-			assertEquals("---->testResponseToEvent2 error<----",listResp.size(),(short) 2);
+			assertEquals(listResp.size(),(short) 1);
 
 
 		}		
 		
-		// Respuestas afirmativas-negativas al evento 3
+		// Positive-negative responses to the event 7
 		@Test
 		public void testResponseToEvent3() throws InputValidationException,
         InstanceNotFoundException, OverCapacityError, EventRegisterUsersError {
 			EventService serv =  EventServiceFactory.getService();
-			Calendar fechaIni1 = Calendar.getInstance();
-			fechaIni1.set(2013, 1, 1);
-			Calendar fechaFin1 = Calendar.getInstance();
-			fechaFin1.set(2013, 1, 3);
-			Event event1 = new Event("tarea comer manzana","Evento1 descripcion",fechaIni1,fechaFin1,false,"Calle 1",(short) 20);
-			event1 = serv.addEvent(event1);
-			
-			Calendar fechaIni3 = Calendar.getInstance();
-			fechaIni3.set(2013, 1, 3);
-			Calendar fechaFin3 = Calendar.getInstance();
-			fechaFin3.set(2013, 1, 5);
-			Event event3 = new Event("caramelo","Evento3 descripcion",fechaIni3,fechaFin3,true,"Calle 3",(short) 10);
-			event3 = serv.addEvent(event3);
+			Calendar fechaIni8 = Calendar.getInstance();
+			fechaIni8.set(2013, 1, 1);
+			Calendar fechaFin8 = Calendar.getInstance();
+			fechaFin8.set(2013, 1, 3);
+			Event event8 = new Event("ver la television","Evento8 descripcion",fechaIni8,fechaFin8,false,"Calle 8",(short) 20);
+			event8 = serv.addEvent(event8);
 
-			serv.responseToEvent("Alejandro", event1.getEventId(), true);
-			serv.responseToEvent("Francisco", event1.getEventId(), true);
-			serv.responseToEvent("Pepe", event3.getEventId(), true);
-			serv.responseToEvent("Xacobe", event3.getEventId(), false);
-			serv.responseToEvent("Daniel", event3.getEventId(), true);
-			serv.responseToEvent("Maria", event3.getEventId(), false);
-			serv.responseToEvent("Alex", event3.getEventId(), true);
-			serv.responseToEvent("Juan Carlos", event3.getEventId(), true);
-			
-			System.out.println("Respuestas afirmativas-negativas al evento 3");
+			serv.responseToEvent("Alejandro", event8.getEventId(), true);
+			serv.responseToEvent("Francisco", event8.getEventId(), true);
+			serv.responseToEvent("Pepe", event8.getEventId(), false);
 
-			ArrayList <Response> listResp = (ArrayList<Response>) serv.getResponses(event3.getEventId(), null);
+			ArrayList <Response> listResp = (ArrayList<Response>) serv.getResponses(event8.getEventId(), null);
 			int i = 0;
 			while(i < listResp.size()){
-				System.out.println(listResp.get(i).toString());
 				i++;
 			}
-			assertEquals("---->testResponseToEvent3 error<----",listResp.size(),(short) 6);
+			assertEquals(listResp.size(),(short) 3);
 		}
 		
-		// responder a un evento que ya se sobrepasado el aforo
-		@Test
+		// Respond to an event that has already exceeded the capacity
+		@Test(expected = OverCapacityError.class)
 		public void testResponseToEvent4() throws InputValidationException,
         InstanceNotFoundException, OverCapacityError, EventRegisterUsersError {
 			EventService serv =  EventServiceFactory.getService();
-			Calendar fechaIni1 = Calendar.getInstance();
-			fechaIni1.set(2013, 1, 1);
-			Calendar fechaFin1 = Calendar.getInstance();
-			fechaFin1.set(2013, 1, 3);
-			Event event1 = new Event("tarea comer manzana","Evento1 descripcion",fechaIni1,fechaFin1,false,"Calle 1",(short) 2);
-			event1 = serv.addEvent(event1);
+			Calendar fechaIni9 = Calendar.getInstance();
+			fechaIni9.set(2013, 1, 1);
+			Calendar fechaFin9 = Calendar.getInstance();
+			fechaFin9.set(2013, 1, 3);
+			Event event9 = new Event("exposicion de Picasso","Evento9 descripcion",fechaIni9,fechaFin9,false,"Calle 9",(short) 2);
+			event9 = serv.addEvent(event9);
 			
+			serv.responseToEvent("Alejandro", event9.getEventId(), true);
+			serv.responseToEvent("Francisco", event9.getEventId(), true);
+			
+			boolean exceptionCatched = false;
 			try {
-				serv.responseToEvent("Alejandro", event1.getEventId(), true);
-				serv.responseToEvent("Francisco", event1.getEventId(), true);
-				serv.responseToEvent("Manulo", event1.getEventId(), true);
-				fail("---->testResponseToEvent4 error<----");
+				serv.responseToEvent("Manolo", event9.getEventId(), true);
 			} catch (OverCapacityError e) {
-				throw new OverCapacityError("test ok");
+				exceptionCatched = true;
 			}
+			assertTrue(exceptionCatched);
 		}
-		
 }
