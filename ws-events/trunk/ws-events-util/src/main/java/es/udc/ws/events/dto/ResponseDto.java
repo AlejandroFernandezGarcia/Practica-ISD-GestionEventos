@@ -1,6 +1,5 @@
 package es.udc.ws.events.dto;
 
-import java.util.Calendar;
 
 public class ResponseDto {
 	private Long responseId;
