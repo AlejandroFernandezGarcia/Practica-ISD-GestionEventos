@@ -263,7 +263,7 @@ public class EventServiceTest {
 			assertTrue(true);
 		}
 	}
-	//Comprueba que devuelve una busqueda correcta buscando por
+	//Comprueba que devuelve una busqueda correcta buscando por solo la clave
 	@Test
 	public void testFindEventByKeywords(){
 		try{
@@ -287,10 +287,49 @@ public class EventServiceTest {
 			fechaFin4.set(2013, 1, 5);
 			Event event4 = new Event("evento4","Evento4 descripcion",fechaIni4,fechaFin4,true,"Calle 4",(short) 5);
 			event4 = serv.addEvent(event4);
-		}catch(InputValidationException e){
+			
+			ArrayList<Event> eventsFound = (ArrayList<Event>) serv.findEventByKeyword("caramelo", null, null);
+			assertEquals("---->testFindEventByKeywords error<----",eventsFound.size(),2);
+		}catch(InputValidationException e) {
 			assertTrue(false);
 		}
 	}
+	//Comprueba el caso de busqueda de eventos por fecha
+	@Test
+	public void testFindEventByKeywords2(){
+		Calendar dateTest1 = Calendar.getInstance();
+		dateTest1.set(2013, 1, 2);
+		Calendar dateTest2 = Calendar.getInstance();
+		dateTest2.set(2013, 1, 4);
+		ArrayList<Event> eventsFound = (ArrayList<Event>) serv.findEventByKeyword(null, dateTest1, dateTest2);
+		assertEquals("---->testFindEventByKeywords2 error<----",eventsFound.size(),3);
+	}
+	//Comprueba el caso de busqueda de eventos r fecha y clave
+	@Test
+	public void testFinEventBykeywords3(){
+		Calendar dateTest3 = Calendar.getInstance();
+		dateTest3.set(2013, 1, 2);
+		Calendar dateTest4 = Calendar.getInstance();
+		dateTest4.set(2013, 1, 5);
+		ArrayList<Event>eventsFound = (ArrayList<Event>) serv.findEventByKeyword("caramelo",dateTest3,dateTest4);
+		assertEquals("---->testFindEventByKeywords3 error<----",eventsFound.size(),2);
+	}
+	//Comprueba el caso de busqueda de eventos y no encuentra ninguno
+	@Test
+	public void testFinEventBykeywords4(){
+		Calendar dateTest3 = Calendar.getInstance();
+		dateTest3.set(2016, 1, 2);
+		Calendar dateTest4 = Calendar.getInstance();
+		dateTest4.set(2016, 1, 5);
+		ArrayList<Event>eventsFound = (ArrayList<Event>) serv.findEventByKeyword("caramelo",dateTest3,dateTest4);
+		assertEquals("---->testFindEventByKeywords4 error<----",eventsFound.size(),0);
+	}
+	//
+	@Test
+	public void testResponseToEvent(){
+		
+	}
+	
 //	/*
 //	// Find a a nonexistent event
 //	@Test(expected = InstanceNotFoundException.class)

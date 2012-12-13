@@ -21,8 +21,7 @@ public interface EventService {
     
     public Event findEvent(Long eventId) throws InstanceNotFoundException;
     
-    public List<Event> findEventByKeyword(String clave, Calendar fechaIni, Calendar fechaFin)
-    		throws InstanceNotFoundException;
+    public List<Event> findEventByKeyword(String clave, Calendar fechaIni, Calendar fechaFin);
     
     public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException, OverCapacityError, EventRegisterUsersError;
     
