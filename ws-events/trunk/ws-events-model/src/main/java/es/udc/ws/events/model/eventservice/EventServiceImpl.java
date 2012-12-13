@@ -143,7 +143,7 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public List<Event> findEventByKeyword(String keywords, Calendar dateSt,
-			Calendar dateEnd) throws InstanceNotFoundException {
+			Calendar dateEnd){
 		try (Connection connection = dataSource.getConnection()) {
             return eventDao.findByKeyword(connection, keywords, dateSt, dateEnd);
         } catch (SQLException e) {
