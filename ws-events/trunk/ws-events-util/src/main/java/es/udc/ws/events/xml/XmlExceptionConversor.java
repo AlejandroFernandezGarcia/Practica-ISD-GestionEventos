@@ -1,15 +1,13 @@
 package es.udc.ws.events.xml;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
 import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
 
 import es.udc.ws.events.exceptions.EventRegisterUsersError;
+import es.udc.ws.events.exceptions.OverCapacityError;
 import es.udc.ws.events.xml.XmlEntityResponseWriter;
 import es.udc.ws.events.xml.XmlEventDtoConversor;
 import es.udc.ws.util.exceptions.InputValidationException;
@@ -50,7 +48,19 @@ public class XmlExceptionConversor {
 
 	public static XmlEntityResponseWriter toEventRegisterUsersError(
 			EventRegisterUsersError e) {
-		Element exceptionElement = new Element("InstanceNotFoundException",
+		Element exceptionElement = new Element("EventRegisterUsersError",
+				XML_NS);
+
+		Element messageElement = new Element("message", XML_NS);
+		messageElement.setText(e.getMessage());
+		exceptionElement.addContent(messageElement);
+		Document document = new Document(exceptionElement);
+		return new XmlEntityResponseWriter(document);
+	}
+
+	public static ResponseEntityWriter toOverCapacityError(
+			OverCapacityError e) {
+		Element exceptionElement = new Element("OverCapacityError",
 				XML_NS);
 
 		Element messageElement = new Element("message", XML_NS);
