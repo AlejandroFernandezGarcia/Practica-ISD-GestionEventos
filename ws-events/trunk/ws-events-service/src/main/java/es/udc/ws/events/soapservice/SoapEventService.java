@@ -87,15 +87,11 @@ public class SoapEventService {
             operationName="findEventByKeyword"
         )
     public List<EventDto> findEventByKeyword(@WebParam(name="clave")String clave,@WebParam(name="dateSt") Calendar dateSt,@WebParam(name="duracion") Integer duration)throws SoapInstanceNotFoundException{
-    	try{
-            Long dateEndMilis = dateSt.getTimeInMillis() + (duration*60000);
-            Calendar dateEnd = Calendar.getInstance();
-            dateEnd.setTimeInMillis(dateEndMilis);
-            List<Event> eventList= EventServiceFactory.getService().findEventByKeyword(clave, dateSt, dateEnd);
-    		return EventToEventDtoConversor.toEventDtos(eventList);
-    	}catch(InstanceNotFoundException e){
-    		throw new SoapInstanceNotFoundException(new SoapInstanceNotFoundExceptionInfo(e.getInstanceId(), e.getInstanceType()));
-    	}
+	    Long dateEndMilis = dateSt.getTimeInMillis() + (duration*60000);
+	    Calendar dateEnd = Calendar.getInstance();
+	    dateEnd.setTimeInMillis(dateEndMilis);
+	    List<Event> eventList= EventServiceFactory.getService().findEventByKeyword(clave, dateSt, dateEnd);
+		return EventToEventDtoConversor.toEventDtos(eventList);
     }
     
     @WebMethod(

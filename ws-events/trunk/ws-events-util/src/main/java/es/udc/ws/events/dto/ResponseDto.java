@@ -7,6 +7,9 @@ public class ResponseDto {
 	private String username;
 	private boolean assists;
 	
+	public ResponseDto() {
+	}
+	
 	public ResponseDto(Long responseId, Long eventId, String username, Boolean assists){
 		this.responseId = responseId;
 		this.eventId = eventId;
