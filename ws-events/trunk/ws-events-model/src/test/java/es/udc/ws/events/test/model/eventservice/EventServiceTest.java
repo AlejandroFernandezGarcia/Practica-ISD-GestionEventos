@@ -304,7 +304,7 @@ public class EventServiceTest {
 		ArrayList<Event> eventsFound = (ArrayList<Event>) serv.findEventByKeyword(null, dateTest1, dateTest2);
 		assertEquals("---->testFindEventByKeywords2 error<----",eventsFound.size(),3);
 	}
-	//Comprueba el caso de busqueda de eventos r fecha y clave
+	//Comprueba el caso de busqueda de eventos por fecha y clave
 	@Test
 	public void testFinEventBykeywords3(){
 		Calendar dateTest3 = Calendar.getInstance();
@@ -324,11 +324,129 @@ public class EventServiceTest {
 		ArrayList<Event>eventsFound = (ArrayList<Event>) serv.findEventByKeyword("caramelo",dateTest3,dateTest4);
 		assertEquals("---->testFindEventByKeywords4 error<----",eventsFound.size(),0);
 	}
-	//
+	//Comprueba el caso de responder a un evento correctamente.
 	@Test
-	public void testResponseToEvent(){
-		
+	public void testResponseToEvent1(){
+		try{
+			Event event = serv.findEvent((long) 1);
+			serv.responseToEvent("Alejandro", event.getEventId(), true);
+			serv.responseToEvent("Francisco", event.getEventId(), true);
+			serv.responseToEvent("Pepe", event.getEventId(), false);
+			assertTrue(true);
+		}catch(InstanceNotFoundException | EventRegisterUsersError | OverCapacityError e){
+			assertTrue(false);
+		}
 	}
+	//Obtener las respuestas positivas a un evento.
+	@Test
+	public void testGetResponses1(){
+		try {
+			Event event = serv.findEvent((long) 1);
+			ArrayList <Response> listResp = (ArrayList<Response>) serv.getResponses(event.getEventId(), true);
+			assertEquals("---->testResponesToEvent2 error<----",listResp.size(), 2);
+		} catch (InstanceNotFoundException e){
+			assertTrue(false);
+		}
+	}
+	//Obtener las respuestas negativas a un evento.
+	@Test
+	public void testGetResponses2(){
+		try {
+			Event event = serv.findEvent((long) 1);
+			ArrayList <Response> listResp = (ArrayList<Response>) serv.getResponses(event.getEventId(), false);
+			assertEquals("---->testResponesToEvent3 error<----",listResp.size(), 1);
+		} catch (InstanceNotFoundException e){
+			assertTrue(false);
+		}
+	}	
+	//Obtener las respuestas positivas-negativas a un evento.
+	@Test
+	public void testGetResponses3(){
+		try {
+			Event event = serv.findEvent((long) 1);
+			ArrayList <Response> listResp = (ArrayList<Response>) serv.getResponses(event.getEventId(), null);
+			assertEquals("---->testResponesToEvent4 error<----",listResp.size(), 3);
+		} catch (InstanceNotFoundException e){
+			assertTrue(false);
+		}
+	}
+	//Responder a un evento que ya ha excedido la capacidad 
+	@Test
+	public void testResponseToEvent2(){
+		EventService serv =  EventServiceFactory.getService();
+		Calendar fechaIni6 = Calendar.getInstance();
+		fechaIni6.set(2013, 1, 1);
+		Calendar fechaFin6 = Calendar.getInstance();
+		fechaFin6.set(2013, 1, 3);
+		Event event6 = new Event("exposicion de Picasso","Evento9 descripcion",fechaIni6,fechaFin6,false,"Calle 6",(short) 2);
+		try{
+			event6 = serv.addEvent(event6);
+			serv.responseToEvent("Alejandro", event6.getEventId(), true);
+			serv.responseToEvent("Francisco", event6.getEventId(), true);
+			serv.responseToEvent("Manolo", event6.getEventId(), true);
+		} catch (InstanceNotFoundException | EventRegisterUsersError | OverCapacityError | InputValidationException e){
+			assertTrue(true);
+		}
+	}
+	
+	//comprueba el caso de responder a un evento inexistente.
+	@Test
+	public void testResponseToEvent3(){
+	    try{
+			Event event = serv.findEvent((long) 7);
+			serv.responseToEvent("Alejandro", event.getEventId(), true);
+			assertTrue(false);
+		}catch(InstanceNotFoundException e){
+	    	assertTrue(true);
+	    }catch (EventRegisterUsersError e) {
+			assertTrue(false);
+		}catch (OverCapacityError e){
+			assertTrue(false);
+		}
+	}
+	
+	// Obtener respuestas por ID de evento
+	@Test
+	public void testGetResponsesByEventID1(){
+		try {
+			Response resp1 = serv.getResponsesByID((long) 1);
+			assertEquals(resp1.getUsername(),"Pepe");
+		} catch (InstanceNotFoundException e){
+			assertTrue(false);
+		}
+	}
+	
+	// Obtener respuestas por ID de un evento inexsistente
+	@Test
+	public void testGetResponsesByEventID2(){
+		try {
+			Response resp1 = serv.getResponsesByID((long) 7);
+			assertTrue("---->testGetResponsesByEventID2 error<----",false);	
+		} catch (InstanceNotFoundException e){
+			assertTrue(true);
+		}
+	}
+	
+//	// Get answers by event ID
+//	@Test
+//	public void testResponseToEvent6() throws InputValidationException,
+//    InstanceNotFoundException, OverCapacityError, EventRegisterUsersError {
+//		EventService serv =  EventServiceFactory.getService();
+//		Calendar fechaIni11 = Calendar.getInstance();
+//		fechaIni11.set(2013, 1, 1);
+//		Calendar fechaFin11 = Calendar.getInstance();
+//		fechaFin11.set(2013, 1, 3);
+//		Event event11 = new Event("ver la television","Evento8 descripcion",fechaIni11,fechaFin11,false,"Calle 11",(short) 20);
+//		event11 = serv.addEvent(event11);
+//
+//		serv.responseToEvent("Alejandro", event11.getEventId(), true);
+//		serv.responseToEvent("Francisco", event11.getEventId(), true);
+//		serv.responseToEvent("Pepe", event11.getEventId(), false);
+//
+//		Response resp1 = serv.getResponsesByID((long) 1);
+//
+//		assertEquals(resp1.getUsername(),"Alejandro");
+//	}
 	
 //	/*
 //	// Find a a nonexistent event
