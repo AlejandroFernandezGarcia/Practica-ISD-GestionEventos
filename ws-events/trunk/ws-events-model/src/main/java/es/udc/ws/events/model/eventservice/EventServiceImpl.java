@@ -169,13 +169,13 @@ public class EventServiceImpl implements EventService {
             	}
             	Response response = responseDao.findResponseByEventUser(connection, username, eventId);
                 if (response != null){
-                	responseDao.update(connection, response);
+                	responseDao.update(connection, new Response(response.getId(), response.getUsername(), response.getEventId() ,response.getRespDate(),code ));
                 }else{
                 	response = new Response(username, eventId,code,Calendar.getInstance());
-                	responseDao.create(connection, response);
+                	response = responseDao.create(connection, response);
                 }
             	connection.commit();
-                return null;
+                return response.getId();
             } catch (InstanceNotFoundException e){
             	throw new InstanceNotFoundException(eventId,Event.class.getName());
             } catch (SQLException e) {

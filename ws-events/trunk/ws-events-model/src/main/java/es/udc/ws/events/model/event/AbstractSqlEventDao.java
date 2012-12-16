@@ -97,7 +97,7 @@ public abstract class AbstractSqlEventDao implements SqlEventDao {
 
             /* Fill "preparedStatement". */
             int i = 1;
-            preparedStatement.setLong(i++, eventId.longValue());
+            preparedStatement.setLong(i++, eventId);
 
             /* Execute query. */
             ResultSet resultSet = preparedStatement.executeQuery();
