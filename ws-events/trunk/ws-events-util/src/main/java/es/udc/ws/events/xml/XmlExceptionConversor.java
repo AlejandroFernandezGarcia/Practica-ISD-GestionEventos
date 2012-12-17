@@ -6,8 +6,8 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import es.udc.ws.events.exceptions.EventRegisterUsersError;
-import es.udc.ws.events.exceptions.OverCapacityError;
+import es.udc.ws.events.exceptions.EventRegisterUsersException;
+import es.udc.ws.events.exceptions.OverCapacityException;
 import es.udc.ws.events.xml.XmlEntityResponseWriter;
 import es.udc.ws.events.xml.XmlEventDtoConversor;
 import es.udc.ws.util.exceptions.InputValidationException;
@@ -47,7 +47,7 @@ public class XmlExceptionConversor {
 	}
 
 	public static XmlEntityResponseWriter toEventRegisterUsersError(
-			EventRegisterUsersError e) {
+			EventRegisterUsersException e) {
 		Element exceptionElement = new Element("EventRegisterUsersError",
 				XML_NS);
 
@@ -59,7 +59,7 @@ public class XmlExceptionConversor {
 	}
 
 	public static ResponseEntityWriter toOverCapacityError(
-			OverCapacityError e) {
+			OverCapacityException e) {
 		Element exceptionElement = new Element("OverCapacityError",
 				XML_NS);
 

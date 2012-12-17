@@ -19,7 +19,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 
 import es.udc.ws.events.dto.EventDto;
-import es.udc.ws.events.exceptions.EventRegisterUsersError;
+import es.udc.ws.events.exceptions.EventRegisterUsersException;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.eventservice.EventServiceFactory;
 import es.udc.ws.events.util.EventToEventDtoConversor;
@@ -142,10 +142,10 @@ public class EventsServlet extends HttpServlet {
                     ex.getInstanceId().toString(), ex.getInstanceType())),
                     null);       
             return;
-        } catch (EventRegisterUsersError e) {
+        } catch (EventRegisterUsersException e) {
         	ServletUtils.writeServiceResponse(resp, HttpStatus.SC_INTERNAL_SERVER_ERROR, 
                     XmlExceptionConversor.toEventRegisterUsersError(
-                    new EventRegisterUsersError("Error: Register user not found")), 
+                    new EventRegisterUsersException("Error: Register user not found")), 
                     null);
             return;
 		}
@@ -271,13 +271,13 @@ public class EventsServlet extends HttpServlet {
 											ex.getInstanceId().toString(), ex
 													.getInstanceType())), null);
 			return;
-		} catch (EventRegisterUsersError e) {
+		} catch (EventRegisterUsersException e) {
 			ServletUtils
 					.writeServiceResponse(
 							resp,
 							HttpStatus.SC_INTERNAL_SERVER_ERROR,
 							XmlExceptionConversor
-									.toEventRegisterUsersError(new EventRegisterUsersError(
+									.toEventRegisterUsersError(new EventRegisterUsersException(
 											"Error: Register user not found")),
 							null);
 			return;

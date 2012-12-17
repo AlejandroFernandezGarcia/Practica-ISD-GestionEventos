@@ -12,8 +12,8 @@ import javax.sql.DataSource;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import es.udc.ws.events.exceptions.EventRegisterUsersError;
-import es.udc.ws.events.exceptions.OverCapacityError;
+import es.udc.ws.events.exceptions.EventRegisterUsersException;
+import es.udc.ws.events.exceptions.OverCapacityException;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.eventservice.EventService;
 import es.udc.ws.events.model.eventservice.EventServiceFactory;
@@ -165,7 +165,7 @@ public class EventServiceTest {
 	    }catch(InputValidationException e){
 	    	System.out.println("2");
 	    	assertTrue(false);
-	    }catch(EventRegisterUsersError e){
+	    }catch(EventRegisterUsersException e){
 	    	System.out.println("3");
 	    	assertTrue(false);
 	    }
@@ -182,7 +182,7 @@ public class EventServiceTest {
 	    	assertTrue(true);
 	    } catch (InputValidationException e) {
 	    	assertTrue(false);
-		} catch (EventRegisterUsersError e) {
+		} catch (EventRegisterUsersException e) {
 			assertTrue(false);
 		}
 	}
@@ -200,9 +200,9 @@ public class EventServiceTest {
 	    } catch (InputValidationException e) {
 	    	System.out.println("2");
 	    	assertTrue(false);
-		} catch (EventRegisterUsersError e) {
+		} catch (EventRegisterUsersException e) {
 			assertTrue(true);
-		} catch (OverCapacityError e) {
+		} catch (OverCapacityException e) {
 			System.out.println("4");
 			assertTrue(false);
 		}
@@ -220,7 +220,7 @@ public class EventServiceTest {
 			Event event1 = new Event("Prueba para borrar","b",fechaIni1,fechaFin1,false,"Calle 1",(short) 20);
 			serv.addEvent(event1);
 			serv.deleteEvent((long)2);
-		}catch(InstanceNotFoundException | EventRegisterUsersError | InputValidationException e){
+		}catch(InstanceNotFoundException | EventRegisterUsersException | InputValidationException e){
 			assertTrue(false);
 		}
 		try{
@@ -238,7 +238,7 @@ public class EventServiceTest {
 			assertTrue(false);
 		}catch(InstanceNotFoundException e){
 			assertTrue(true);
-		} catch (EventRegisterUsersError e) {
+		} catch (EventRegisterUsersException e) {
 			assertTrue(false);
 		}
 	}
@@ -248,7 +248,7 @@ public class EventServiceTest {
 		try{
 			serv.deleteEvent((long) 1);
 			assertTrue(false);
-		}catch(EventRegisterUsersError e){
+		}catch(EventRegisterUsersException e){
 			assertTrue(true);
 		} catch (InstanceNotFoundException e) {
 			assertTrue(false);
@@ -334,7 +334,7 @@ public class EventServiceTest {
 			serv.responseToEvent("Pepe2", event.getEventId(), false);
 			serv.responseToEvent("Alejandro", event.getEventId(), false);
 			assertTrue(true);
-		}catch(InstanceNotFoundException | EventRegisterUsersError | OverCapacityError e){
+		}catch(InstanceNotFoundException | EventRegisterUsersException | OverCapacityException e){
 			assertTrue(false);
 		}
 	}
@@ -382,9 +382,9 @@ public class EventServiceTest {
 			assertTrue(false);
 		} catch (InstanceNotFoundException e){
 			assertTrue(false);
-		} catch (OverCapacityError e) {
+		} catch (OverCapacityException e) {
 			assertTrue(true);
-		} catch (EventRegisterUsersError e) {
+		} catch (EventRegisterUsersException e) {
 			assertTrue(false);
 		}
 	}
@@ -397,9 +397,9 @@ public class EventServiceTest {
 			assertTrue(false);
 		}catch(InstanceNotFoundException e){
 	    	assertTrue(true);
-	    }catch (EventRegisterUsersError e) {
+	    }catch (EventRegisterUsersException e) {
 			assertTrue(false);
-		}catch (OverCapacityError e){
+		}catch (OverCapacityException e){
 			assertTrue(false);
 		}
 	}
