@@ -9,8 +9,8 @@ import javax.jws.WebService;
 
 import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.events.dto.ResponseDto;
-import es.udc.ws.events.exceptions.EventRegisterUsersError;
-import es.udc.ws.events.exceptions.OverCapacityError;
+import es.udc.ws.events.exceptions.EventRegisterUsersException;
+import es.udc.ws.events.exceptions.OverCapacityException;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.eventservice.EventServiceFactory;
 import es.udc.ws.events.model.response.Response;
@@ -50,7 +50,7 @@ public class SoapEventService {
     		throw new SoapInputValidationException(e.getMessage());
     	}catch(InstanceNotFoundException e){
 			throw new SoapInstanceNotFoundException(new SoapInstanceNotFoundExceptionInfo(e.getInstanceId(), e.getInstanceType()));
-		}catch(EventRegisterUsersError e){
+		}catch(EventRegisterUsersException e){
 			throw new SoapEventRegisterUsersError(e.getMessage());
 		}
     }
@@ -64,7 +64,7 @@ public class SoapEventService {
     		EventServiceFactory.getService().deleteEvent(eventId);
     	}catch(InstanceNotFoundException e){
 			throw new SoapInstanceNotFoundException(new SoapInstanceNotFoundExceptionInfo(e.getInstanceId(), e.getInstanceType()));
-		} catch (EventRegisterUsersError e) {
+		} catch (EventRegisterUsersException e) {
 			throw new SoapEventRegisterUsersError(e.getMessage());
 		}
     }
@@ -102,9 +102,9 @@ public class SoapEventService {
     		return EventServiceFactory.getService().responseToEvent(username, eventId, code);
     	}catch(InstanceNotFoundException e){
     		throw new SoapInstanceNotFoundException(new SoapInstanceNotFoundExceptionInfo(e.getInstanceId(), e.getInstanceType()));
-    	} catch (OverCapacityError e) {
+    	} catch (OverCapacityException e) {
 			throw new SoapOverCapacityError(e.getMessage());
-		} catch (EventRegisterUsersError e) {
+		} catch (EventRegisterUsersException e) {
 			throw new SoapEventRegisterUsersError(e.getMessage());
 		}
     }

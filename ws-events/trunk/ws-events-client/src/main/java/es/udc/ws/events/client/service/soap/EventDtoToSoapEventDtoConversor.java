@@ -1,6 +1,9 @@
 package es.udc.ws.events.client.service.soap;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.TimeZone;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -26,6 +29,10 @@ public class EventDtoToSoapEventDtoConversor {
 			xgc.setMinute(event.getDateSt().get(Calendar.MINUTE));
 			xgc.setSecond(event.getDateSt().get(Calendar.SECOND));
 			xgc.setMillisecond(event.getDateSt().get(Calendar.MILLISECOND));
+			
+			int offsetInMinutes = (event.getDateSt().get(Calendar.ZONE_OFFSET) + event.getDateSt().get(Calendar.DST_OFFSET)) / (60 * 1000);
+			xgc.setTimezone(offsetInMinutes);
+			
 			soapEventDto.setDateSt(xgc);
 		}catch(DatatypeConfigurationException e){
 			return null;
@@ -37,4 +44,31 @@ public class EventDtoToSoapEventDtoConversor {
 		soapEventDto.setCapacity(event.getCapacity());
 		return soapEventDto;
 	}
+	public static EventDto toEventDto(
+            es.udc.ws.events.client.service.soap.wsdl.EventDto event) {
+			XMLGregorianCalendar xmlCalendar = event.getDateSt();
+			TimeZone timeZone = xmlCalendar.getTimeZone(xmlCalendar.getTimezone());          
+		    Calendar calendar = Calendar.getInstance(timeZone);  
+		    calendar.set(Calendar.YEAR,xmlCalendar.getYear());  
+		    calendar.set(Calendar.MONTH,xmlCalendar.getMonth()-1);  
+		    calendar.set(Calendar.DATE,xmlCalendar.getDay());  
+		    calendar.set(Calendar.HOUR_OF_DAY,xmlCalendar.getHour());  
+		    calendar.set(Calendar.MINUTE,xmlCalendar.getMinute());  
+		    calendar.set(Calendar.SECOND,xmlCalendar.getSecond());  
+        return new EventDto(event.getEventId(),event.getName(),event.getDescription(),
+        		calendar ,event.getDuration(),event.isIntern() ,event.getAddress(),
+        		event.getCapacity());
+    }     
+    
+    public static List<EventDto> toEventDtos(
+            List<es.udc.ws.events.client.service.soap.wsdl.EventDto> events) {
+        List<EventDto> eventsDtos = new ArrayList<>(events.size());
+        for (int i = 0; i < events.size(); i++) {
+            es.udc.ws.events.client.service.soap.wsdl.EventDto movie = 
+                    events.get(i);
+            eventsDtos.add(toEventDto(movie));
+            
+        }
+        return eventsDtos;
+    }
 }
