@@ -115,7 +115,7 @@ public class SoapClientEventService implements ClientEventService{
 			XMLGregorianCalendar xgc = dtf.newXMLGregorianCalendar();
 			xgc.setYear(fechaIni.get(Calendar.YEAR));
 			xgc.setDay(fechaIni.get(Calendar.DAY_OF_MONTH));
-			xgc.setMonth(fechaIni.get(Calendar.MONTH)+ 1);
+			xgc.setMonth(fechaIni.get(Calendar.MONTH));
 			xgc.setHour(fechaIni.get(Calendar.HOUR_OF_DAY));
 			xgc.setMinute(fechaIni.get(Calendar.MINUTE));
 			xgc.setSecond(fechaIni.get(Calendar.SECOND));

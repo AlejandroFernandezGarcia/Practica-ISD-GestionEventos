@@ -24,7 +24,7 @@ public class EventDtoToSoapEventDtoConversor {
 			XMLGregorianCalendar xgc = dtf.newXMLGregorianCalendar();
 			xgc.setYear(event.getDateSt().get(Calendar.YEAR));
 			xgc.setDay(event.getDateSt().get(Calendar.DAY_OF_MONTH));
-			xgc.setMonth(event.getDateSt().get(Calendar.MONTH)+ 1);
+			xgc.setMonth(event.getDateSt().get(Calendar.MONTH));
 			xgc.setHour(event.getDateSt().get(Calendar.HOUR_OF_DAY));
 			xgc.setMinute(event.getDateSt().get(Calendar.MINUTE));
 			xgc.setSecond(event.getDateSt().get(Calendar.SECOND));
@@ -50,7 +50,7 @@ public class EventDtoToSoapEventDtoConversor {
 			TimeZone timeZone = xmlCalendar.getTimeZone(xmlCalendar.getTimezone());          
 		    Calendar calendar = Calendar.getInstance(timeZone);  
 		    calendar.set(Calendar.YEAR,xmlCalendar.getYear());  
-		    calendar.set(Calendar.MONTH,xmlCalendar.getMonth()-1);  
+		    calendar.set(Calendar.MONTH,xmlCalendar.getMonth());  
 		    calendar.set(Calendar.DATE,xmlCalendar.getDay());  
 		    calendar.set(Calendar.HOUR_OF_DAY,xmlCalendar.getHour());  
 		    calendar.set(Calendar.MINUTE,xmlCalendar.getMinute());  
