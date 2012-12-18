@@ -64,9 +64,9 @@ public class EventDtoToSoapEventDtoConversor {
             List<es.udc.ws.events.client.service.soap.wsdl.EventDto> events) {
         List<EventDto> eventsDtos = new ArrayList<>(events.size());
         for (int i = 0; i < events.size(); i++) {
-            es.udc.ws.events.client.service.soap.wsdl.EventDto movie = 
+            es.udc.ws.events.client.service.soap.wsdl.EventDto event = 
                     events.get(i);
-            eventsDtos.add(toEventDto(movie));
+            eventsDtos.add(toEventDto(event));
             
         }
         return eventsDtos;
