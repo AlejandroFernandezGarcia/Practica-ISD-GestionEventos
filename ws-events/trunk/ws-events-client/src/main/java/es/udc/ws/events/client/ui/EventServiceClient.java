@@ -1,52 +1,61 @@
 package es.udc.ws.events.client.ui;
 
+import java.util.Calendar;
+import java.util.StringTokenizer;
+
 import es.udc.ws.events.client.service.ClientEventService;
+import es.udc.ws.events.client.service.ClientEventServiceFactory;
 import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.util.exceptions.InputValidationException;
 
+/*
+ * 
+ * 
+ */
 public class EventServiceClient {
 
     public static void main(String[] args) {
-
-//        if (args.length == 0) {
-//            printUsageAndExit();
-//        }
-//        ClientEventService clientEventService = new MockClientEventService();
-//        if ("-a".equalsIgnoreCase(args[0])) {
-//            validateArgs(args, 2, new int[] {});
-//
-//            // [add] EventServiceClient -a <name>
-//
-//            try {
-//                Long eventId = clientEventService.addEvent(new EventDto(null,
-//                        args[1]));
-//
-//                System.out.println("Event " + eventId + " "
-//                        + "created sucessfully");
-//
-//            } catch (NumberFormatException | InputValidationException ex) {
-//                ex.printStackTrace(System.err);
-//            } catch (Exception ex) {
-//                ex.printStackTrace(System.err);
-//            }
-//
-//        } else if ("-f".equalsIgnoreCase(args[0])) {
-//            validateArgs(args, 2, new int[] { 1 });
-//
-//            // [find] EventServiceClient -f <eventId>
-//
-//            try {
-//                EventDto eventDto = clientEventService.findEvent(Long
-//                        .parseLong(args[1]));
-//                System.out.println("Id: " + eventDto.getEventId() + " Name: "
-//                        + eventDto.getName());
-//            } catch (NumberFormatException ex) {
-//                ex.printStackTrace(System.err);
-//            } catch (Exception ex) {
-//                ex.printStackTrace(System.err);
-//            }
-//
-//        }
+        if (args.length == 0) {
+            printUsageAndExit();
+        }
+        ClientEventService clientEventService = ClientEventServiceFactory.getService();
+        if("-a".equalsIgnoreCase(args[0])){
+        	//[add] EventServiceClient -a <name> <description> <dateSt> <duration> <intern>
+        	//							  <address> <capacity>
+        	validateArgs(args,8,new int []{4,7});
+        	try{
+        		Calendar fecha = Calendar.getInstance();
+        		StringTokenizer tokens = new StringTokenizer(args[3]," ");
+        		int i=0;
+        		String vector[]={""};
+        		while(tokens.hasMoreTokens()){
+        			vector[i] = tokens.nextToken();
+        			i++;
+        		}
+        		StringTokenizer tokens1 = new StringTokenizer(vector[0],"/");
+        		i=0;
+        		int vectorI[]={0};
+        		while(tokens1.hasMoreTokens()){
+        			vectorI[i] = Integer.valueOf(tokens1.nextToken());
+        			i++;
+        		}
+        		StringTokenizer tokens2 = new StringTokenizer(vector[1],":");
+        		while(tokens2.hasMoreTokens()){
+        			vectorI[i] = Integer.valueOf(tokens2.nextToken());
+        			i++;
+        		}
+        		fecha.set(vectorI[2],vectorI[1],vectorI[0],vectorI[3],vectorI[4],vectorI[5]);
+        		int duration = Integer.valueOf(args[4]);
+        		boolean intern = Boolean.valueOf(args[5]);
+        		short capacity = Short.valueOf(args[7]);
+        		EventDto eventDto = new EventDto(null,args[1],args[2],fecha,duration,
+        										  intern,args[6],capacity);
+        		Long eventId = clientEventService.addEvent(eventDto);
+        		System.out.println("Event "+ eventId+ " created succesfully");
+        	}catch(InputValidationException e){
+        		e.printStackTrace(System.err);
+        	}
+        }
     }
 
     public static void validateArgs(String[] args, int expectedArgs,
