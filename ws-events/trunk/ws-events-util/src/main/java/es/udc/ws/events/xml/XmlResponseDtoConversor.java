@@ -1,10 +1,13 @@
 package es.udc.ws.events.xml;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.jdom.input.SAXBuilder;
 
 import es.udc.ws.events.dto.ResponseDto;
 import es.udc.ws.events.xml.XmlEntityResponseWriter;
@@ -51,6 +54,69 @@ public class XmlResponseDtoConversor {
         responseElement.addContent(assistsElement);
         
         return responseElement;
+	}
+
+	public static List<ResponseDto> toResponses(InputStream responseXml) {
+		try {
+
+            SAXBuilder builder = new SAXBuilder();
+            Document document = builder.build(responseXml);
+            Element rootElement = document.getRootElement();
+
+            if(!"responses".equalsIgnoreCase(rootElement.getName())) {
+                throw new ParsingException("Unrecognized element '"
+                    + rootElement.getName() + "' ('responses' expected)");
+            }
+            @SuppressWarnings("unchecked")
+			List<Element> children = rootElement.getChildren();
+            List<ResponseDto> responseDtos = new ArrayList<>(children.size());
+            for (int i = 0; i < children.size(); i++) {
+                Element element = children.get(i);
+                responseDtos.add(toResponse(element));
+            }
+            
+            return responseDtos;
+        } catch (ParsingException ex) {
+            throw ex;
+        } catch (Exception e) {
+            throw new ParsingException(e);
+        }
+	}
+
+	private static ResponseDto toResponse(Element responseElement) {
+		if (!"response".equals(
+                responseElement.getName())) {
+            throw new ParsingException("Unrecognized element '"
+                    + responseElement.getName() + "' ('response' expected)");
+        }
+        Element identifierElement = responseElement.getChild("responseId", XML_NS);
+        Long responseId = null;
+
+        if (identifierElement != null) {
+            responseId = Long.valueOf(identifierElement.getTextTrim());
+        }
+        Long eventId = Long.parseLong(responseElement.getChildTextNormalize("eventId", XML_NS));
+
+        String userName=responseElement.getChildTextNormalize("userName",XML_NS);
+
+        Boolean assists = Boolean.getBoolean(responseElement
+                .getChildTextNormalize("assists", XML_NS));
+        return new ResponseDto(responseId, eventId, userName, assists);
+	}
+
+	public static ResponseDto toResponse(InputStream responseXml) {
+		try {
+
+            SAXBuilder builder = new SAXBuilder();
+            Document document = builder.build(responseXml);
+            Element rootElement = document.getRootElement();
+
+            return toResponse(rootElement);
+        } catch (ParsingException ex) {
+            throw ex;
+        } catch (Exception e) {
+            throw new ParsingException(e);
+        }
 	}
 
 }

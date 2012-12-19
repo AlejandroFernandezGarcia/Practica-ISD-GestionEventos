@@ -3,6 +3,7 @@ package es.udc.ws.events.xml;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.jdom.input.SAXBuilder;
 
 import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.events.xml.XmlEntityResponseWriter;
+
 
 public class XmlEventDtoConversor {
 	public final static Namespace XML_NS =
@@ -129,6 +131,33 @@ public class XmlEventDtoConversor {
 		Short capacity =Short.parseShort(eventElement.getChildTextTrim("capacity", XML_NS));
 		
         return new EventDto(eventId, name, description, dateSt, duration, intern, address, capacity);
+	}
+
+	public static List<EventDto> toEvents(InputStream eventXml) {
+		try {
+
+            SAXBuilder builder = new SAXBuilder();
+            Document document = builder.build(eventXml);
+            Element rootElement = document.getRootElement();
+
+            if(!"events".equalsIgnoreCase(rootElement.getName())) {
+                throw new ParsingException("Unrecognized element '"
+                    + rootElement.getName() + "' ('events' expected)");
+            }
+            @SuppressWarnings("unchecked")
+			List<Element> children = rootElement.getChildren();
+            List<EventDto> eventDtos = new ArrayList<>(children.size());
+            for (int i = 0; i < children.size(); i++) {
+                Element element = children.get(i);
+                eventDtos.add(toEvent(element));
+            }
+            
+            return eventDtos;
+        } catch (ParsingException ex) {
+            throw ex;
+        } catch (Exception e) {
+            throw new ParsingException(e);
+        }
 	}
 
 }
