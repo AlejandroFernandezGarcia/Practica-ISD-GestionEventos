@@ -1,12 +1,15 @@
 package es.udc.ws.events.client.ui;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import es.udc.ws.events.client.service.ClientEventService;
 import es.udc.ws.events.client.service.ClientEventServiceFactory;
 import es.udc.ws.events.dto.EventDto;
+import es.udc.ws.events.exceptions.EventRegisterUsersException;
 import es.udc.ws.util.exceptions.InputValidationException;
+import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
 /*
  * 
@@ -36,22 +39,59 @@ public class EventServiceClient {
         		e.printStackTrace(System.err);
         	}
         
-    }else if ("-f".equalsIgnoreCase(args[0])){
-    	System.out.println("hola");
-    }else if ("-u".equalsIgnoreCase(args[0])){
-    	System.out.println("hola");
-    }else if ("-r".equalsIgnoreCase(args[0])){
-    	System.out.println("hola");
-    }else if ("-fb".equalsIgnoreCase(args[0])){
-    	System.out.println("hola");
-    }else if ("-res".equalsIgnoreCase(args[0])){
-    	System.out.println("hola");
-    }else if ("-fr".equalsIgnoreCase(args[0])){
-    	System.out.println("hola");
-    }else if ("-frb".equalsIgnoreCase(args[0])){
-    	System.out.println("hola");
+        }else if ("-f".equalsIgnoreCase(args[0])){
+        	//[find] eventServiceCliente -f <eventId>
+        	validateArgs(args,2,new int[]{1});
+        		try {
+					System.out.println(clientEventService.findEvent(Long.valueOf(args[1])).toString());
+				} catch (InstanceNotFoundException e) {
+					e.printStackTrace(System.err);
+				}
+        	
+	    }else if ("-u".equalsIgnoreCase(args[0])){
+	    	//[update]	 EventServiceClient -u <eventId><name><description><dateSt>
+	        //                                       <duration><intern><address><capacity>
+	        validateArgs(args,9,new int []{1,5,8});
+	    	int duration = Integer.valueOf(args[5]);
+    		boolean intern = Boolean.valueOf(args[6]);
+    		short capacity = Short.valueOf(args[8]);
+    		long eventId = Long.valueOf(args[1]);
+    		EventDto eventDto = new EventDto(eventId,args[2],args[3],parseCalendar(args[4]),
+    											duration,intern,args[7],capacity);
+    		try {
+				clientEventService.updateEvent(eventDto);
+			} catch (InputValidationException | InstanceNotFoundException
+					| EventRegisterUsersException e) {
+				e.printStackTrace(System.err);
+			}
+	    }else if ("-r".equalsIgnoreCase(args[0])){
+	    	//[remove]	 EventServiceClient -r 		<eventId>
+	    	validateArgs(args,2,new int []{1});
+	    	try {
+				clientEventService.deleteEvent(Long.valueOf(args[1]));
+				System.out.println("Event "+args[1]+" deleted sucesfully");
+			} catch (InstanceNotFoundException | EventRegisterUsersException e) {
+				e.printStackTrace(System.err);
+			}
+	    	
+	    }else if ("-fb".equalsIgnoreCase(args[0])){
+	    	//[findEveBy]	 EventServiceClient -fb		<keyword><date1><date2>
+	    	validateArgs(args,4,new int[]{});
+	    	List <EventDto> listEvents = clientEventService.findEventByKeyword(args[1],parseCalendar(args[2]),
+	    												  parseCalendar(args[3]));
+	    	int i = 0;
+	    	while(i<listEvents.size()){
+	    		System.out.println(listEvents.get(i).toString());
+	    		i++;
+	    	}
+	    }else if ("-res".equalsIgnoreCase(args[0])){
+	    	System.out.println("hola");
+	    }else if ("-fr".equalsIgnoreCase(args[0])){
+	    	System.out.println("hola");
+	    }else if ("-frb".equalsIgnoreCase(args[0])){
+	    	System.out.println("hola");
+	    }
     }
-}
 
     public static void validateArgs(String[] args, int expectedArgs,
             int[] numericArguments) {

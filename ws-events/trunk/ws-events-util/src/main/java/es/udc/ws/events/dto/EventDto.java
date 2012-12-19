@@ -96,7 +96,10 @@ public class EventDto {
 	@Override
 	public String toString() {
 		return "EventDto [eventId=" + eventId + ", name=" + name
-				+ ", description=" + description + ", dateSt=" + dateSt
+				+ ", description=" + description + ", dateSt=" 
+				+ dateSt.get(Calendar.DATE)+"/"+dateSt.get(Calendar.MONTH)+"/"
+				+ dateSt.get(Calendar.YEAR)+" " + dateSt.get(Calendar.HOUR_OF_DAY)+":"
+				+ dateSt.get(Calendar.MINUTE)+":"+dateSt.get(Calendar.SECOND)
 				+ ", duration=" + duration + ", intern=" + intern
 				+ ", address=" + address + ", capacity=" + capacity + "]";
 	}
