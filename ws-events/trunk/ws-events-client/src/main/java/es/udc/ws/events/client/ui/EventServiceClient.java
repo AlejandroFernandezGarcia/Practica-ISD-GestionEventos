@@ -7,7 +7,9 @@ import java.util.StringTokenizer;
 import es.udc.ws.events.client.service.ClientEventService;
 import es.udc.ws.events.client.service.ClientEventServiceFactory;
 import es.udc.ws.events.dto.EventDto;
+import es.udc.ws.events.dto.ResponseDto;
 import es.udc.ws.events.exceptions.EventRegisterUsersException;
+import es.udc.ws.events.exceptions.OverCapacityException;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
@@ -79,17 +81,49 @@ public class EventServiceClient {
 	    	validateArgs(args,4,new int[]{});
 	    	List <EventDto> listEvents = clientEventService.findEventByKeyword(args[1],parseCalendar(args[2]),
 	    												  parseCalendar(args[3]));
+	    	if(listEvents.size()==0){System.out.println("No matches\n");}
 	    	int i = 0;
 	    	while(i<listEvents.size()){
 	    		System.out.println(listEvents.get(i).toString());
 	    		i++;
 	    	}
 	    }else if ("-res".equalsIgnoreCase(args[0])){
-	    	System.out.println("hola");
+	    	//[response]	 EventServiceClient -res	<username><eventId><code>\n"
+	    	validateArgs(args,4,new int[]{2});
+	    	long eventId = Long.valueOf(args[2]);
+	    	boolean code = Boolean.valueOf(args[3]);
+	    	try {
+				Long responseId = clientEventService.responseToEvent(args[1], eventId, code);
+				System.out.println("Reponse "+responseId+": created by " +args[1]+" in event "+eventId);
+			} catch (InstanceNotFoundException | OverCapacityException
+					| EventRegisterUsersException e) {
+				e.printStackTrace(System.err);
+			}
 	    }else if ("-fr".equalsIgnoreCase(args[0])){
-	    	System.out.println("hola");
+	    	// [findResp]	 EventServiceClient -fr		<eventId><code>\n"
+	    	validateArgs(args,3,new int[]{1});
+	    	long eventId = Long.valueOf(args[1]);
+	    	boolean code = Boolean.valueOf(args[2]);
+	    	try {
+				List<ResponseDto> listResp = clientEventService.getResponses(eventId, code);
+				int i = 0;
+		    	while(i<listResp.size()){
+		    		System.out.println(listResp.get(i).toString());
+		    		i++;
+		    	}
+			} catch (InstanceNotFoundException e) {
+				e.printStackTrace(System.err);
+			}
 	    }else if ("-frb".equalsIgnoreCase(args[0])){
-	    	System.out.println("hola");
+	    	// [findRespBy] EventServiceClient -frb	<responseId>
+	    	validateArgs(args,2,new int[]{1});
+	    	long responseId = Long.valueOf(args[1]);
+	    	try {
+				ResponseDto response = clientEventService.getResponsesByID(responseId);
+				System.out.println(response.toString());
+			} catch (InstanceNotFoundException e) {
+				e.printStackTrace(System.err);
+			}
 	    }
     }
 
