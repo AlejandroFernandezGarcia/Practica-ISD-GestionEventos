@@ -62,6 +62,7 @@ public class EventServiceClient {
     											duration,intern,args[7],capacity);
     		try {
 				clientEventService.updateEvent(eventDto);
+				System.out.println("Event "+eventId+ " modified");
 			} catch (InputValidationException | InstanceNotFoundException
 					| EventRegisterUsersException e) {
 				e.printStackTrace(System.err);
@@ -78,9 +79,26 @@ public class EventServiceClient {
 	    	
 	    }else if ("-fb".equalsIgnoreCase(args[0])){
 	    	//[findEveBy]	 EventServiceClient -fb		<keyword><date1><date2>
-	    	validateArgs(args,4,new int[]{});
-	    	List <EventDto> listEvents = clientEventService.findEventByKeyword(args[1],parseCalendar(args[2]),
-	    												  parseCalendar(args[3]));
+	    	Calendar date1 = null;
+	    	Calendar date2 = null;
+	    	String keywords = null;
+	    	if(args.length == 2){
+	    		validateArgs(args,2,new int[]{});	  
+	    		keywords = args[1];
+	    	}else if(args.length == 3){
+	    		validateArgs(args,3,new int[]{});	  
+	    		date1 = parseCalendar(args[1]);
+	    		date2 = parseCalendar(args[2]);
+	    	}else if(args.length == 4){
+	    		validateArgs(args,4,new int[]{});
+	    		keywords = args[1];
+	    		date1 = parseCalendar(args[2]);
+	    		date2 = parseCalendar(args[3]);
+	    	}else {
+	    		printUsageAndExit();
+	    	}
+	    	List <EventDto> listEvents = clientEventService.findEventByKeyword(keywords,date1,
+	    												  date2);
 	    	if(listEvents.size()==0){System.out.println("No matches\n");}
 	    	int i = 0;
 	    	while(i<listEvents.size()){
@@ -101,9 +119,17 @@ public class EventServiceClient {
 			}
 	    }else if ("-fr".equalsIgnoreCase(args[0])){
 	    	// [findResp]	 EventServiceClient -fr		<eventId><code>\n"
-	    	validateArgs(args,3,new int[]{1});
+	    	Boolean code = null;
+	    	if(args.length ==2){
+	    		validateArgs(args,2,new int[]{1});
+	    	}else if(args.length ==3){
+	    		validateArgs(args,3,new int[]{1});
+	    		code = Boolean.valueOf(args[2]);
+	    	}else{
+	    		printUsageAndExit();
+	    	}
+	    	
 	    	long eventId = Long.valueOf(args[1]);
-	    	boolean code = Boolean.valueOf(args[2]);
 	    	try {
 				List<ResponseDto> listResp = clientEventService.getResponses(eventId, code);
 				int i = 0;
@@ -189,8 +215,11 @@ public class EventServiceClient {
                 +                                        	"<duration><intern><address><capacity>\n"
                 + "	[remove]	 EventServiceClient -r 		<eventId>\n"
                 + "	[findEveBy]	 EventServiceClient -fb		<keyword><date1*><date2*>\n"
+                + "	[findEveBy]	 EventServiceClient -fb		<keyword>\n"
+                + " [findEveBy]	 EventServiceClient -fb		<date1*><date2*>\n"
                 + "	[response]	 EventServiceClient -res	<username><eventId><code>\n"
                 + "	[findResp]	 EventServiceClient -fr		<eventId><code>\n"
+                + "	[findResp]	 EventServiceClient -fr		<eventId>\n"
                 + "	[findRespBy] EventServiceClient -frb	<responseId>\n\n"
                 +"	*Format of the  dates		<dd/MM/YY hh:mm:ss>");
     }

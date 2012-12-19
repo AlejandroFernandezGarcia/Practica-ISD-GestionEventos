@@ -87,9 +87,13 @@ public class SoapEventService {
             operationName="findEventByKeyword"
         )
     public List<EventDto> findEventByKeyword(@WebParam(name="clave")String clave,@WebParam(name="dateSt") Calendar dateSt,@WebParam(name="duracion") int duration){
-	    Long dateEndMilis = dateSt.getTimeInMillis() + (duration*60000);
-	    Calendar dateEnd = Calendar.getInstance();
-	    dateEnd.setTimeInMillis(dateEndMilis);
+		Long dateEndMilis = null;
+		Calendar dateEnd = null;
+    	if((dateSt != null)&(duration!=0)){
+    		dateEndMilis = dateSt.getTimeInMillis() + (duration*60000);
+		    dateEnd = Calendar.getInstance();
+		    dateEnd.setTimeInMillis(dateEndMilis);
+		}
 	    List<Event> eventList= EventServiceFactory.getService().findEventByKeyword(clave, dateSt, dateEnd);
 		return EventToEventDtoConversor.toEventDtos(eventList);
     }

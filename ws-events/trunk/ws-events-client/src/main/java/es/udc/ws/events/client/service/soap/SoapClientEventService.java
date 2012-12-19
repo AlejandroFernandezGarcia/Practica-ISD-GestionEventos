@@ -108,6 +108,11 @@ public class SoapClientEventService implements ClientEventService{
 	@Override
 	public List<EventDto> findEventByKeyword(String clave, Calendar fechaIni,
 			Calendar fechaFin) {
+		if((fechaIni ==null) |(fechaFin== null)){
+			XMLGregorianCalendar xgc = null;
+			return EventDtoToSoapEventDtoConversor.toEventDtos(
+					eventsProvider.findEventByKeyword(clave, xgc,(int) 0));
+		}
 		Long dist = fechaFin.getTimeInMillis() - fechaIni.getTimeInMillis();
         int duration =(int) (dist / 60000);
         try{
