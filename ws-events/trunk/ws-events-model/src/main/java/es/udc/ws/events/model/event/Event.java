@@ -159,8 +159,15 @@ public class Event {
 	@Override
 	public String toString() {
 		return "Event [eventId=" + eventId + ", name=" + name
-				+ ", description=" + description + ", dateSt=" + dateSt.toString()
-				+ ", dateEnd=" + dateEnd.toString() + ", intern=" + intern + ", address="
+				+ ", description=" + description + ", dateSt="
+				+ dateSt.get(Calendar.DATE)+"/"+dateSt.get(Calendar.MONTH)+"/"
+				+ dateSt.get(Calendar.YEAR)+" " + dateSt.get(Calendar.HOUR_OF_DAY)+":"
+				+ dateSt.get(Calendar.MINUTE)+":"+dateSt.get(Calendar.SECOND)
+				+ ", dateEnd="
+				+ dateEnd.get(Calendar.DATE)+"/"+dateEnd.get(Calendar.MONTH)+"/"
+				+ dateEnd.get(Calendar.YEAR)+" " + dateEnd.get(Calendar.HOUR_OF_DAY)+":"
+				+ dateEnd.get(Calendar.MINUTE)+":"+dateEnd.get(Calendar.SECOND)
+				+ ", intern=" + intern + ", address="
 				+ address + ", capacity=" + capacity + "]";
 	}
     

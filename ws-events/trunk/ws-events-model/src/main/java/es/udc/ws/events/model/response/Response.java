@@ -107,7 +107,10 @@ public class Response {
 	public String toString() {
 		return "Response [responseId=" + responseId + ", eventId=" + eventId
 				+ ", username=" + username + ", assists=" + assists
-				+ ", respDate=" + respDate + "]";
+				+ ", respDate=" 
+				+ respDate.get(Calendar.DATE)+"/"+respDate.get(Calendar.MONTH)+"/"
+				+ respDate.get(Calendar.YEAR)+" " + respDate.get(Calendar.HOUR_OF_DAY)+":"
+				+ respDate.get(Calendar.MINUTE)+":"+respDate.get(Calendar.SECOND) + "]";
 	}
 	
 }
