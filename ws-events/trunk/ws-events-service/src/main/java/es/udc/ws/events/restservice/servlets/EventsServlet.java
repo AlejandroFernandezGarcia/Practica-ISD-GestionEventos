@@ -152,6 +152,7 @@ public class EventsServlet extends HttpServlet {
         ServletUtils.writeServiceResponse(resp, HttpStatus.SC_NO_CONTENT, 
                 null, null);        
     }
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -286,7 +287,6 @@ public class EventsServlet extends HttpServlet {
 				null);
 	}
 	
-//No se para que se usa....  lo voy a dejar por si acaso
 	private Document getEventDocument() {
 
 		Element eventElement = new Element("event");

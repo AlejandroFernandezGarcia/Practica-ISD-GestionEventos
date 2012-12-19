@@ -103,10 +103,9 @@ public class ResponseServlet {
 			return;
 		} catch (OverCapacityException ex) {
 			ServletUtils.writeServiceResponse(resp,
-					HttpStatus.SC_INTERNAL_SERVER_ERROR, XmlExceptionConversor
+					HttpStatus.SC_INSUFFICIENT_SPACE_ON_RESOURCE, XmlExceptionConversor
 							.toOverCapacityError(new OverCapacityException(
-									"Error: Event full")),
-					null);
+									"Error: Event full")), null);
 			return;
 		} catch (EventRegisterUsersException x) {
 			ServletUtils
@@ -139,26 +138,53 @@ public class ResponseServlet {
 			Long eventId = Long.getLong(req.getParameter("eventId"));
 			Boolean valueResponse = Boolean.getBoolean(req
 					.getParameter("response"));
-			List<Response> listResponses;
-			try {
-				listResponses = EventServiceFactory.getService().getResponses(
-						eventId, valueResponse);
-			} catch (InstanceNotFoundException e) {
-				ServletUtils
-						.writeServiceResponse(
-								resp,
-								HttpStatus.SC_NOT_FOUND,
-								XmlExceptionConversor
-										.toInstanceNotFoundException(new InstanceNotFoundException(
-												e.getInstanceId().toString(), e
-														.getInstanceType())),
-								null);
-				return;
+			Long responseId = Long.getLong(req.getParameter("responseId"));
+			
+			if (valueResponse == null) {
+				Response response;
+				try {
+					response = EventServiceFactory.getService()
+							.getResponsesByID(responseId);
+				} catch (InstanceNotFoundException e) {
+					ServletUtils
+							.writeServiceResponse(
+									resp,
+									HttpStatus.SC_NOT_FOUND,
+									XmlExceptionConversor
+											.toInstanceNotFoundException(new InstanceNotFoundException(
+													e.getInstanceId()
+															.toString(), e
+															.getInstanceType())),
+									null);
+					return;
+				}
+				ResponseDto respDto= ResponseToResponseDtoConversor
+						.toResponseDto(response);
+				ServletUtils.writeServiceResponse(resp, HttpStatus.SC_OK,
+						XmlResponseDtoConversor.toXml(respDto), null);
+			} else {
+				List<Response> listResponses;
+				try {
+					listResponses = EventServiceFactory.getService()
+							.getResponses(eventId, valueResponse);
+				} catch (InstanceNotFoundException e) {
+					ServletUtils
+							.writeServiceResponse(
+									resp,
+									HttpStatus.SC_NOT_FOUND,
+									XmlExceptionConversor
+											.toInstanceNotFoundException(new InstanceNotFoundException(
+													e.getInstanceId()
+															.toString(), e
+															.getInstanceType())),
+									null);
+					return;
+				}
+				List<ResponseDto> listResponsesDtos = ResponseToResponseDtoConversor
+						.toResponseDtos(listResponses);
+				ServletUtils.writeServiceResponse(resp, HttpStatus.SC_OK,
+						XmlResponseDtoConversor.toXml(listResponsesDtos), null);
 			}
-			List<ResponseDto> listResponsesDtos = ResponseToResponseDtoConversor
-					.toResponseDtos(listResponses);
-			ServletUtils.writeServiceResponse(resp, HttpStatus.SC_OK,
-					XmlResponseDtoConversor.toXml(listResponsesDtos), null);
 		} else {
 			String responseIdAsString = path.endsWith("/") && path.length() > 2 ? path
 					.substring(1, path.length() - 1) : path.substring(1);
