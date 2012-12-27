@@ -8,8 +8,9 @@ import es.udc.ws.events.client.service.ClientEventService;
 import es.udc.ws.events.client.service.ClientEventServiceFactory;
 import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.events.dto.ResponseDto;
-import es.udc.ws.events.exceptions.EventRegisterUsersException;
+import es.udc.ws.events.exceptions.EventRegisteredUsersException;
 import es.udc.ws.events.exceptions.OverCapacityException;
+import es.udc.ws.events.service.client.rest.RestClientEventService;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
@@ -64,7 +65,7 @@ public class EventServiceClient {
 				clientEventService.updateEvent(eventDto);
 				System.out.println("Event "+eventId+ " modified");
 			} catch (InputValidationException | InstanceNotFoundException
-					| EventRegisterUsersException e) {
+					| EventRegisteredUsersException e) {
 				e.printStackTrace(System.err);
 			}
 	    }else if ("-r".equalsIgnoreCase(args[0])){
@@ -73,7 +74,7 @@ public class EventServiceClient {
 	    	try {
 				clientEventService.deleteEvent(Long.valueOf(args[1]));
 				System.out.println("Event "+args[1]+" deleted sucesfully");
-			} catch (InstanceNotFoundException | EventRegisterUsersException e) {
+			} catch (InstanceNotFoundException | EventRegisteredUsersException e) {
 				e.printStackTrace(System.err);
 			}
 	    	
@@ -114,7 +115,7 @@ public class EventServiceClient {
 				Long responseId = clientEventService.responseToEvent(args[1], eventId, code);
 				System.out.println("Reponse "+responseId+": created by " +args[1]+" in event "+eventId);
 			} catch (InstanceNotFoundException | OverCapacityException
-					| EventRegisterUsersException e) {
+					| EventRegisteredUsersException e) {
 				e.printStackTrace(System.err);
 			}
 	    }else if ("-fr".equalsIgnoreCase(args[0])){

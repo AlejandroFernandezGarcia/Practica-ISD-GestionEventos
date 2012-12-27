@@ -9,7 +9,7 @@ import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 
-import es.udc.ws.events.exceptions.EventRegisterUsersException;
+import es.udc.ws.events.exceptions.EventRegisteredUsersException;
 import es.udc.ws.events.exceptions.OverCapacityException;
 import es.udc.ws.events.xml.XmlEntityResponseWriter;
 import es.udc.ws.events.xml.XmlEventDtoConversor;
@@ -50,7 +50,7 @@ public class XmlExceptionConversor {
 	}
 
 	public static XmlEntityResponseWriter toEventRegisterUsersError(
-			EventRegisterUsersException e) {
+			EventRegisteredUsersException e) {
 		Element exceptionElement = new Element("EventRegisterUsersError",
 				XML_NS);
 
@@ -107,7 +107,7 @@ public class XmlExceptionConversor {
         }
 	}
 
-	public static EventRegisterUsersException fromEventRegisterUsersException(InputStream in)throws ParsingException {
+	public static EventRegisteredUsersException fromEventRegisterUsersException(InputStream in)throws ParsingException {
 		try {
 
             SAXBuilder builder = new SAXBuilder();
@@ -116,7 +116,7 @@ public class XmlExceptionConversor {
 
             Element message = rootElement.getChild("message", XML_NS);
 
-            return new EventRegisterUsersException(message.getText());
+            return new EventRegisteredUsersException(message.getText());
         } catch (JDOMException | IOException e) {
             throw new ParsingException(e);
         } catch (Exception e) {

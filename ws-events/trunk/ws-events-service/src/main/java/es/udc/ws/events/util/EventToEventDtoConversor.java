@@ -23,8 +23,7 @@ public class EventToEventDtoConversor {
         String name = event.getName();
         String description = event.getDescription();
         Calendar dateSt = event.getDateSt();
-        Long dist = event.getDateEnd().getTimeInMillis() - event.getDateSt().getTimeInMillis();
-        int duration =(int) (dist / 60000);
+        int duration = getDurationFromCalendar(event.getDateEnd(),event.getDateSt());
         boolean intern = event.isIntern();
         String address = event.getAddress();
         short capacity = event.getCapacity();
@@ -37,13 +36,25 @@ public class EventToEventDtoConversor {
         String description = eventDto.getDescription();
         Calendar dateSt = eventDto.getDateSt();
         int duration = eventDto.getDuration();
-        Long dateEndMilis = dateSt.getTimeInMillis() + (duration*60000);
-        Calendar dateEnd = Calendar.getInstance();
-        dateEnd.setTimeInMillis(dateEndMilis);
+        Calendar dateEnd = getCalendarFromDuration(duration,dateSt);
         boolean intern = eventDto.isIntern();
         String address = eventDto.getAddress();
         short capacity = eventDto.getCapacity();
         return new Event(eventId, name, description, dateSt, dateEnd, intern, address, capacity);
     }
-
+    
+    public static int getDurationFromCalendar(Calendar date1, Calendar date2){
+    	Long dist = date2.getTimeInMillis() - date1.getTimeInMillis();
+        int duration =(int) (dist / 60000);
+        
+        return duration;
+    }
+    
+    public static Calendar getCalendarFromDuration(int duration, Calendar date){
+    	Long dateEndMilis = date.getTimeInMillis() + (duration*60000);
+        Calendar dateEnd = Calendar.getInstance();
+        dateEnd.setTimeInMillis(dateEndMilis);
+        
+        return dateEnd;
+    }
 }

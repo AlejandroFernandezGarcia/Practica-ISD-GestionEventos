@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import es.udc.ws.events.exceptions.EventRegisterUsersException;
+import es.udc.ws.events.exceptions.EventRegisteredUsersException;
 import es.udc.ws.events.exceptions.OverCapacityException;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.event.SqlEventDao;
@@ -79,14 +79,14 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public void updateEvent(Event event) throws InputValidationException,InstanceNotFoundException, EventRegisterUsersException{
+	public void updateEvent(Event event) throws InputValidationException,InstanceNotFoundException, EventRegisteredUsersException{
 		try (Connection connection = dataSource.getConnection()) {
 			
             try {
             	connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
     			connection.setAutoCommit(false);
     			Long numResponses = responseDao.numResponsesToEvent(connection, event.getEventId(), null);
-    			if (numResponses != 0){throw new EventRegisterUsersException("Cannot update the event with registered users");}
+    			if (numResponses != 0){throw new EventRegisteredUsersException("Cannot update the event with registered users");}
     			validateEvent(event);
             	eventDao.update(connection, event);
                 connection.commit();
@@ -109,13 +109,13 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public void deleteEvent(Long eventId) throws InstanceNotFoundException,EventRegisterUsersException {
+	public void deleteEvent(Long eventId) throws InstanceNotFoundException,EventRegisteredUsersException {
 		try (Connection connection = dataSource.getConnection()) {
 			connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
         	connection.setAutoCommit(false);
         	Event event = eventDao.find(connection, eventId);
         	Long numResponses = responseDao.numResponsesToEvent(connection, event.getEventId(), null);
-        	if(numResponses != 0 ){throw new EventRegisterUsersException("Error: Cannot be deleted, registered users");}
+        	if(numResponses != 0 ){throw new EventRegisteredUsersException("Error: Cannot be deleted, registered users");}
         	try{
         		eventDao.delete(connection, eventId);
         	} catch (InstanceNotFoundException err){
@@ -152,14 +152,14 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException, OverCapacityException, EventRegisterUsersException {
+	public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException, OverCapacityException, EventRegisteredUsersException {
 		try (Connection connection = dataSource.getConnection()) {
             try {
             	connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             	connection.setAutoCommit(false);
             	Event event = eventDao.find(connection, eventId);
             	if((event.getDateSt()).before(Calendar.getInstance())){
-            		throw new EventRegisterUsersException("Event expired");
+            		throw new EventRegisteredUsersException("Event expired");
             	}
             	if (code){
             		Long num = responseDao.numResponsesToEvent(connection, eventId, true);

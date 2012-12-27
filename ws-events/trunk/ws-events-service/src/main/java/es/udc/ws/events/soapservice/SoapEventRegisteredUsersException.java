@@ -4,9 +4,9 @@ import javax.xml.ws.WebFault;
 
 @SuppressWarnings("serial")
 @WebFault(name = "SoapEventRegisterUsersError", targetNamespace = "http://soap.ws.udc.es/")
-public class SoapEventRegisterUsersError extends Exception {
+public class SoapEventRegisteredUsersException extends Exception {
 
-    public SoapEventRegisterUsersError(String message) {
+    public SoapEventRegisteredUsersException(String message) {
         super(message);
     }
 
