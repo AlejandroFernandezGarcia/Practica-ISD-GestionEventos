@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.httpclient.HttpStatus;
 
 import es.udc.ws.events.dto.ResponseDto;
-import es.udc.ws.events.exceptions.EventRegisterUsersException;
+import es.udc.ws.events.exceptions.EventRegisteredUsersException;
 import es.udc.ws.events.exceptions.OverCapacityException;
 import es.udc.ws.events.model.eventservice.EventServiceFactory;
 import es.udc.ws.events.model.response.Response;
@@ -107,13 +107,13 @@ public class ResponseServlet {
 							.toOverCapacityError(new OverCapacityException(
 									"Error: Event full")), null);
 			return;
-		} catch (EventRegisterUsersException x) {
+		} catch (EventRegisteredUsersException x) {
 			ServletUtils
 					.writeServiceResponse(
 							resp,
-							HttpStatus.SC_INTERNAL_SERVER_ERROR,
+							HttpStatus.SC_NOT_FOUND,
 							XmlExceptionConversor
-									.toEventRegisterUsersError(new EventRegisterUsersException(
+									.toEventRegisterUsersError(new EventRegisteredUsersException(
 											"Error: Register user not found")),
 							null);
 			return;

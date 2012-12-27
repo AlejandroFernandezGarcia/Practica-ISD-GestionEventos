@@ -9,7 +9,7 @@ import javax.jws.WebService;
 
 import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.events.dto.ResponseDto;
-import es.udc.ws.events.exceptions.EventRegisterUsersException;
+import es.udc.ws.events.exceptions.EventRegisteredUsersException;
 import es.udc.ws.events.exceptions.OverCapacityException;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.eventservice.EventServiceFactory;
@@ -42,7 +42,7 @@ public class SoapEventService {
 	@WebMethod(
             operationName="updateEvent"
         )
-    public void updateEvent(@WebParam(name="eventDto") EventDto eventDto) throws SoapInputValidationException, SoapInstanceNotFoundException, SoapEventRegisterUsersError {
+    public void updateEvent(@WebParam(name="eventDto") EventDto eventDto) throws SoapInputValidationException, SoapInstanceNotFoundException, SoapEventRegisteredUsersException {
     	Event event = EventToEventDtoConversor.toEvent(eventDto);
     	try{
     		EventServiceFactory.getService().updateEvent(event);
@@ -50,8 +50,8 @@ public class SoapEventService {
     		throw new SoapInputValidationException(e.getMessage());
     	}catch(InstanceNotFoundException e){
 			throw new SoapInstanceNotFoundException(new SoapInstanceNotFoundExceptionInfo(e.getInstanceId(), e.getInstanceType()));
-		}catch(EventRegisterUsersException e){
-			throw new SoapEventRegisterUsersError(e.getMessage());
+		}catch(EventRegisteredUsersException e){
+			throw new SoapEventRegisteredUsersException(e.getMessage());
 		}
     }
     
@@ -59,13 +59,13 @@ public class SoapEventService {
 	@WebMethod(
             operationName="removeEvent"
         )
-    public void removeEvent(@WebParam(name="eventId") Long eventId) throws SoapInstanceNotFoundException, SoapEventRegisterUsersError{
+    public void removeEvent(@WebParam(name="eventId") Long eventId) throws SoapInstanceNotFoundException, SoapEventRegisteredUsersException{
     	try{
     		EventServiceFactory.getService().deleteEvent(eventId);
     	}catch(InstanceNotFoundException e){
 			throw new SoapInstanceNotFoundException(new SoapInstanceNotFoundExceptionInfo(e.getInstanceId(), e.getInstanceType()));
-		} catch (EventRegisterUsersException e) {
-			throw new SoapEventRegisterUsersError(e.getMessage());
+		} catch (EventRegisteredUsersException e) {
+			throw new SoapEventRegisteredUsersException(e.getMessage());
 		}
     }
 	
@@ -86,14 +86,8 @@ public class SoapEventService {
     @WebMethod(
             operationName="findEventByKeyword"
         )
-    public List<EventDto> findEventByKeyword(@WebParam(name="clave")String clave,@WebParam(name="dateSt") Calendar dateSt,@WebParam(name="duracion") int duration){
-		Long dateEndMilis = null;
-		Calendar dateEnd = null;
-    	if((dateSt != null)&(duration!=0)){
-    		dateEndMilis = dateSt.getTimeInMillis() + (duration*60000);
-		    dateEnd = Calendar.getInstance();
-		    dateEnd.setTimeInMillis(dateEndMilis);
-		}
+    public List<EventDto> findEventByKeyword(@WebParam(name="clave")String clave,@WebParam(name="dateSt") Calendar dateSt,@WebParam(name="dateEnd") Calendar dateEnd){
+		
 	    List<Event> eventList= EventServiceFactory.getService().findEventByKeyword(clave, dateSt, dateEnd);
 		return EventToEventDtoConversor.toEventDtos(eventList);
     }
@@ -101,15 +95,15 @@ public class SoapEventService {
     @WebMethod(
             operationName="responseToEvent"
         )
-    public Long responseToEvent(@WebParam(name="username")String username,@WebParam(name="eventId") Long eventId,@WebParam(name="code") Boolean code) throws SoapInstanceNotFoundException, SoapEventRegisterUsersError, SoapOverCapacityError{
+    public Long responseToEvent(@WebParam(name="username")String username,@WebParam(name="eventId") Long eventId,@WebParam(name="code") Boolean code) throws SoapInstanceNotFoundException, SoapEventRegisteredUsersException, SoapOverCapacityException{
     	try{
     		return EventServiceFactory.getService().responseToEvent(username, eventId, code);
     	}catch(InstanceNotFoundException e){
     		throw new SoapInstanceNotFoundException(new SoapInstanceNotFoundExceptionInfo(e.getInstanceId(), e.getInstanceType()));
     	} catch (OverCapacityException e) {
-			throw new SoapOverCapacityError(e.getMessage());
-		} catch (EventRegisterUsersException e) {
-			throw new SoapEventRegisterUsersError(e.getMessage());
+			throw new SoapOverCapacityException(e.getMessage());
+		} catch (EventRegisteredUsersException e) {
+			throw new SoapEventRegisteredUsersException(e.getMessage());
 		}
     }
     

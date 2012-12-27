@@ -1,4 +1,4 @@
-package es.udc.ws.events.service.rest;
+package es.udc.ws.events.service.client.rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,7 +22,7 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import es.udc.ws.events.client.service.ClientEventService;
 import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.events.dto.ResponseDto;
-import es.udc.ws.events.exceptions.EventRegisterUsersException;
+import es.udc.ws.events.exceptions.EventRegisteredUsersException;
 import es.udc.ws.events.exceptions.OverCapacityException;
 import es.udc.ws.events.xml.ParsingException;
 import es.udc.ws.events.xml.XmlEntityResponseWriter;
@@ -82,7 +82,7 @@ public class RestClientEventService implements ClientEventService {
 
 	@Override
 	public void updateEvent(EventDto event) throws InputValidationException,
-			InstanceNotFoundException, EventRegisterUsersException {
+			InstanceNotFoundException, EventRegisteredUsersException {
 		PutMethod method =
                 new PutMethod(getEndpointAddress() + "events/"
                 + event.getEventId());
@@ -112,7 +112,7 @@ public class RestClientEventService implements ClientEventService {
             }
             try {
                 validateResponse(statusCode, HttpStatus.SC_NO_CONTENT, method);
-            } catch (InputValidationException | InstanceNotFoundException | EventRegisterUsersException ex) {
+            } catch (InputValidationException | InstanceNotFoundException | EventRegisteredUsersException ex) {
                 throw ex;
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
@@ -126,14 +126,14 @@ public class RestClientEventService implements ClientEventService {
 
 	@Override
 	public void deleteEvent(Long eventId) throws InstanceNotFoundException,
-			EventRegisterUsersException {
+			EventRegisteredUsersException {
 		DeleteMethod method =
                 new DeleteMethod(getEndpointAddress() + "events/" + eventId);
         try {
             HttpClient client = new HttpClient();
             int statusCode = client.executeMethod(method);
             validateResponse(statusCode, HttpStatus.SC_NO_CONTENT, method);
-        } catch (InstanceNotFoundException | EventRegisterUsersException ex) {
+        } catch (InstanceNotFoundException | EventRegisteredUsersException ex) {
             throw ex;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -329,7 +329,7 @@ public class RestClientEventService implements ClientEventService {
 
 	private void validateResponse(int statusCode, int expectedStatusCode,
 			HttpMethod method) throws InstanceNotFoundException,
-			OverCapacityException, InputValidationException, EventRegisterUsersException {
+			OverCapacityException, InputValidationException, EventRegisteredUsersException {
 
 		InputStream in;
 		try {

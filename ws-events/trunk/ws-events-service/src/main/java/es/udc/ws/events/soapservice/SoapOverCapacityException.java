@@ -4,9 +4,9 @@ import javax.xml.ws.WebFault;
 
 @SuppressWarnings("serial")
 @WebFault(name = "SoapOverCapacityError", targetNamespace = "http://soap.ws.udc.es/")
-public class SoapOverCapacityError extends Exception {
+public class SoapOverCapacityException extends Exception {
 
-    public SoapOverCapacityError(String message) {
+    public SoapOverCapacityException(String message) {
         super(message);
     }
 
