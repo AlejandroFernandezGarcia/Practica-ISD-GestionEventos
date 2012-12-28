@@ -6,14 +6,14 @@ import javax.xml.ws.WebFault;
 @WebFault(name = "SoapInstanceNotFoundException", targetNamespace = "http://soap.ws.udc.es/")
 public class SoapInstanceNotFoundException extends Exception {
 
-    private SoapInstanceNotFoundExceptionInfo faultInfo;
+	private SoapInstanceNotFoundExceptionInfo faultInfo;
 
-    protected SoapInstanceNotFoundException(
-            SoapInstanceNotFoundExceptionInfo faultInfo) {
-        this.faultInfo = faultInfo;
-    }
+	protected SoapInstanceNotFoundException(
+			SoapInstanceNotFoundExceptionInfo faultInfo) {
+		this.faultInfo = faultInfo;
+	}
 
-    public SoapInstanceNotFoundExceptionInfo getFaultInfo() {
-        return faultInfo;
-    }
+	public SoapInstanceNotFoundExceptionInfo getFaultInfo() {
+		return faultInfo;
+	}
 }

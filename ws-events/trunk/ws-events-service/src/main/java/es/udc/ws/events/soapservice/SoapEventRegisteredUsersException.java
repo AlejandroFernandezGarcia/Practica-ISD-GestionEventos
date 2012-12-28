@@ -6,11 +6,11 @@ import javax.xml.ws.WebFault;
 @WebFault(name = "SoapEventRegisterUsersError", targetNamespace = "http://soap.ws.udc.es/")
 public class SoapEventRegisteredUsersException extends Exception {
 
-    public SoapEventRegisteredUsersException(String message) {
-        super(message);
-    }
+	public SoapEventRegisteredUsersException(String message) {
+		super(message);
+	}
 
-    public String getFaultInfo() {
-        return getMessage();
-    }
+	public String getFaultInfo() {
+		return getMessage();
+	}
 }

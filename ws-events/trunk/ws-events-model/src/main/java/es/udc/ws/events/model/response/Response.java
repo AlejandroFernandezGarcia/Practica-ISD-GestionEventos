@@ -8,47 +8,53 @@ public class Response {
 	private String username;
 	private boolean assists;
 	private Calendar respDate;
-	
-	
-	public Response(String username,Long eventId, boolean response, Calendar respDate) {
+
+	public Response(String username, Long eventId, boolean response,
+			Calendar respDate) {
 		this.username = username;
 		this.assists = response;
 		this.respDate = respDate;
 		this.setEventId(eventId);
 	}
-	
-	
-	public Response(Long responseId,String username, Long eventId,Calendar respDate, boolean response) {
-		this(username,eventId,response,respDate);
+
+	public Response(Long responseId, String username, Long eventId,
+			Calendar respDate, boolean response) {
+		this(username, eventId, response, respDate);
 		this.responseId = responseId;
 	}
-
 
 	public String getUsername() {
 		return username;
 	}
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
 	public boolean isAssists() {
 		return assists;
 	}
+
 	public void setAssists(boolean response) {
 		this.assists = response;
 	}
+
 	public Long getId() {
 		return responseId;
 	}
+
 	public void setId(Long id) {
 		this.responseId = id;
 	}
+
 	public Calendar getRespDate() {
 		return respDate;
 	}
+
 	public void setRespDate(Calendar respDate) {
 		this.respDate = respDate;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -92,25 +98,24 @@ public class Response {
 		return true;
 	}
 
-
 	public Long getEventId() {
 		return eventId;
 	}
-
 
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	}
 
-
 	@Override
 	public String toString() {
 		return "Response [responseId=" + responseId + ", eventId=" + eventId
 				+ ", username=" + username + ", assists=" + assists
-				+ ", respDate=" 
-				+ respDate.get(Calendar.DATE)+"/"+respDate.get(Calendar.MONTH)+"/"
-				+ respDate.get(Calendar.YEAR)+" " + respDate.get(Calendar.HOUR_OF_DAY)+":"
-				+ respDate.get(Calendar.MINUTE)+":"+respDate.get(Calendar.SECOND) + "]";
+				+ ", respDate=" + respDate.get(Calendar.DATE) + "/"
+				+ respDate.get(Calendar.MONTH) + "/"
+				+ respDate.get(Calendar.YEAR) + " "
+				+ respDate.get(Calendar.HOUR_OF_DAY) + ":"
+				+ respDate.get(Calendar.MINUTE) + ":"
+				+ respDate.get(Calendar.SECOND) + "]";
 	}
-	
+
 }

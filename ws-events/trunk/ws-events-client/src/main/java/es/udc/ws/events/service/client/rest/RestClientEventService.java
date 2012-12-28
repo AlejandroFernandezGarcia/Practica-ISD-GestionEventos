@@ -83,238 +83,246 @@ public class RestClientEventService implements ClientEventService {
 	@Override
 	public void updateEvent(EventDto event) throws InputValidationException,
 			InstanceNotFoundException, EventRegisteredUsersException {
-		PutMethod method =
-                new PutMethod(getEndpointAddress() + "events/"
-                + event.getEventId());
-        try {
+		PutMethod method = new PutMethod(getEndpointAddress() + "events/"
+				+ event.getEventId());
+		try {
 
-            ByteArrayOutputStream xmlOutputStream = new ByteArrayOutputStream();
-            XmlEntityResponseWriter response;
-            try {
-                response = XmlEventDtoConversor.toXml(event);
-                response.write(xmlOutputStream);
-            } catch (IOException ex) {
-                throw new InputValidationException(ex.getMessage());
-            }
-            ByteArrayInputStream xmlInputStream =
-                    new ByteArrayInputStream(xmlOutputStream.toByteArray());
-            InputStreamRequestEntity requestEntity =
-                    new InputStreamRequestEntity(xmlInputStream,
-                    response.getContentType());
-            HttpClient client = new HttpClient();
-            method.setRequestEntity(requestEntity);
+			ByteArrayOutputStream xmlOutputStream = new ByteArrayOutputStream();
+			XmlEntityResponseWriter response;
+			try {
+				response = XmlEventDtoConversor.toXml(event);
+				response.write(xmlOutputStream);
+			} catch (IOException ex) {
+				throw new InputValidationException(ex.getMessage());
+			}
+			ByteArrayInputStream xmlInputStream = new ByteArrayInputStream(
+					xmlOutputStream.toByteArray());
+			InputStreamRequestEntity requestEntity = new InputStreamRequestEntity(
+					xmlInputStream, response.getContentType());
+			HttpClient client = new HttpClient();
+			method.setRequestEntity(requestEntity);
 
-            int statusCode;
-            try {
-                statusCode = client.executeMethod(method);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            try {
-                validateResponse(statusCode, HttpStatus.SC_NO_CONTENT, method);
-            } catch (InputValidationException | InstanceNotFoundException | EventRegisteredUsersException ex) {
-                throw ex;
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        } finally {
-            if (method != null) {
-                method.releaseConnection();
-            }
-        }
-    }
+			int statusCode;
+			try {
+				statusCode = client.executeMethod(method);
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
+			try {
+				validateResponse(statusCode, HttpStatus.SC_NO_CONTENT, method);
+			} catch (InputValidationException | InstanceNotFoundException
+					| EventRegisteredUsersException ex) {
+				throw ex;
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+		} finally {
+			if (method != null) {
+				method.releaseConnection();
+			}
+		}
+	}
 
 	@Override
 	public void deleteEvent(Long eventId) throws InstanceNotFoundException,
 			EventRegisteredUsersException {
-		DeleteMethod method =
-                new DeleteMethod(getEndpointAddress() + "events/" + eventId);
-        try {
-            HttpClient client = new HttpClient();
-            int statusCode = client.executeMethod(method);
-            validateResponse(statusCode, HttpStatus.SC_NO_CONTENT, method);
-        } catch (InstanceNotFoundException | EventRegisteredUsersException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            if (method != null) {
-                method.releaseConnection();
-            }
-        }
+		DeleteMethod method = new DeleteMethod(getEndpointAddress() + "events/"
+				+ eventId);
+		try {
+			HttpClient client = new HttpClient();
+			int statusCode = client.executeMethod(method);
+			validateResponse(statusCode, HttpStatus.SC_NO_CONTENT, method);
+		} catch (InstanceNotFoundException | EventRegisteredUsersException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			if (method != null) {
+				method.releaseConnection();
+			}
+		}
 	}
 
 	@Override
 	public EventDto findEvent(Long eventId) throws InstanceNotFoundException {
 		GetMethod method = null;
-        try {
-            method = new GetMethod(getEndpointAddress() + "events/?eventId="
-                    + URLEncoder.encode(eventId.toString(), "UTF-8"));
-        } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
-        }
-        try {
-            HttpClient client = new HttpClient();
-            int statusCode;
-            try {
-                statusCode = client.executeMethod(method);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            try {
-                validateResponse(statusCode, HttpStatus.SC_OK, method);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            try {
-                return XmlEventDtoConversor.toEvent(
-                        method.getResponseBodyAsStream());
-            } catch (ParsingException | IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        } finally {
-            if (method != null) {
-                method.releaseConnection();
-            }
-        }
+		try {
+			method = new GetMethod(getEndpointAddress() + "events/?eventId="
+					+ URLEncoder.encode(eventId.toString(), "UTF-8"));
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex);
+		}
+		try {
+			HttpClient client = new HttpClient();
+			int statusCode;
+			try {
+				statusCode = client.executeMethod(method);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			try {
+				validateResponse(statusCode, HttpStatus.SC_OK, method);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			try {
+				return XmlEventDtoConversor.toEvent(method
+						.getResponseBodyAsStream());
+			} catch (ParsingException | IOException ex) {
+				throw new RuntimeException(ex);
+			}
+		} finally {
+			if (method != null) {
+				method.releaseConnection();
+			}
+		}
 	}
 
 	@Override
 	public List<EventDto> findEventByKeyword(String clave, Calendar fechaIni,
 			Calendar fechaFin) {
 		GetMethod method = null;
-        try {
-        	String inicio=fechaIni.get(Calendar.DATE)+"-"+fechaIni.get(Calendar.MONTH)+"-"+fechaIni.get(Calendar.YEAR);
-        	String fin=fechaFin.get(Calendar.DATE)+"-"+fechaFin.get(Calendar.MONTH)+"-"+fechaFin.get(Calendar.YEAR);
-        	method = new GetMethod(getEndpointAddress() + "events/?clave="
-                    + URLEncoder.encode(clave, "UTF-8")+"&inicio="+URLEncoder.encode(inicio, "UTF-8")+"&fin="+URLEncoder.encode(fin, "UTF-8"));
-        } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
-        }
-        try {
-            HttpClient client = new HttpClient();
-            int statusCode;
-            try {
-                statusCode = client.executeMethod(method);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            try {
-                validateResponse(statusCode, HttpStatus.SC_OK, method);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            try {
-                return XmlEventDtoConversor.toEvents(
-                        method.getResponseBodyAsStream());
-            } catch (ParsingException | IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        } finally {
-            if (method != null) {
-                method.releaseConnection();
-            }
-        }
+		try {
+			String inicio = fechaIni.get(Calendar.DATE) + "-"
+					+ fechaIni.get(Calendar.MONTH) + "-"
+					+ fechaIni.get(Calendar.YEAR);
+			String fin = fechaFin.get(Calendar.DATE) + "-"
+					+ fechaFin.get(Calendar.MONTH) + "-"
+					+ fechaFin.get(Calendar.YEAR);
+			method = new GetMethod(getEndpointAddress() + "events/?clave="
+					+ URLEncoder.encode(clave, "UTF-8") + "&inicio="
+					+ URLEncoder.encode(inicio, "UTF-8") + "&fin="
+					+ URLEncoder.encode(fin, "UTF-8"));
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex);
+		}
+		try {
+			HttpClient client = new HttpClient();
+			int statusCode;
+			try {
+				statusCode = client.executeMethod(method);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			try {
+				validateResponse(statusCode, HttpStatus.SC_OK, method);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			try {
+				return XmlEventDtoConversor.toEvents(method
+						.getResponseBodyAsStream());
+			} catch (ParsingException | IOException ex) {
+				throw new RuntimeException(ex);
+			}
+		} finally {
+			if (method != null) {
+				method.releaseConnection();
+			}
+		}
 	}
 
 	@Override
-	public Long responseToEvent(String username, Long eventId, Boolean code){
+	public Long responseToEvent(String username, Long eventId, Boolean code) {
 		PostMethod method = new PostMethod(getEndpointAddress() + "responses");
-        try {
-            method.addParameter("eventId", Long.toString(eventId));
-            method.addParameter("userName", username);
-            method.addParameter("respuesta", Boolean.toString(code));
-            HttpClient client = new HttpClient();
+		try {
+			method.addParameter("eventId", Long.toString(eventId));
+			method.addParameter("userName", username);
+			method.addParameter("respuesta", Boolean.toString(code));
+			HttpClient client = new HttpClient();
 
-            int statusCode;
-            try {
-                statusCode = client.executeMethod(method);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            try {
-                validateResponse(statusCode, HttpStatus.SC_CREATED, method);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            return getIdFromHeaders(method);
+			int statusCode;
+			try {
+				statusCode = client.executeMethod(method);
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
+			try {
+				validateResponse(statusCode, HttpStatus.SC_CREATED, method);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			return getIdFromHeaders(method);
 		} finally {
-            if (method != null) {
-                method.releaseConnection();
-            }
-        }
+			if (method != null) {
+				method.releaseConnection();
+			}
+		}
 	}
 
 	@Override
 	public List<ResponseDto> getResponses(Long eventId, Boolean code)
 			throws InstanceNotFoundException {
 		GetMethod method = null;
-        try {
-            method = new GetMethod(getEndpointAddress() + "responses/?eventId="
-                    + URLEncoder.encode(eventId.toString(), "UTF-8")+"&response="+URLEncoder.encode(Boolean.toString(code), "UTF-8"));
-        } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
-        }
-        try {
-            HttpClient client = new HttpClient();
-            int statusCode;
-            try {
-                statusCode = client.executeMethod(method);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            try {
-                validateResponse(statusCode, HttpStatus.SC_OK, method);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            try {
-                return XmlResponseDtoConversor.toResponses(
-                        method.getResponseBodyAsStream());
-            } catch (ParsingException | IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        } finally {
-            if (method != null) {
-                method.releaseConnection();
-            }
-        }
+		try {
+			method = new GetMethod(getEndpointAddress() + "responses/?eventId="
+					+ URLEncoder.encode(eventId.toString(), "UTF-8")
+					+ "&response="
+					+ URLEncoder.encode(Boolean.toString(code), "UTF-8"));
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex);
+		}
+		try {
+			HttpClient client = new HttpClient();
+			int statusCode;
+			try {
+				statusCode = client.executeMethod(method);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			try {
+				validateResponse(statusCode, HttpStatus.SC_OK, method);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			try {
+				return XmlResponseDtoConversor.toResponses(method
+						.getResponseBodyAsStream());
+			} catch (ParsingException | IOException ex) {
+				throw new RuntimeException(ex);
+			}
+		} finally {
+			if (method != null) {
+				method.releaseConnection();
+			}
+		}
 	}
 
 	@Override
 	public ResponseDto getResponsesByID(Long responseId)
 			throws InstanceNotFoundException {
 		GetMethod method = null;
-        try {
-            method = new GetMethod(getEndpointAddress() + "responses/?responseId="
-                    + URLEncoder.encode(responseId.toString(), "UTF-8"));
-        } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
-        }
-        try {
-            HttpClient client = new HttpClient();
-            int statusCode;
-            try {
-                statusCode = client.executeMethod(method);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            try {
-                validateResponse(statusCode, HttpStatus.SC_OK, method);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            try {
-                return XmlResponseDtoConversor.toResponse(
-                        method.getResponseBodyAsStream());
-            } catch (ParsingException | IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        } finally {
-            if (method != null) {
-                method.releaseConnection();
-            }
-        }
+		try {
+			method = new GetMethod(getEndpointAddress()
+					+ "responses/?responseId="
+					+ URLEncoder.encode(responseId.toString(), "UTF-8"));
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex);
+		}
+		try {
+			HttpClient client = new HttpClient();
+			int statusCode;
+			try {
+				statusCode = client.executeMethod(method);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			try {
+				validateResponse(statusCode, HttpStatus.SC_OK, method);
+			} catch (Exception ex) {
+				throw new RuntimeException(ex);
+			}
+			try {
+				return XmlResponseDtoConversor.toResponse(method
+						.getResponseBodyAsStream());
+			} catch (ParsingException | IOException ex) {
+				throw new RuntimeException(ex);
+			}
+		} finally {
+			if (method != null) {
+				method.releaseConnection();
+			}
+		}
 	}
 
 	private synchronized String getEndpointAddress() {
@@ -329,7 +337,8 @@ public class RestClientEventService implements ClientEventService {
 
 	private void validateResponse(int statusCode, int expectedStatusCode,
 			HttpMethod method) throws InstanceNotFoundException,
-			OverCapacityException, InputValidationException, EventRegisteredUsersException {
+			OverCapacityException, InputValidationException,
+			EventRegisteredUsersException {
 
 		InputStream in;
 		try {
@@ -377,25 +386,24 @@ public class RestClientEventService implements ClientEventService {
 			break;
 		}
 	}
-	
-	private static Long getIdFromHeaders(HttpMethod method) {
-        String location = getResponseHeader(method, "Location");
-        if (location != null) {
-            int idx = location.lastIndexOf('/');
-            return Long.valueOf(location.substring(idx + 1));
-        }
-        return null;
-    }
 
-    private static String getResponseHeader(HttpMethod method,
-            String headerName) {
-        Header[] headers = method.getResponseHeaders();
-        for (int i = 0; i < headers.length; i++) {
-            Header header = headers[i];
-            if (headerName.equalsIgnoreCase(header.getName())) {
-                return header.getValue();
-            }
-        }
-        return null;
-    }
+	private static Long getIdFromHeaders(HttpMethod method) {
+		String location = getResponseHeader(method, "Location");
+		if (location != null) {
+			int idx = location.lastIndexOf('/');
+			return Long.valueOf(location.substring(idx + 1));
+		}
+		return null;
+	}
+
+	private static String getResponseHeader(HttpMethod method, String headerName) {
+		Header[] headers = method.getResponseHeaders();
+		for (int i = 0; i < headers.length; i++) {
+			Header header = headers[i];
+			if (headerName.equalsIgnoreCase(header.getName())) {
+				return header.getValue();
+			}
+		}
+		return null;
+	}
 }
