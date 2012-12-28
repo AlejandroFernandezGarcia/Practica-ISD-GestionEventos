@@ -6,11 +6,11 @@ import javax.xml.ws.WebFault;
 @WebFault(name = "SoapOverCapacityError", targetNamespace = "http://soap.ws.udc.es/")
 public class SoapOverCapacityException extends Exception {
 
-    public SoapOverCapacityException(String message) {
-        super(message);
-    }
+	public SoapOverCapacityException(String message) {
+		super(message);
+	}
 
-    public String getFaultInfo() {
-        return getMessage();
-    }
+	public String getFaultInfo() {
+		return getMessage();
+	}
 }

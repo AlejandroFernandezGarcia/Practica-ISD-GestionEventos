@@ -4,55 +4,58 @@ import java.util.Calendar;
 
 public class Event {
 
-    private Long eventId;
-    private String name;
-    private String description;
-    private Calendar dateSt;
-    private Calendar dateEnd;
-    private boolean intern = true;
-    private String address;
-    private short capacity = 0;
+	private Long eventId;
+	private String name;
+	private String description;
+	private Calendar dateSt;
+	private Calendar dateEnd;
+	private boolean intern = true;
+	private String address;
+	private short capacity = 0;
 
-    public Event(String name, String description,Calendar fechaIni,Calendar fechaFin,boolean interno, String direccion, short aforo) {
-        fechaIni.set(Calendar.MILLISECOND,0);
-        fechaFin.set(Calendar.MILLISECOND,0);    	
-    	this.name = name;
-        this.description = description;
-        this.dateSt = fechaIni;
-        this.dateEnd = fechaFin;
-        this.intern = interno;
-        this.address = direccion;
-        this.capacity = aforo;
-    }
+	public Event(String name, String description, Calendar fechaIni,
+			Calendar fechaFin, boolean interno, String direccion, short aforo) {
+		fechaIni.set(Calendar.MILLISECOND, 0);
+		fechaFin.set(Calendar.MILLISECOND, 0);
+		this.name = name;
+		this.description = description;
+		this.dateSt = fechaIni;
+		this.dateEnd = fechaFin;
+		this.intern = interno;
+		this.address = direccion;
+		this.capacity = aforo;
+	}
 
-    public Event(Long eventId, String name, String description, Calendar fechaIni,Calendar fechaFin,boolean interno, String direccion, short aforo) {
-        this(name, description, fechaIni, fechaFin, interno,  direccion, aforo);
-        this.eventId = eventId;
-    }
+	public Event(Long eventId, String name, String description,
+			Calendar fechaIni, Calendar fechaFin, boolean interno,
+			String direccion, short aforo) {
+		this(name, description, fechaIni, fechaFin, interno, direccion, aforo);
+		this.eventId = eventId;
+	}
 
-    public Long getEventId() {
-        return eventId;
-    }
+	public Long getEventId() {
+		return eventId;
+	}
 
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
-    }
+	public void setEventId(Long eventId) {
+		this.eventId = eventId;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public Calendar getDateSt() {
 		return dateSt;
@@ -110,7 +113,7 @@ public class Event {
 		return result;
 	}
 
-    @Override
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -160,15 +163,18 @@ public class Event {
 	public String toString() {
 		return "Event [eventId=" + eventId + ", name=" + name
 				+ ", description=" + description + ", dateSt="
-				+ dateSt.get(Calendar.DATE)+"/"+dateSt.get(Calendar.MONTH)+"/"
-				+ dateSt.get(Calendar.YEAR)+" " + dateSt.get(Calendar.HOUR_OF_DAY)+":"
-				+ dateSt.get(Calendar.MINUTE)+":"+dateSt.get(Calendar.SECOND)
-				+ ", dateEnd="
-				+ dateEnd.get(Calendar.DATE)+"/"+dateEnd.get(Calendar.MONTH)+"/"
-				+ dateEnd.get(Calendar.YEAR)+" " + dateEnd.get(Calendar.HOUR_OF_DAY)+":"
-				+ dateEnd.get(Calendar.MINUTE)+":"+dateEnd.get(Calendar.SECOND)
-				+ ", intern=" + intern + ", address="
-				+ address + ", capacity=" + capacity + "]";
+				+ dateSt.get(Calendar.DATE) + "/" + dateSt.get(Calendar.MONTH)
+				+ "/" + dateSt.get(Calendar.YEAR) + " "
+				+ dateSt.get(Calendar.HOUR_OF_DAY) + ":"
+				+ dateSt.get(Calendar.MINUTE) + ":"
+				+ dateSt.get(Calendar.SECOND) + ", dateEnd="
+				+ dateEnd.get(Calendar.DATE) + "/"
+				+ dateEnd.get(Calendar.MONTH) + "/"
+				+ dateEnd.get(Calendar.YEAR) + " "
+				+ dateEnd.get(Calendar.HOUR_OF_DAY) + ":"
+				+ dateEnd.get(Calendar.MINUTE) + ":"
+				+ dateEnd.get(Calendar.SECOND) + ", intern=" + intern
+				+ ", address=" + address + ", capacity=" + capacity + "]";
 	}
-    
+
 }

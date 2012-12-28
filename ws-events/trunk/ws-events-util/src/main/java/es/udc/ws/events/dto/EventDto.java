@@ -4,30 +4,31 @@ import java.util.Calendar;
 
 public class EventDto {
 
-    private Long eventId;
-    private String name;
-    private String description;
-    private Calendar dateSt;
-    private int duration;
-    private boolean intern = true;
-    private String address;
-    private short capacity = 0;
-    
-    
-    public EventDto() {
-    }
+	private Long eventId;
+	private String name;
+	private String description;
+	private Calendar dateSt;
+	private int duration;
+	private boolean intern = true;
+	private String address;
+	private short capacity = 0;
 
-    public EventDto(Long eventId, String name, String description, Calendar dateSt, Integer duration, Boolean intern, String address, Short capacity) {
-        this.eventId = eventId;
-        this.name = name;
-        this.description = description;
-        this.dateSt = dateSt;
-        this.duration = duration;
-        this.intern = intern;
-        this.address = address;
-        this.capacity = capacity;
-        
-    }
+	public EventDto() {
+	}
+
+	public EventDto(Long eventId, String name, String description,
+			Calendar dateSt, Integer duration, Boolean intern, String address,
+			Short capacity) {
+		this.eventId = eventId;
+		this.name = name;
+		this.description = description;
+		this.dateSt = dateSt;
+		this.duration = duration;
+		this.intern = intern;
+		this.address = address;
+		this.capacity = capacity;
+
+	}
 
 	public Long getEventId() {
 		return eventId;
@@ -96,12 +97,14 @@ public class EventDto {
 	@Override
 	public String toString() {
 		return "EventDto [eventId=" + eventId + ", name=" + name
-				+ ", description=" + description + ", dateSt=" 
-				+ dateSt.get(Calendar.DATE)+"/"+dateSt.get(Calendar.MONTH)+"/"
-				+ dateSt.get(Calendar.YEAR)+" " + dateSt.get(Calendar.HOUR_OF_DAY)+":"
-				+ dateSt.get(Calendar.MINUTE)+":"+dateSt.get(Calendar.SECOND)
-				+ ", duration=" + duration + ", intern=" + intern
-				+ ", address=" + address + ", capacity=" + capacity + "]";
+				+ ", description=" + description + ", dateSt="
+				+ dateSt.get(Calendar.DATE) + "/" + dateSt.get(Calendar.MONTH)
+				+ "/" + dateSt.get(Calendar.YEAR) + " "
+				+ dateSt.get(Calendar.HOUR_OF_DAY) + ":"
+				+ dateSt.get(Calendar.MINUTE) + ":"
+				+ dateSt.get(Calendar.SECOND) + ", duration=" + duration
+				+ ", intern=" + intern + ", address=" + address + ", capacity="
+				+ capacity + "]";
 	}
-    
+
 }

@@ -88,71 +88,93 @@ public class EventsServlet extends HttpServlet {
 				XmlEventDtoConversor.toXml(eventDto), headers);
 	}
 
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) 
-            throws ServletException, IOException {
-        
-        String requestURI = req.getRequestURI();
-        int index = requestURI.lastIndexOf('/');
-        if (index <= 0) {
-            ServletUtils.writeServiceResponse(resp, HttpStatus.SC_BAD_REQUEST,
-                    XmlExceptionConversor.toInputValidationExceptionXml(
-                    new InputValidationException("Invalid Request: " + 
-                        "unable to find event id")), null);
-            return;
-        }
-        Long eventId;
-        String eventIdAsString = requestURI.substring(index + 1);
-        try {
-            eventId = Long.valueOf(eventIdAsString);
-        } catch (NumberFormatException ex) {
-            ServletUtils.writeServiceResponse(resp, HttpStatus.SC_BAD_REQUEST,
-                    XmlExceptionConversor.toInputValidationExceptionXml(
-                    new InputValidationException("Invalid Request: " + 
-                        "unable to parse event id '" + 
-                    eventIdAsString + "'")), null);
-            return;
-        }        
-        
-        EventDto eventDto;
-        try {
-            eventDto = XmlEventDtoConversor
-                    .toEvent(req.getInputStream());
-        } catch (ParsingException ex) {
-            ServletUtils.writeServiceResponse(resp, HttpStatus.SC_BAD_REQUEST, 
-                    XmlExceptionConversor.toInputValidationExceptionXml(
-                    new InputValidationException(ex.getMessage())), 
-                    null);
-            return;
-            
-        }
-        Event event = EventToEventDtoConversor.toEvent(eventDto);
-        event.setEventId(eventId);
-        try {
-            EventServiceFactory.getService().updateEvent(event);
-        } catch (InputValidationException ex) {
-            ServletUtils.writeServiceResponse(resp, HttpStatus.SC_BAD_REQUEST, 
-                    XmlExceptionConversor.toInputValidationExceptionXml(
-                    new InputValidationException(ex.getMessage())), 
-                    null);
-            return;
-        } catch (InstanceNotFoundException ex) {
-            ServletUtils.writeServiceResponse(resp, HttpStatus.SC_NOT_FOUND, 
-                    XmlExceptionConversor.toInstanceNotFoundException(
-                new InstanceNotFoundException(
-                    ex.getInstanceId().toString(), ex.getInstanceType())),
-                    null);       
-            return;
-        } catch (EventRegisteredUsersException e) {
-        	ServletUtils.writeServiceResponse(resp, HttpStatus.SC_NOT_FOUND, 
-                    XmlExceptionConversor.toEventRegisterUsersError(
-                    new EventRegisteredUsersException("Error: Register user not found")), 
-                    null);
-            return;
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+
+		String requestURI = req.getRequestURI();
+		int index = requestURI.lastIndexOf('/');
+		if (index <= 0) {
+			ServletUtils
+					.writeServiceResponse(
+							resp,
+							HttpStatus.SC_BAD_REQUEST,
+							XmlExceptionConversor
+									.toInputValidationExceptionXml(new InputValidationException(
+											"Invalid Request: "
+													+ "unable to find event id")),
+							null);
+			return;
 		}
-        ServletUtils.writeServiceResponse(resp, HttpStatus.SC_NO_CONTENT, 
-                null, null);        
-    }
-	
+		Long eventId;
+		String eventIdAsString = requestURI.substring(index + 1);
+		try {
+			eventId = Long.valueOf(eventIdAsString);
+		} catch (NumberFormatException ex) {
+			ServletUtils
+					.writeServiceResponse(
+							resp,
+							HttpStatus.SC_BAD_REQUEST,
+							XmlExceptionConversor
+									.toInputValidationExceptionXml(new InputValidationException(
+											"Invalid Request: "
+													+ "unable to parse event id '"
+													+ eventIdAsString + "'")),
+							null);
+			return;
+		}
+
+		EventDto eventDto;
+		try {
+			eventDto = XmlEventDtoConversor.toEvent(req.getInputStream());
+		} catch (ParsingException ex) {
+			ServletUtils
+					.writeServiceResponse(
+							resp,
+							HttpStatus.SC_BAD_REQUEST,
+							XmlExceptionConversor
+									.toInputValidationExceptionXml(new InputValidationException(
+											ex.getMessage())), null);
+			return;
+
+		}
+		Event event = EventToEventDtoConversor.toEvent(eventDto);
+		event.setEventId(eventId);
+		try {
+			EventServiceFactory.getService().updateEvent(event);
+		} catch (InputValidationException ex) {
+			ServletUtils
+					.writeServiceResponse(
+							resp,
+							HttpStatus.SC_BAD_REQUEST,
+							XmlExceptionConversor
+									.toInputValidationExceptionXml(new InputValidationException(
+											ex.getMessage())), null);
+			return;
+		} catch (InstanceNotFoundException ex) {
+			ServletUtils
+					.writeServiceResponse(
+							resp,
+							HttpStatus.SC_NOT_FOUND,
+							XmlExceptionConversor
+									.toInstanceNotFoundException(new InstanceNotFoundException(
+											ex.getInstanceId().toString(), ex
+													.getInstanceType())), null);
+			return;
+		} catch (EventRegisteredUsersException e) {
+			ServletUtils
+					.writeServiceResponse(
+							resp,
+							HttpStatus.SC_NOT_FOUND,
+							XmlExceptionConversor
+									.toEventRegisterUsersError(new EventRegisteredUsersException(
+											"Error: Register user not found")),
+							null);
+			return;
+		}
+		ServletUtils.writeServiceResponse(resp, HttpStatus.SC_NO_CONTENT, null,
+				null);
+	}
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -286,7 +308,7 @@ public class EventsServlet extends HttpServlet {
 		ServletUtils.writeServiceResponse(resp, HttpStatus.SC_NO_CONTENT, null,
 				null);
 	}
-	
+
 	private Document getEventDocument() {
 
 		Element eventElement = new Element("event");

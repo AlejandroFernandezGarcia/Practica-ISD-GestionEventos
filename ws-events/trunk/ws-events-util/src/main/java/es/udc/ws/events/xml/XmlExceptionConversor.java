@@ -17,7 +17,6 @@ import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.servlet.ResponseEntityWriter;
 
-
 public class XmlExceptionConversor {
 	public final static String CONVERSION_PATTERN = "EEE, d MMM yyyy HH:mm:ss Z";
 
@@ -63,8 +62,7 @@ public class XmlExceptionConversor {
 
 	public static ResponseEntityWriter toOverCapacityError(
 			OverCapacityException e) {
-		Element exceptionElement = new Element("OverCapacityError",
-				XML_NS);
+		Element exceptionElement = new Element("OverCapacityError", XML_NS);
 
 		Element messageElement = new Element("message", XML_NS);
 		messageElement.setText(e.getMessage());
@@ -73,74 +71,77 @@ public class XmlExceptionConversor {
 		return new XmlEntityResponseWriter(document);
 	}
 
-	public static InputValidationException fromInputValidationExceptionXml(InputStream in)throws ParsingException{
+	public static InputValidationException fromInputValidationExceptionXml(
+			InputStream in) throws ParsingException {
 		try {
 
-            SAXBuilder builder = new SAXBuilder();
-            Document document = builder.build(in);
-            Element rootElement = document.getRootElement();
+			SAXBuilder builder = new SAXBuilder();
+			Document document = builder.build(in);
+			Element rootElement = document.getRootElement();
 
-            Element message = rootElement.getChild("message", XML_NS);
+			Element message = rootElement.getChild("message", XML_NS);
 
-            return new InputValidationException(message.getText());
-        } catch (JDOMException | IOException e) {
-            throw new ParsingException(e);
-        } catch (Exception e) {
-            throw new ParsingException(e);
-        }
+			return new InputValidationException(message.getText());
+		} catch (JDOMException | IOException e) {
+			throw new ParsingException(e);
+		} catch (Exception e) {
+			throw new ParsingException(e);
+		}
 	}
 
-	public static OverCapacityException fromOverCapacityException(InputStream in)throws ParsingException {
+	public static OverCapacityException fromOverCapacityException(InputStream in)
+			throws ParsingException {
 		try {
 
-            SAXBuilder builder = new SAXBuilder();
-            Document document = builder.build(in);
-            Element rootElement = document.getRootElement();
+			SAXBuilder builder = new SAXBuilder();
+			Document document = builder.build(in);
+			Element rootElement = document.getRootElement();
 
-            Element message = rootElement.getChild("message", XML_NS);
+			Element message = rootElement.getChild("message", XML_NS);
 
-            return new OverCapacityException(message.getText());
-        } catch (JDOMException | IOException e) {
-            throw new ParsingException(e);
-        } catch (Exception e) {
-            throw new ParsingException(e);
-        }
+			return new OverCapacityException(message.getText());
+		} catch (JDOMException | IOException e) {
+			throw new ParsingException(e);
+		} catch (Exception e) {
+			throw new ParsingException(e);
+		}
 	}
 
-	public static EventRegisteredUsersException fromEventRegisterUsersException(InputStream in)throws ParsingException {
+	public static EventRegisteredUsersException fromEventRegisterUsersException(
+			InputStream in) throws ParsingException {
 		try {
 
-            SAXBuilder builder = new SAXBuilder();
-            Document document = builder.build(in);
-            Element rootElement = document.getRootElement();
+			SAXBuilder builder = new SAXBuilder();
+			Document document = builder.build(in);
+			Element rootElement = document.getRootElement();
 
-            Element message = rootElement.getChild("message", XML_NS);
+			Element message = rootElement.getChild("message", XML_NS);
 
-            return new EventRegisteredUsersException(message.getText());
-        } catch (JDOMException | IOException e) {
-            throw new ParsingException(e);
-        } catch (Exception e) {
-            throw new ParsingException(e);
-        }
+			return new EventRegisteredUsersException(message.getText());
+		} catch (JDOMException | IOException e) {
+			throw new ParsingException(e);
+		} catch (Exception e) {
+			throw new ParsingException(e);
+		}
 	}
 
-	public static InstanceNotFoundException fromInstanceNotFoundExceptionXml(InputStream in)throws ParsingException {
+	public static InstanceNotFoundException fromInstanceNotFoundExceptionXml(
+			InputStream in) throws ParsingException {
 		try {
 
-            SAXBuilder builder = new SAXBuilder();
-            Document document = builder.build(in);
-            Element rootElement = document.getRootElement();
+			SAXBuilder builder = new SAXBuilder();
+			Document document = builder.build(in);
+			Element rootElement = document.getRootElement();
 
-            Element instanceId = rootElement.getChild("instanceId", XML_NS);
-            Element instanceType = 
-                    rootElement.getChild("instanceType", XML_NS);
+			Element instanceId = rootElement.getChild("instanceId", XML_NS);
+			Element instanceType = rootElement.getChild("instanceType", XML_NS);
 
-            return new InstanceNotFoundException(instanceId.getText(),
-                    instanceType.getText());
-        } catch (JDOMException | IOException e) {
-            throw new ParsingException(e);
-        } catch (Exception e) {
-            throw new ParsingException(e);
-        }
+			return new InstanceNotFoundException(instanceId.getText(),
+					instanceType.getText());
+		} catch (JDOMException | IOException e) {
+			throw new ParsingException(e);
+		} catch (Exception e) {
+			throw new ParsingException(e);
+		}
 	}
 }

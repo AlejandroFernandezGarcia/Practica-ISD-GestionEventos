@@ -12,11 +12,10 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 public class Jdbc3CcSqlResponseDAO extends AbstractSqlResponseDao {
 	@Override
 	public Response create(Connection connection, Response response)
-			throws InstanceNotFoundException{
+			throws InstanceNotFoundException {
 		/* Create "queryString". */
 		String queryString = "INSERT INTO Response"
-				+ " (userId, eventId, date, assists)"
-				+ " VALUES (?, ?, ?, ?)";
+				+ " (userId, eventId, date, assists)" + " VALUES (?, ?, ?, ?)";
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				queryString, Statement.RETURN_GENERATED_KEYS)) {
@@ -25,9 +24,8 @@ public class Jdbc3CcSqlResponseDAO extends AbstractSqlResponseDao {
 			int i = 1;
 			preparedStatement.setString(i++, response.getUsername());
 			preparedStatement.setLong(i++, response.getEventId());
-			Timestamp date = 
-					response.getRespDate() != null ?
-					new Timestamp(response.getRespDate().getTime().getTime()): null;
+			Timestamp date = response.getRespDate() != null ? new Timestamp(
+					response.getRespDate().getTime().getTime()) : null;
 			preparedStatement.setTimestamp(i++, date);
 			preparedStatement.setBoolean(i++, response.isAssists());
 

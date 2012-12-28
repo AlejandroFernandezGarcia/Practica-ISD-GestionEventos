@@ -5,28 +5,28 @@ import es.udc.ws.util.configuration.ConfigurationParametersManager;
 
 public class SqlResponseDaoFactory {
 	private final static String CLASS_NAME_PARAMETER = "SqlResponseDaoFactory.className";
-    private static SqlResponseDao dao = null;
+	private static SqlResponseDao dao = null;
 
-    private SqlResponseDaoFactory() {
-    }
+	private SqlResponseDaoFactory() {
+	}
 
-    @SuppressWarnings("rawtypes")
-    private static SqlResponseDao getInstance() {
-        try {
-            String daoClassName = ConfigurationParametersManager
-                    .getParameter(CLASS_NAME_PARAMETER);
-            Class daoClass = Class.forName(daoClassName);
-            return (SqlResponseDao) daoClass.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+	@SuppressWarnings("rawtypes")
+	private static SqlResponseDao getInstance() {
+		try {
+			String daoClassName = ConfigurationParametersManager
+					.getParameter(CLASS_NAME_PARAMETER);
+			Class daoClass = Class.forName(daoClassName);
+			return (SqlResponseDao) daoClass.newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 
-    }
+	}
 
-    public synchronized static SqlResponseDao getDao() {
-        if (dao == null) {
-            dao = getInstance();
-        }
-        return dao;
-    }
+	public synchronized static SqlResponseDao getDao() {
+		if (dao == null) {
+			dao = getInstance();
+		}
+		return dao;
+	}
 }

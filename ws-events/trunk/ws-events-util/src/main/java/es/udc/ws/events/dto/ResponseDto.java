@@ -1,16 +1,16 @@
 package es.udc.ws.events.dto;
 
-
 public class ResponseDto {
 	private Long responseId;
 	private Long eventId;
 	private String username;
 	private boolean assists;
-	
+
 	public ResponseDto() {
 	}
-	
-	public ResponseDto(Long responseId, Long eventId, String username, Boolean assists){
+
+	public ResponseDto(Long responseId, Long eventId, String username,
+			Boolean assists) {
 		this.responseId = responseId;
 		this.eventId = eventId;
 		this.username = username;
@@ -49,11 +49,10 @@ public class ResponseDto {
 		this.assists = assists;
 	}
 
-
 	@Override
 	public String toString() {
 		return "ResponseDto [responseId=" + responseId + ", eventId=" + eventId
 				+ ", username=" + username + ", assists=" + assists + "]";
 	}
-	
+
 }

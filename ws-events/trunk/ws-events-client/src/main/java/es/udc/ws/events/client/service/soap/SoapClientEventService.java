@@ -23,40 +23,41 @@ import es.udc.ws.util.configuration.ConfigurationParametersManager;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
-public class SoapClientEventService implements ClientEventService{
-	
-	private final static String ENDPOINT_ADDRESS_PARAMETER =
-			"SoapClientEventService.endpointAddress";
-	
+public class SoapClientEventService implements ClientEventService {
+
+	private final static String ENDPOINT_ADDRESS_PARAMETER = "SoapClientEventService.endpointAddress";
+
 	private String endpointAddress;
-	
+
 	private EventsProvider eventsProvider;
-	
-	public SoapClientEventService(){
+
+	public SoapClientEventService() {
 		init(getEndpointAddress());
 	}
-	
-	private void init(String eventsProviderURL){
+
+	private void init(String eventsProviderURL) {
 		EventsProviderService stockQuoteProviderService = new EventsProviderService();
 		eventsProvider = stockQuoteProviderService.getEventsProviderPort();
 		((BindingProvider) eventsProvider).getRequestContext().put(
-				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,eventsProviderURL);
+				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, eventsProviderURL);
 	}
-	
-	private String getEndpointAddress(){
-		if(endpointAddress == null){
-			endpointAddress = ConfigurationParametersManager.getParameter(ENDPOINT_ADDRESS_PARAMETER);
+
+	private String getEndpointAddress() {
+		if (endpointAddress == null) {
+			endpointAddress = ConfigurationParametersManager
+					.getParameter(ENDPOINT_ADDRESS_PARAMETER);
 		}
 		return endpointAddress;
 	}
-	
+
 	@Override
 	public Long addEvent(EventDto event) throws InputValidationException {
-		try{
-			return eventsProvider.addEvent(EventDtoToSoapEventDtoConversor.toSoapEventDto(event));
-		}catch(SoapInputValidationException e){
+		try {
+			return eventsProvider.addEvent(EventDtoToSoapEventDtoConversor
+					.toSoapEventDto(event));
+		} catch (SoapInputValidationException e) {
 			throw new InputValidationException(e.getMessage());
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -65,19 +66,19 @@ public class SoapClientEventService implements ClientEventService{
 	public void updateEvent(EventDto event) throws InputValidationException,
 			InstanceNotFoundException, EventRegisteredUsersException {
 		try {
-			eventsProvider.updateEvent(EventDtoToSoapEventDtoConversor.toSoapEventDto(
-					event));
-		}catch (SoapEventRegisteredUsersException e) {
+			eventsProvider.updateEvent(EventDtoToSoapEventDtoConversor
+					.toSoapEventDto(event));
+		} catch (SoapEventRegisteredUsersException e) {
 			throw new EventRegisteredUsersException(e.getMessage());
-		}catch (SoapInputValidationException e) {
+		} catch (SoapInputValidationException e) {
 			throw new InputValidationException(e.getMessage());
-		}catch (SoapInstanceNotFoundException e){
-			throw new InstanceNotFoundException(e.getFaultInfo().getInstanceId(),
-												e.getFaultInfo().getInstanceType());
-		}catch(Exception e){
+		} catch (SoapInstanceNotFoundException e) {
+			throw new InstanceNotFoundException(e.getFaultInfo()
+					.getInstanceId(), e.getFaultInfo().getInstanceType());
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-			
+
 	}
 
 	@Override
@@ -88,20 +89,20 @@ public class SoapClientEventService implements ClientEventService{
 		} catch (SoapEventRegisteredUsersException e) {
 			throw new EventRegisteredUsersException(e.getMessage());
 		} catch (SoapInstanceNotFoundException e) {
-			throw new InstanceNotFoundException(e.getFaultInfo().getInstanceId(),
-												 e.getFaultInfo().getInstanceType());
+			throw new InstanceNotFoundException(e.getFaultInfo()
+					.getInstanceId(), e.getFaultInfo().getInstanceType());
 		}
-		
+
 	}
 
 	@Override
 	public EventDto findEvent(Long eventId) throws InstanceNotFoundException {
 		try {
-			return EventDtoToSoapEventDtoConversor.toEventDto(
-							eventsProvider.findEvent(eventId));
+			return EventDtoToSoapEventDtoConversor.toEventDto(eventsProvider
+					.findEvent(eventId));
 		} catch (SoapInstanceNotFoundException e) {
-			throw new InstanceNotFoundException(e.getFaultInfo().getInstanceId(),
-					 							 e.getFaultInfo().getInstanceType());
+			throw new InstanceNotFoundException(e.getFaultInfo()
+					.getInstanceId(), e.getFaultInfo().getInstanceType());
 		}
 	}
 
@@ -110,14 +111,17 @@ public class SoapClientEventService implements ClientEventService{
 			Calendar fechaFin) {
 		XMLGregorianCalendar xgc = null;
 		XMLGregorianCalendar xgc1 = null;
-		if((fechaIni ==null) |(fechaFin== null)){
-			return EventDtoToSoapEventDtoConversor.toEventDtos(
-					eventsProvider.findEventByKeyword(clave, xgc, xgc1));
+		if ((fechaIni == null) | (fechaFin == null)) {
+			return EventDtoToSoapEventDtoConversor.toEventDtos(eventsProvider
+					.findEventByKeyword(clave, xgc, xgc1));
 		}
-		xgc = EventDtoToSoapEventDtoConversor.toXMLGregorianCalendarFromCalendar(fechaIni);
-		xgc1 = EventDtoToSoapEventDtoConversor.toXMLGregorianCalendarFromCalendar(fechaFin);
-		return EventDtoToSoapEventDtoConversor.toEventDtos(	eventsProvider.findEventByKeyword(clave, xgc, xgc1));
-		
+		xgc = EventDtoToSoapEventDtoConversor
+				.toXMLGregorianCalendarFromCalendar(fechaIni);
+		xgc1 = EventDtoToSoapEventDtoConversor
+				.toXMLGregorianCalendarFromCalendar(fechaFin);
+		return EventDtoToSoapEventDtoConversor.toEventDtos(eventsProvider
+				.findEventByKeyword(clave, xgc, xgc1));
+
 	}
 
 	@Override
@@ -129,8 +133,8 @@ public class SoapClientEventService implements ClientEventService{
 		} catch (SoapEventRegisteredUsersException e) {
 			throw new EventRegisteredUsersException(e.getMessage());
 		} catch (SoapInstanceNotFoundException e) {
-			throw new InstanceNotFoundException(e.getFaultInfo().getInstanceId(),
-					 							 e.getFaultInfo().getInstanceType());
+			throw new InstanceNotFoundException(e.getFaultInfo()
+					.getInstanceId(), e.getFaultInfo().getInstanceType());
 		} catch (SoapOverCapacityException e) {
 			throw new OverCapacityException(e.getMessage());
 		}
@@ -140,22 +144,23 @@ public class SoapClientEventService implements ClientEventService{
 	public List<ResponseDto> getResponses(Long eventId, Boolean code)
 			throws InstanceNotFoundException {
 		try {
-			return ResponseDtoToSoapResponseDtoConversor.toResponseDtos(
-					eventsProvider.getResponses(eventId, code));
+			return ResponseDtoToSoapResponseDtoConversor
+					.toResponseDtos(eventsProvider.getResponses(eventId, code));
 		} catch (SoapInstanceNotFoundException e) {
-			throw new InstanceNotFoundException(e.getFaultInfo().getInstanceId(),
-					 							 e.getFaultInfo().getInstanceType());
+			throw new InstanceNotFoundException(e.getFaultInfo()
+					.getInstanceId(), e.getFaultInfo().getInstanceType());
 		}
 	}
 
 	@Override
-	public ResponseDto getResponsesByID(Long responseId) throws InstanceNotFoundException{
+	public ResponseDto getResponsesByID(Long responseId)
+			throws InstanceNotFoundException {
 		try {
-			return ResponseDtoToSoapResponseDtoConversor.toResponseDto(
-							 eventsProvider.getResponsesByID(responseId));
+			return ResponseDtoToSoapResponseDtoConversor
+					.toResponseDto(eventsProvider.getResponsesByID(responseId));
 		} catch (SoapInstanceNotFoundException e) {
-			throw new InstanceNotFoundException(e.getFaultInfo().getInstanceId(),
-					 							e.getFaultInfo().getInstanceType());
+			throw new InstanceNotFoundException(e.getFaultInfo()
+					.getInstanceId(), e.getFaultInfo().getInstanceType());
 		}
 	}
 

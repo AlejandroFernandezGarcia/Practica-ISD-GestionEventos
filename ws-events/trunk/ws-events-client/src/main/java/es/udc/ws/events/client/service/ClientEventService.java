@@ -12,19 +12,26 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 
 public interface ClientEventService {
 
-    public Long addEvent(EventDto event) throws InputValidationException;
+	public Long addEvent(EventDto event) throws InputValidationException;
 
-    public void updateEvent(EventDto event) throws InputValidationException, InstanceNotFoundException, EventRegisteredUsersException;
-    
-    public void deleteEvent(Long eventId) throws InstanceNotFoundException, EventRegisteredUsersException;
-    
-    public EventDto findEvent(Long eventId) throws InstanceNotFoundException;
-    
-    public List<EventDto> findEventByKeyword(String clave, Calendar fechaIni, Calendar fechaFin);
-    
-    public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException, OverCapacityException, EventRegisteredUsersException;
-    
-    public List<ResponseDto> getResponses(Long eventId, Boolean code) throws InstanceNotFoundException;
-    
-    public ResponseDto getResponsesByID(Long responseId) throws InstanceNotFoundException;
+	public void updateEvent(EventDto event) throws InputValidationException,
+			InstanceNotFoundException, EventRegisteredUsersException;
+
+	public void deleteEvent(Long eventId) throws InstanceNotFoundException,
+			EventRegisteredUsersException;
+
+	public EventDto findEvent(Long eventId) throws InstanceNotFoundException;
+
+	public List<EventDto> findEventByKeyword(String clave, Calendar fechaIni,
+			Calendar fechaFin);
+
+	public Long responseToEvent(String username, Long eventId, Boolean code)
+			throws InstanceNotFoundException, OverCapacityException,
+			EventRegisteredUsersException;
+
+	public List<ResponseDto> getResponses(Long eventId, Boolean code)
+			throws InstanceNotFoundException;
+
+	public ResponseDto getResponsesByID(Long responseId)
+			throws InstanceNotFoundException;
 }

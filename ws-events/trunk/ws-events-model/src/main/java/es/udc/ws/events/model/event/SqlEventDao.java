@@ -7,13 +7,17 @@ import java.util.List;
 
 public interface SqlEventDao {
 
-    public Event create(Connection connection, Event event);
+	public Event create(Connection connection, Event event);
 
-    public void update(Connection connection, Event event)
-    		throws InstanceNotFoundException;
-    public void delete(Connection connection, Long eventId)
-    		throws InstanceNotFoundException;
-    public Event find(Connection connection, Long eventId)
-            throws InstanceNotFoundException;
-    public List<Event> findByKeyword(Connection connection, String clave, Calendar fechaIni, Calendar fechaFin);
+	public void update(Connection connection, Event event)
+			throws InstanceNotFoundException;
+
+	public void delete(Connection connection, Long eventId)
+			throws InstanceNotFoundException;
+
+	public Event find(Connection connection, Long eventId)
+			throws InstanceNotFoundException;
+
+	public List<Event> findByKeyword(Connection connection, String clave,
+			Calendar fechaIni, Calendar fechaFin);
 }

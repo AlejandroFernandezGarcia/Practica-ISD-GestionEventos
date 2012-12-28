@@ -102,8 +102,8 @@ public class ResponseServlet {
 													.getInstanceType())), null);
 			return;
 		} catch (OverCapacityException ex) {
-			ServletUtils.writeServiceResponse(resp,
-					HttpStatus.SC_INSUFFICIENT_SPACE_ON_RESOURCE, XmlExceptionConversor
+			ServletUtils.writeServiceResponse(resp, HttpStatus.SC_GONE,
+					XmlExceptionConversor
 							.toOverCapacityError(new OverCapacityException(
 									"Error: Event full")), null);
 			return;
@@ -139,7 +139,7 @@ public class ResponseServlet {
 			Boolean valueResponse = Boolean.getBoolean(req
 					.getParameter("response"));
 			Long responseId = Long.getLong(req.getParameter("responseId"));
-			
+
 			if (valueResponse == null) {
 				Response response;
 				try {
@@ -158,7 +158,7 @@ public class ResponseServlet {
 									null);
 					return;
 				}
-				ResponseDto respDto= ResponseToResponseDtoConversor
+				ResponseDto respDto = ResponseToResponseDtoConversor
 						.toResponseDto(response);
 				ServletUtils.writeServiceResponse(resp, HttpStatus.SC_OK,
 						XmlResponseDtoConversor.toXml(respDto), null);
