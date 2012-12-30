@@ -48,7 +48,7 @@ public class EventDtoToSoapEventDtoConversor {
 	}
 
 	public static Calendar toCalendarFromXml(XMLGregorianCalendar xmlCalendar) {
-		TimeZone timeZone = xmlCalendar.getTimeZone(xmlCalendar.getTimezone());
+		/*TimeZone timeZone = xmlCalendar.getTimeZone(xmlCalendar.getTimezone());
 		Calendar calendar = Calendar.getInstance(timeZone);
 		calendar.set(Calendar.YEAR, xmlCalendar.getYear());
 		calendar.set(Calendar.MONTH, xmlCalendar.getMonth());
@@ -56,8 +56,8 @@ public class EventDtoToSoapEventDtoConversor {
 		calendar.set(Calendar.HOUR_OF_DAY, xmlCalendar.getHour());
 		calendar.set(Calendar.MINUTE, xmlCalendar.getMinute());
 		calendar.set(Calendar.SECOND, xmlCalendar.getSecond());
-
-		return calendar;
+		return calendar;*/
+		return xmlCalendar.toGregorianCalendar();
 	}
 
 	public static XMLGregorianCalendar toXMLGregorianCalendarFromCalendar(
@@ -67,7 +67,7 @@ public class EventDtoToSoapEventDtoConversor {
 			XMLGregorianCalendar xgc = dtf.newXMLGregorianCalendar();
 			xgc.setYear(cal.get(Calendar.YEAR));
 			xgc.setDay(cal.get(Calendar.DAY_OF_MONTH));
-			xgc.setMonth(cal.get(Calendar.MONTH));
+			xgc.setMonth(cal.get(Calendar.MONTH)+1);
 			xgc.setHour(cal.get(Calendar.HOUR_OF_DAY));
 			xgc.setMinute(cal.get(Calendar.MINUTE));
 			xgc.setSecond(cal.get(Calendar.SECOND));
@@ -79,22 +79,22 @@ public class EventDtoToSoapEventDtoConversor {
 			return xgc;
 
 		} catch (DatatypeConfigurationException e) {
+			e.printStackTrace(System.err);
 			return null;
 		}
 	}
 
 	public static int getDurationFromCalendar(Calendar date1, Calendar date2) {
-		Long dist = date2.getTimeInMillis() - date1.getTimeInMillis();
+		Long dist = (date2.getTime().getTime()) - (date1.getTime().getTime());
 		int duration = (int) (dist / 60000);
-
 		return duration;
 	}
 
-	public static Calendar getCalendarFromDuration(int duration, Calendar date) {
-		Long dateEndMilis = date.getTimeInMillis() + (duration * 60000);
-		Calendar dateEnd = Calendar.getInstance();
-		dateEnd.setTimeInMillis(dateEndMilis);
-
-		return dateEnd;
-	}
+//	public static Calendar getCalendarFromDuration(int duration, Calendar date) {
+//		Long dateEndMilis = date.getTime().getTime() + (duration * 60000);
+//		Calendar dateEnd = Calendar.getInstance();
+//		dateEnd.setTimeInMillis(dateEndMilis);
+//
+//		return dateEnd;
+//	}
 }

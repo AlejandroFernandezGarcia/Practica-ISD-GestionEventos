@@ -2,6 +2,7 @@ package es.udc.ws.events.util;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import es.udc.ws.events.dto.EventDto;
@@ -47,16 +48,19 @@ public class EventToEventDtoConversor {
 	}
 
 	public static int getDurationFromCalendar(Calendar date1, Calendar date2) {
-		Long dist = date2.getTimeInMillis() - date1.getTimeInMillis();
+		Long dist = (date2.getTime().getTime()) - (date1.getTime().getTime());
 		int duration = (int) (dist / 60000);
-
 		return duration;
 	}
 
 	public static Calendar getCalendarFromDuration(int duration, Calendar date) {
-		Long dateEndMilis = date.getTimeInMillis() + (duration * 60000);
+		Long dateEndMilis = date.getTime().getTime() + ((long)duration * (long)60000);
 		Calendar dateEnd = Calendar.getInstance();
 		dateEnd.setTimeInMillis(dateEndMilis);
+//		Calendar prueba1 = Calendar.getInstance();
+//		String l = "2764800000";
+//		prueba1.setTimeInMillis(Long.valueOf(l));
+//		System.out.println("Este"+prueba1.toString());
 
 		return dateEnd;
 	}

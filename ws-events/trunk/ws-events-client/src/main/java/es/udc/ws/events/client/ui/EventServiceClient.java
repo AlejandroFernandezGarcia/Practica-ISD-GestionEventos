@@ -213,13 +213,13 @@ public class EventServiceClient {
 			i++;
 		}
 		fecha.set(Calendar.YEAR, vectorI[2]);
-		fecha.set(Calendar.MONTH, vectorI[1]);
+		fecha.set(Calendar.MONTH, vectorI[1]-1);
 		fecha.set(Calendar.DATE, vectorI[0]);
 		fecha.set(Calendar.HOUR_OF_DAY, vectorI[3]);
 		fecha.set(Calendar.MINUTE, vectorI[4]);
 		fecha.set(Calendar.SECOND, vectorI[5]);
 		fecha.set(Calendar.MILLISECOND, 0);
-
+		System.out.println(fecha.toString());
 		return fecha;
 	}
 
