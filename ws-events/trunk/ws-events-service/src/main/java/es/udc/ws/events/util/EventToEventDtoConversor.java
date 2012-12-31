@@ -23,9 +23,10 @@ public class EventToEventDtoConversor {
 		Long eventId = event.getEventId();
 		String name = event.getName();
 		String description = event.getDescription();
-		Calendar dateSt = event.getDateSt();
 		int duration = getDurationFromCalendar(event.getDateSt(),
 				event.getDateEnd());
+		event.getDateSt().add(Calendar.MONTH, 1);
+		Calendar dateSt = event.getDateSt();
 		boolean intern = event.isIntern();
 		String address = event.getAddress();
 		short capacity = event.getCapacity();

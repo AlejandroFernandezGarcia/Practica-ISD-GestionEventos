@@ -149,9 +149,13 @@ public class EventServiceClient {
 				List<ResponseDto> listResp = clientEventService.getResponses(
 						eventId, code);
 				int i = 0;
-				while (i < listResp.size()) {
-					System.out.println(listResp.get(i).toString());
-					i++;
+				if (listResp.size() == 0) {
+					System.out.println("No matches\n");
+				}else{
+					while (i < listResp.size()) {
+						System.out.println(listResp.get(i).toString());
+						i++;
+					}
 				}
 			} catch (InstanceNotFoundException e) {
 				e.printStackTrace(System.err);
@@ -219,7 +223,7 @@ public class EventServiceClient {
 		fecha.set(Calendar.MINUTE, vectorI[4]);
 		fecha.set(Calendar.SECOND, vectorI[5]);
 		fecha.set(Calendar.MILLISECOND, 0);
-		System.out.println(fecha.toString());
+		//System.out.println(fecha.toString());
 		return fecha;
 	}
 
