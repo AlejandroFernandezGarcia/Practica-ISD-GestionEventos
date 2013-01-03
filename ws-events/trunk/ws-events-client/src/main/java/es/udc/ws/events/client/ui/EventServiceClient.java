@@ -6,12 +6,12 @@ import java.util.StringTokenizer;
 
 import es.udc.ws.events.client.service.ClientEventService;
 import es.udc.ws.events.client.service.ClientEventServiceFactory;
+import es.udc.ws.events.client.service.rest.RestClientEventService;
 import es.udc.ws.events.client.service.soap.EventDtoToSoapEventDtoConversor;
 import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.events.dto.ResponseDto;
 import es.udc.ws.events.exceptions.EventRegisteredUsersException;
 import es.udc.ws.events.exceptions.OverCapacityException;
-import es.udc.ws.events.service.client.rest.RestClientEventService;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 

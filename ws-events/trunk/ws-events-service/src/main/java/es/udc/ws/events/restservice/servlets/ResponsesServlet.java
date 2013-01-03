@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,8 +24,10 @@ import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.servlet.ServletUtils;
 
-public class ResponseServlet {
+@SuppressWarnings("serial")
+public class ResponsesServlet extends HttpServlet {
 
+	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		System.out.println("DoPost de response");
@@ -135,7 +138,8 @@ public class ResponseServlet {
 		ServletUtils.writeServiceResponse(resp, HttpStatus.SC_CREATED,
 				XmlResponseDtoConversor.toXml(responseDto), headers);
 	}
-
+	
+	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		System.out.println("DoGet de response");
@@ -189,7 +193,7 @@ public class ResponseServlet {
 				List<ResponseDto> listResponsesDtos = ResponseToResponseDtoConversor
 						.toResponseDtos(listResponses);
 				ServletUtils.writeServiceResponse(resp, HttpStatus.SC_OK,
-						XmlResponseDtoConversor.toXml(listResponsesDtos), null);
+						XmlResponseDtoConversor.toXml(listResponsesDtos), null);//???
 			}
 		} else {
 			String responseIdAsString = path.endsWith("/") && path.length() > 2 ? path

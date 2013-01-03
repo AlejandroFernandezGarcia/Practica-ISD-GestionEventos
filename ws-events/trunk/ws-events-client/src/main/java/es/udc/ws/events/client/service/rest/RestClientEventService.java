@@ -1,4 +1,4 @@
-package es.udc.ws.events.service.client.rest;
+package es.udc.ws.events.client.service.rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,7 +29,6 @@ import es.udc.ws.events.xml.XmlEntityResponseWriter;
 import es.udc.ws.events.xml.XmlEventDtoConversor;
 import es.udc.ws.events.xml.XmlExceptionConversor;
 import es.udc.ws.events.xml.XmlResponseDtoConversor;
-
 import es.udc.ws.util.configuration.ConfigurationParametersManager;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
@@ -258,29 +257,12 @@ public class RestClientEventService implements ClientEventService {
 	public Long responseToEvent(String username, Long eventId, Boolean code) {
 		PostMethod method = new PostMethod(getEndpointAddress() + "responses");
 		try {
-			
+
 			method.addParameter("eventId", Long.toString(eventId));
 			method.addParameter("userName", username);
-			method.addParameter("respuesta", Boolean.toString(code));
+			method.addParameter("assists", Boolean.toString(code));
 			HttpClient client = new HttpClient();
-			/*
-			ResponseDto responseDto = new ResponseDto(null, eventId,
-					username, code);
-			ByteArrayOutputStream xmlOutputStream = new ByteArrayOutputStream();
-			XmlEntityResponseWriter response;
-			response = XmlResponseDtoConversor.toXml(responseDto);
-			try {
-				response.write(xmlOutputStream);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			ByteArrayInputStream xmlInputStream = new ByteArrayInputStream(
-					xmlOutputStream.toByteArray());
-			InputStreamRequestEntity requestEntity = new InputStreamRequestEntity(
-					xmlInputStream, response.getContentType());
-			HttpClient client = new HttpClient();
-			method.setRequestEntity(requestEntity);
-*/
+
 			int statusCode;
 			try {
 				statusCode = client.executeMethod(method);
@@ -326,7 +308,7 @@ public class RestClientEventService implements ClientEventService {
 				throw new RuntimeException(ex);
 			}
 			try {
-				return XmlResponseDtoConversor.toResponses(method
+				return XmlResponseDtoConversor.toResponses(method// XmlResponseDtoConversor.toResponses(method
 						.getResponseBodyAsStream());
 			} catch (ParsingException | IOException ex) {
 				throw new RuntimeException(ex);

@@ -37,19 +37,6 @@ public class EventsServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		System.out.println("DoPost de Event");
-		/*
-		 * Long eventId = new Long(0L);
-		 * 
-		 * String eventURL = req.getRequestURL().append("/").append(eventId)
-		 * .toString(); Map<String, String> headers = new HashMap<>(1);
-		 * headers.put("Location", eventURL);
-		 * 
-		 * ServletUtils.writeServiceResponse(resp, HttpStatus.SC_CREATED, null,
-		 * headers);
-		 * 
-		 * XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-		 * outputter.output(getEventDocument(), resp.getOutputStream());
-		 */
 		EventDto xmlEvent;
 		try {
 			xmlEvent = XmlEventDtoConversor.toEvent(req.getInputStream());
@@ -179,12 +166,7 @@ public class EventsServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		/*
-		 * ServletUtils.writeServiceResponse(resp, HttpStatus.SC_OK,
-		 * "application/xml", null, null); XMLOutputter outputter = new
-		 * XMLOutputter(Format.getPrettyFormat());
-		 * outputter.output(getEventDocument(), resp.getOutputStream());
-		 */
+		
 		String path = req.getPathInfo();
 		System.out.println("Path: " + path);
 		if (path == null || path.length() == 0 || "/".equals(path)) {
