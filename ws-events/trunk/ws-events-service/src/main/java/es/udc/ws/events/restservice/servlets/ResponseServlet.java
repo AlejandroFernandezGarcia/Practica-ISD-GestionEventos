@@ -24,9 +24,12 @@ import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.servlet.ServletUtils;
 
 public class ResponseServlet {
+
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		System.out.println("DoPost de response");
 		String eventIdParameter = req.getParameter("eventId");
+		System.out.println("Pasa al servlet");
 		if (eventIdParameter == null) {
 			ServletUtils
 					.writeServiceResponse(
@@ -86,9 +89,11 @@ public class ResponseServlet {
 		Boolean valueResponse = Boolean.getBoolean(strResponse);
 		Long responseId;
 		Response response;
+		System.out.println(userName + eventId + valueResponse);
 		try {
 			responseId = EventServiceFactory.getService().responseToEvent(
 					userName, eventId, valueResponse);
+			System.out.println(responseId);
 			response = EventServiceFactory.getService().getResponsesByID(
 					responseId);
 		} catch (InstanceNotFoundException ex) {
@@ -133,6 +138,7 @@ public class ResponseServlet {
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		System.out.println("DoGet de response");
 		String path = req.getPathInfo();
 		if (path == null || path.length() == 0 || "/".equals(path)) {
 			Long eventId = Long.getLong(req.getParameter("eventId"));

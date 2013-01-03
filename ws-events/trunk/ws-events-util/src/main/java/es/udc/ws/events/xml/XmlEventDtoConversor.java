@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.jdom.DataConversionException;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -55,7 +56,21 @@ public class XmlEventDtoConversor {
 		eventElement.addContent(descriptionElement);
 
 		Element dateStElement = new Element("dateSt", XML_NS);
-		dateStElement.setText(eventDto.getDateSt().toString());
+		//dateStElement.setText(eventDto.getDateSt().toString());
+		int day = eventDto.getDateSt().get(Calendar.DAY_OF_MONTH);
+        int month = eventDto.getDateSt().get(Calendar.MONTH) + 1;
+        int year = eventDto.getDateSt().get(Calendar.YEAR);
+        int hour = eventDto.getDateSt().get(Calendar.HOUR_OF_DAY);
+        int minute = eventDto.getDateSt().get(Calendar.MINUTE);
+        int second = eventDto.getDateSt().get(Calendar.SECOND);
+
+        dateStElement.setAttribute("day", Integer.toString(day));
+        dateStElement.setAttribute("month", Integer.toString(month));
+        dateStElement.setAttribute("year", Integer.toString(year));
+        dateStElement.setAttribute("hour", Integer.toString(hour));
+        dateStElement.setAttribute("minute", Integer.toString(minute));
+        dateStElement.setAttribute("second", Integer.toString(second));
+        /*****/
 		eventElement.addContent(dateStElement);
 
 		Element durationElement = new Element("duration", XML_NS);
@@ -110,15 +125,51 @@ public class XmlEventDtoConversor {
 				XML_NS);
 
 		Calendar dateSt = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		/*SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		Date date;
 		try {
 			date = sdf.parse(eventElement.getChildTextTrim("dateSt", XML_NS));
 			dateSt.setTime(date);
 		} catch (ParseException e) {
+			System.out.println("Falla aqui!!!!");
 			throw e;
+		}*/
+		Element fecha = eventElement.getChild("dateSt",XML_NS);
+		int day = 0;
+		int month = 0;
+		int year = 0;
+		int hour = 0;
+		int minute = 0;
+		int second = 0;
+		try {
+			day = fecha.getAttribute("day").getIntValue();
+			//System.out.println(day);
+			month = fecha.getAttribute("month").getIntValue();
+			//System.out.println(month);
+			year = fecha.getAttribute("year").getIntValue();
+			//System.out.println(year);
+			hour = fecha.getAttribute("hour").getIntValue();
+			//System.out.println(hour);
+			minute = fecha.getAttribute("minute").getIntValue();
+			//System.out.println(minute);
+			second = fecha.getAttribute("second").getIntValue();
+			//System.out.println(second);
+			
+		} catch (DataConversionException e) {
+			System.out.println("Falla aqui lo recien cambiado!!!!");
+			
 		}
 
+        dateSt.set(Calendar.DAY_OF_MONTH, day);
+        dateSt.set(Calendar.MONTH, month - 1);
+        dateSt.set(Calendar.YEAR, year);
+        dateSt.set(Calendar.HOUR_OF_DAY, hour);
+        dateSt.set(Calendar.MINUTE, minute);
+        dateSt.set(Calendar.SECOND, second);
+        dateSt.set(Calendar.MILLISECOND, 0);
+		//System.out.println(dateSt.toString());
+		
+		/**/
 		Integer duration = Integer.parseInt(eventElement.getChildTextTrim(
 				"duration", XML_NS));
 
