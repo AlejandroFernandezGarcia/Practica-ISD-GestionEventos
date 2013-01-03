@@ -36,6 +36,7 @@ public class EventsServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		System.out.println("DoPost de Event");
 		/*
 		 * Long eventId = new Long(0L);
 		 * 
@@ -185,22 +186,47 @@ public class EventsServlet extends HttpServlet {
 		 * outputter.output(getEventDocument(), resp.getOutputStream());
 		 */
 		String path = req.getPathInfo();
+		System.out.println("Path: " + path);
 		if (path == null || path.length() == 0 || "/".equals(path)) {
 			String clave = req.getParameter("clave");
-			String strDate = req.getParameter("inicio");
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-			Date date;
+			String strDateSt = req.getParameter("inicio");
+			String strDateEnd = req.getParameter("fin");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_hh:mm:ss");
 			Calendar inicio = Calendar.getInstance();
 			Calendar fin = Calendar.getInstance();
-			try {
-				date = sdf.parse(strDate);
-				inicio.setTime(date);
-				strDate = req.getParameter("fin");
-				date = sdf.parse(strDate);
-				fin.setTime(date);
-			} catch (ParseException e) {
-				e.printStackTrace();
+			if ((!clave.equals("null")) && (!strDateSt.equals("null"))
+					&& (!strDateEnd.equals("null"))) {
+				Date date;
+				try {
+					date = sdf.parse(strDateSt);
+					inicio.setTime(date);
+					date = sdf.parse(strDateEnd);
+					fin.setTime(date);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}else if((!clave.equals("null")) && (strDateSt.equals("null"))
+					&& (strDateEnd.equals("null"))){
+				inicio = null;
+				fin = null;
+			}else if((clave.equals("null")) && (!strDateSt.equals("null"))
+					&& (!strDateEnd.equals("null"))){
+				Date date;
+				try {
+					date = sdf.parse(strDateSt);
+					inicio.setTime(date);
+					date = sdf.parse(strDateEnd);
+					fin.setTime(date);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				clave = null;
+			}else{
+				clave = null;
+				inicio = null;
+				fin = null;
 			}
+			
 
 			List<Event> listaEventos = EventServiceFactory.getService()
 					.findEventByKeyword(clave, inicio, fin);

@@ -146,12 +146,8 @@ public class RestClientEventService implements ClientEventService {
 	@Override
 	public EventDto findEvent(Long eventId) throws InstanceNotFoundException {
 		GetMethod method = null;
-		try {
-			method = new GetMethod(getEndpointAddress() + "events/?eventId="
-					+ URLEncoder.encode(eventId.toString(), "UTF-8"));
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex);
-		}
+		method = new GetMethod(getEndpointAddress() + "events/" + eventId);
+
 		try {
 			HttpClient client = new HttpClient();
 			int statusCode;
@@ -183,16 +179,52 @@ public class RestClientEventService implements ClientEventService {
 			Calendar fechaFin) {
 		GetMethod method = null;
 		try {
-			String inicio = fechaIni.get(Calendar.DATE) + "-"
-					+ fechaIni.get(Calendar.MONTH) + "-"
-					+ fechaIni.get(Calendar.YEAR);
-			String fin = fechaFin.get(Calendar.DATE) + "-"
-					+ fechaFin.get(Calendar.MONTH) + "-"
-					+ fechaFin.get(Calendar.YEAR);
-			method = new GetMethod(getEndpointAddress() + "events/?clave="
-					+ URLEncoder.encode(clave, "UTF-8") + "&inicio="
-					+ URLEncoder.encode(inicio, "UTF-8") + "&fin="
-					+ URLEncoder.encode(fin, "UTF-8"));
+			if (clave != null && fechaIni != null && fechaFin != null) {
+				String inicio = fechaIni.get(Calendar.DATE) + "-"
+						+ (fechaIni.get(Calendar.MONTH) + 1) + "-"
+						+ fechaIni.get(Calendar.YEAR) + "_"
+						+ fechaIni.get(Calendar.HOUR_OF_DAY) + ":"
+						+ fechaIni.get(Calendar.MINUTE) + ":"
+						+ fechaIni.get(Calendar.SECOND);
+				String fin = fechaFin.get(Calendar.DATE) + "-"
+						+ (fechaFin.get(Calendar.MONTH) + 1) + "-"
+						+ fechaFin.get(Calendar.YEAR) + "_"
+						+ fechaFin.get(Calendar.HOUR_OF_DAY) + ":"
+						+ fechaFin.get(Calendar.MINUTE) + ":"
+						+ fechaFin.get(Calendar.SECOND);
+				method = new GetMethod(getEndpointAddress() + "events/?clave="
+						+ URLEncoder.encode(clave, "UTF-8") + "&inicio="
+						+ URLEncoder.encode(inicio, "UTF-8") + "&fin="
+						+ URLEncoder.encode(fin, "UTF-8"));
+			} else if (clave != null && (fechaIni == null || fechaFin == null)) {
+				method = new GetMethod(getEndpointAddress() + "events/?clave="
+						+ URLEncoder.encode(clave, "UTF-8") + "&inicio="
+						+ URLEncoder.encode("null", "UTF-8") + "&fin="
+						+ URLEncoder.encode("null", "UTF-8"));
+			} else if (clave == null && fechaIni != null && fechaFin != null) {
+				String inicio = fechaIni.get(Calendar.DATE) + "-"
+						+ (fechaIni.get(Calendar.MONTH) + 1) + "-"
+						+ fechaIni.get(Calendar.YEAR) + "_"
+						+ fechaIni.get(Calendar.HOUR_OF_DAY) + ":"
+						+ fechaIni.get(Calendar.MINUTE) + ":"
+						+ fechaIni.get(Calendar.SECOND);
+				String fin = fechaFin.get(Calendar.DATE) + "-"
+						+ (fechaFin.get(Calendar.MONTH) + 1) + "-"
+						+ fechaFin.get(Calendar.YEAR) + "_"
+						+ fechaFin.get(Calendar.HOUR_OF_DAY) + ":"
+						+ fechaFin.get(Calendar.MINUTE) + ":"
+						+ fechaFin.get(Calendar.SECOND);
+				method = new GetMethod(getEndpointAddress() + "events/?clave="
+						+ URLEncoder.encode("null", "UTF-8") + "&inicio="
+						+ URLEncoder.encode(inicio, "UTF-8") + "&fin="
+						+ URLEncoder.encode(fin, "UTF-8"));
+			} else {
+				method = new GetMethod(getEndpointAddress() + "events/?clave="
+						+ URLEncoder.encode("null", "UTF-8") + "&inicio="
+						+ URLEncoder.encode("null", "UTF-8") + "&fin="
+						+ URLEncoder.encode("null", "UTF-8"));
+			}
+
 		} catch (UnsupportedEncodingException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -226,11 +258,29 @@ public class RestClientEventService implements ClientEventService {
 	public Long responseToEvent(String username, Long eventId, Boolean code) {
 		PostMethod method = new PostMethod(getEndpointAddress() + "responses");
 		try {
+			
 			method.addParameter("eventId", Long.toString(eventId));
 			method.addParameter("userName", username);
 			method.addParameter("respuesta", Boolean.toString(code));
 			HttpClient client = new HttpClient();
-
+			/*
+			ResponseDto responseDto = new ResponseDto(null, eventId,
+					username, code);
+			ByteArrayOutputStream xmlOutputStream = new ByteArrayOutputStream();
+			XmlEntityResponseWriter response;
+			response = XmlResponseDtoConversor.toXml(responseDto);
+			try {
+				response.write(xmlOutputStream);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			ByteArrayInputStream xmlInputStream = new ByteArrayInputStream(
+					xmlOutputStream.toByteArray());
+			InputStreamRequestEntity requestEntity = new InputStreamRequestEntity(
+					xmlInputStream, response.getContentType());
+			HttpClient client = new HttpClient();
+			method.setRequestEntity(requestEntity);
+*/
 			int statusCode;
 			try {
 				statusCode = client.executeMethod(method);
