@@ -263,6 +263,22 @@ public class RestClientEventService implements ClientEventService {
 			method.addParameter("assists", Boolean.toString(code));
 			HttpClient client = new HttpClient();
 
+			/*ResponseDto responseDto = new ResponseDto(null, eventId, username, code);
+			ByteArrayOutputStream xmlOutputStream = new ByteArrayOutputStream();
+			XmlEntityResponseWriter response;
+			response = XmlResponseDtoConversor.toXml(responseDto);
+			try {
+				response.write(xmlOutputStream);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			ByteArrayInputStream xmlInputStream = new ByteArrayInputStream(
+					xmlOutputStream.toByteArray());
+			InputStreamRequestEntity requestEntity = new InputStreamRequestEntity(
+					xmlInputStream, response.getContentType());
+			HttpClient client = new HttpClient();
+			method.setRequestEntity(requestEntity);
+			/*****/
 			int statusCode;
 			try {
 				statusCode = client.executeMethod(method);
@@ -287,10 +303,15 @@ public class RestClientEventService implements ClientEventService {
 			throws InstanceNotFoundException {
 		GetMethod method = null;
 		try {
-			method = new GetMethod(getEndpointAddress() + "responses/?eventId="
-					+ URLEncoder.encode(eventId.toString(), "UTF-8")
-					+ "&response="
-					+ URLEncoder.encode(Boolean.toString(code), "UTF-8"));
+			if(code != null){
+				method = new GetMethod(getEndpointAddress() + "responses/?eventId="
+						+ URLEncoder.encode(Long.toString(eventId), "UTF-8") + "&response="
+						+ URLEncoder.encode(Boolean.toString(code), "UTF-8"));
+			}else{
+				method = new GetMethod(getEndpointAddress() + "responses/?eventId="
+						+ URLEncoder.encode(Long.toString(eventId), "UTF-8") + "&response="
+						+ URLEncoder.encode("null", "UTF-8"));
+			}
 		} catch (UnsupportedEncodingException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -323,14 +344,9 @@ public class RestClientEventService implements ClientEventService {
 	@Override
 	public ResponseDto getResponsesByID(Long responseId)
 			throws InstanceNotFoundException {
-		GetMethod method = null;
-		try {
-			method = new GetMethod(getEndpointAddress()
-					+ "responses/?responseId="
-					+ URLEncoder.encode(responseId.toString(), "UTF-8"));
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex);
-		}
+		GetMethod method = new GetMethod(getEndpointAddress()
+				+ "responses/"+responseId);
+		
 		try {
 			HttpClient client = new HttpClient();
 			int statusCode;
@@ -398,15 +414,15 @@ public class RestClientEventService implements ClientEventService {
 			} catch (ParsingException e) {
 				throw new RuntimeException(e);
 			}
-		case HttpStatus.SC_INSUFFICIENT_SPACE_ON_RESOURCE:
+		case HttpStatus.SC_GONE:
 			try {
-				throw XmlExceptionConversor.fromOverCapacityException(in);
+				throw XmlExceptionConversor.fromOverCapacityExceptionXml(in);
 			} catch (ParsingException e) {
 				throw new RuntimeException(e);
 			}
-		case HttpStatus.SC_INTERNAL_SERVER_ERROR:
+		case HttpStatus.SC_CONFLICT:
 			try {
-				throw XmlExceptionConversor.fromEventRegisterUsersException(in);
+				throw XmlExceptionConversor.fromEventRegisterUsersExceptionXml(in);
 			} catch (ParsingException e) {
 				throw new RuntimeException(e);
 			}

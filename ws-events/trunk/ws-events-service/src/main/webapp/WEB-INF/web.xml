@@ -43,6 +43,19 @@
         <servlet-name>EventsServlet</servlet-name>
         <url-pattern>/events/*</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <display-name>ResponsesServlet</display-name>
+        <servlet-name>ResponsesServlet</servlet-name>
+        <servlet-class>
+            es.udc.ws.events.restservice.servlets.ResponsesServlet
+        </servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ResponsesServlet</servlet-name>
+        <url-pattern>/responses/*</url-pattern>
+    </servlet-mapping>
 
     <!-- General configuration -->
 
