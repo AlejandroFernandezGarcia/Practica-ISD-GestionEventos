@@ -15,17 +15,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.jdom.Document;
-import org.jdom.Element;
 
 import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.events.exceptions.EventRegisteredUsersException;
 import es.udc.ws.events.model.event.Event;
 import es.udc.ws.events.model.eventservice.EventServiceFactory;
 import es.udc.ws.events.util.EventToEventDtoConversor;
-import es.udc.ws.events.xml.XmlExceptionConversor;
-import es.udc.ws.events.xml.XmlEventDtoConversor;
 import es.udc.ws.events.xml.ParsingException;
+import es.udc.ws.events.xml.XmlEventDtoConversor;
+import es.udc.ws.events.xml.XmlExceptionConversor;
 import es.udc.ws.util.exceptions.InputValidationException;
 import es.udc.ws.util.exceptions.InstanceNotFoundException;
 import es.udc.ws.util.servlet.ServletUtils;
@@ -78,7 +76,7 @@ public class EventsServlet extends HttpServlet {
 
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-
+		System.out.println("Actualizar");
 		String requestURI = req.getRequestURI();
 		int index = requestURI.lastIndexOf('/');
 		if (index <= 0) {
@@ -144,18 +142,19 @@ public class EventsServlet extends HttpServlet {
 							resp,
 							HttpStatus.SC_NOT_FOUND,
 							XmlExceptionConversor
-									.toInstanceNotFoundException(new InstanceNotFoundException(
+									.toInstanceNotFoundExceptionXml(new InstanceNotFoundException(
 											ex.getInstanceId().toString(), ex
 													.getInstanceType())), null);
 			return;
 		} catch (EventRegisteredUsersException e) {
+			System.out.println("Actualizar excepcion");
 			ServletUtils
 					.writeServiceResponse(
 							resp,
-							HttpStatus.SC_NOT_FOUND,
+							HttpStatus.SC_CONFLICT,
 							XmlExceptionConversor
-									.toEventRegisterUsersError(new EventRegisteredUsersException(
-											"Error: Register user not found")),
+									.toEventRegisteredUsersExceptionXml(new EventRegisteredUsersException(
+											e.getMessage())),
 							null);
 			return;
 		}
@@ -245,7 +244,7 @@ public class EventsServlet extends HttpServlet {
 								resp,
 								HttpStatus.SC_NOT_FOUND,
 								XmlExceptionConversor
-										.toInstanceNotFoundException(new InstanceNotFoundException(
+										.toInstanceNotFoundExceptionXml(new InstanceNotFoundException(
 												ex.getInstanceId().toString(),
 												ex.getInstanceType())), null);
 				return;
@@ -298,7 +297,7 @@ public class EventsServlet extends HttpServlet {
 							resp,
 							HttpStatus.SC_NOT_FOUND,
 							XmlExceptionConversor
-									.toInstanceNotFoundException(new InstanceNotFoundException(
+									.toInstanceNotFoundExceptionXml(new InstanceNotFoundException(
 											ex.getInstanceId().toString(), ex
 													.getInstanceType())), null);
 			return;
@@ -306,10 +305,9 @@ public class EventsServlet extends HttpServlet {
 			ServletUtils
 					.writeServiceResponse(
 							resp,
-							HttpStatus.SC_NOT_FOUND,
+							HttpStatus.SC_CONFLICT,
 							XmlExceptionConversor
-									.toEventRegisterUsersError(new EventRegisteredUsersException(
-											"Error: Register user not found")),
+									.toEventRegisteredUsersExceptionXml(new EventRegisteredUsersException(e.getMessage())),
 							null);
 			return;
 		}
@@ -317,20 +315,4 @@ public class EventsServlet extends HttpServlet {
 				null);
 	}
 
-	private Document getEventDocument() {
-
-		Element eventElement = new Element("event");
-
-		Element identifierElement = new Element("eventId");
-		identifierElement.setText(new Long(0L).toString());
-		eventElement.addContent(identifierElement);
-
-		Element nameElement = new Element("name");
-		nameElement.setText("event name");
-		eventElement.addContent(nameElement);
-
-		Document document = new Document(eventElement);
-		return document;
-
-	}
 }
