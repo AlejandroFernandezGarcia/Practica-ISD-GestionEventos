@@ -35,14 +35,25 @@ public class XmlExceptionConversor {
 
 	public static XmlEntityResponseWriter toInstanceNotFoundExceptionXml(
 			InstanceNotFoundException e) {
-		Element exceptionElement = new Element("InstanceNotFoundException",
-				XML_NS);
 
-		Element messageElement = new Element("message", XML_NS);
-		messageElement.setText(e.getMessage());
-		exceptionElement.addContent(messageElement);
-		Document document = new Document(exceptionElement);
-		return new XmlEntityResponseWriter(document);
+		Element exceptionElement = 
+                new Element("InstanceNotFoundException", XML_NS);
+
+        if(e.getInstanceId() != null) {
+            Element instanceIdElement = new Element("instanceId", XML_NS);
+            instanceIdElement.setText(e.getInstanceId().toString());
+        
+            exceptionElement.addContent(instanceIdElement);
+        }
+        
+        if(e.getInstanceType() != null) {
+            Element instanceTypeElement = new Element("instanceType", XML_NS);
+            instanceTypeElement.setText(e.getInstanceType());
+        
+            exceptionElement.addContent(instanceTypeElement);
+        }
+        Document document = new Document(exceptionElement);
+        return new XmlEntityResponseWriter(document);
 	}
 
 	public static XmlEntityResponseWriter toEventRegisteredUsersExceptionXml(
