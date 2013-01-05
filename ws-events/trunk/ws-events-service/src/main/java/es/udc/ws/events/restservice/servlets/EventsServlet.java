@@ -208,7 +208,7 @@ public class EventsServlet extends HttpServlet {
 				fin = null;
 			}
 			
-
+			//si es lista vacia?
 			List<Event> listaEventos = EventServiceFactory.getService()
 					.findEventByKeyword(clave, inicio, fin);
 			List<EventDto> listaEventosDtos = EventToEventDtoConversor
@@ -240,13 +240,13 @@ public class EventsServlet extends HttpServlet {
 				evento = EventServiceFactory.getService().findEvent(eventId);
 			} catch (InstanceNotFoundException ex) {
 				ServletUtils
-						.writeServiceResponse(
-								resp,
-								HttpStatus.SC_NOT_FOUND,
-								XmlExceptionConversor
-										.toInstanceNotFoundExceptionXml(new InstanceNotFoundException(
-												ex.getInstanceId().toString(),
-												ex.getInstanceType())), null);
+				.writeServiceResponse(
+						resp,
+						HttpStatus.SC_NOT_FOUND,
+						XmlExceptionConversor
+								.toInstanceNotFoundExceptionXml(new InstanceNotFoundException(
+										ex.getInstanceId().toString(), ex
+												.getInstanceType())), null);
 				return;
 			}
 			EventDto eventDto = EventToEventDtoConversor.toEventDto(evento);
