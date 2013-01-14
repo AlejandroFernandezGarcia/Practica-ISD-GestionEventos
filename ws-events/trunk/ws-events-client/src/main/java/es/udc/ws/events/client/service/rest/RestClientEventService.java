@@ -157,6 +157,8 @@ public class RestClientEventService implements ClientEventService {
 			}
 			try {
 				validateResponse(statusCode, HttpStatus.SC_OK, method);
+			} catch (InstanceNotFoundException ex) {
+				throw ex;
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
@@ -254,7 +256,7 @@ public class RestClientEventService implements ClientEventService {
 	}
 
 	@Override
-	public Long responseToEvent(String username, Long eventId, Boolean code) {
+	public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException, OverCapacityException, EventRegisteredUsersException {
 		PostMethod method = new PostMethod(getEndpointAddress() + "responses");
 		try {
 
@@ -263,22 +265,6 @@ public class RestClientEventService implements ClientEventService {
 			method.addParameter("assists", Boolean.toString(code));
 			HttpClient client = new HttpClient();
 
-			/*ResponseDto responseDto = new ResponseDto(null, eventId, username, code);
-			ByteArrayOutputStream xmlOutputStream = new ByteArrayOutputStream();
-			XmlEntityResponseWriter response;
-			response = XmlResponseDtoConversor.toXml(responseDto);
-			try {
-				response.write(xmlOutputStream);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			ByteArrayInputStream xmlInputStream = new ByteArrayInputStream(
-					xmlOutputStream.toByteArray());
-			InputStreamRequestEntity requestEntity = new InputStreamRequestEntity(
-					xmlInputStream, response.getContentType());
-			HttpClient client = new HttpClient();
-			method.setRequestEntity(requestEntity);
-			/*****/
 			int statusCode;
 			try {
 				statusCode = client.executeMethod(method);
@@ -287,6 +273,10 @@ public class RestClientEventService implements ClientEventService {
 			}
 			try {
 				validateResponse(statusCode, HttpStatus.SC_CREATED, method);
+			/*} catch (InputValidationException ex){
+				throw ex;*/
+			} catch (InstanceNotFoundException | OverCapacityException |EventRegisteredUsersException ex){
+				throw ex;
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
@@ -325,6 +315,8 @@ public class RestClientEventService implements ClientEventService {
 			}
 			try {
 				validateResponse(statusCode, HttpStatus.SC_OK, method);
+			} catch (InstanceNotFoundException ex){
+				throw ex;
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
@@ -357,6 +349,8 @@ public class RestClientEventService implements ClientEventService {
 			}
 			try {
 				validateResponse(statusCode, HttpStatus.SC_OK, method);
+			} catch (InstanceNotFoundException ex){
+				throw ex;
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
@@ -406,7 +400,11 @@ public class RestClientEventService implements ClientEventService {
 				throw XmlExceptionConversor
 						.fromInstanceNotFoundExceptionXml(in);
 			} catch (ParsingException e) {
-				throw new RuntimeException(e);
+				try {
+					throw XmlExceptionConversor.fromEventRegisterUsersExceptionXml(in);
+				} catch (ParsingException ex) {
+					throw new RuntimeException(ex);
+				}
 			}
 		case HttpStatus.SC_BAD_REQUEST:
 			try {
@@ -420,12 +418,12 @@ public class RestClientEventService implements ClientEventService {
 			} catch (ParsingException e) {
 				throw new RuntimeException(e);
 			}
-		case HttpStatus.SC_CONFLICT:
+		/*case HttpStatus.SC_CONFLICT:
 			try {
 				throw XmlExceptionConversor.fromEventRegisterUsersExceptionXml(in);
 			} catch (ParsingException e) {
 				throw new RuntimeException(e);
-			}
+			}*/
 		default:
 			if (statusCode != expectedStatusCode) {
 				throw new RuntimeException("HTTP error; status code = "

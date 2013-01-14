@@ -109,7 +109,7 @@ public class ResponsesServlet extends HttpServlet {
 			ServletUtils
 					.writeServiceResponse(
 							resp,
-							HttpStatus.SC_CONFLICT,
+							HttpStatus.SC_NOT_FOUND,
 							XmlExceptionConversor
 									.toEventRegisteredUsersExceptionXml(new EventRegisteredUsersException(ex.getMessage())),
 							null);

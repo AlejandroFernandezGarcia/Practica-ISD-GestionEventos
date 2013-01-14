@@ -3,7 +3,6 @@ package es.udc.ws.events.client.service.soap;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
