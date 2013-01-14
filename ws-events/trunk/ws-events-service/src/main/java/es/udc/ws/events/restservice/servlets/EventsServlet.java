@@ -151,7 +151,7 @@ public class EventsServlet extends HttpServlet {
 			ServletUtils
 					.writeServiceResponse(
 							resp,
-							HttpStatus.SC_CONFLICT,
+							HttpStatus.SC_NOT_FOUND,
 							XmlExceptionConversor
 									.toEventRegisteredUsersExceptionXml(new EventRegisteredUsersException(
 											e.getMessage())),
@@ -305,7 +305,7 @@ public class EventsServlet extends HttpServlet {
 			ServletUtils
 					.writeServiceResponse(
 							resp,
-							HttpStatus.SC_CONFLICT,
+							HttpStatus.SC_NOT_FOUND,
 							XmlExceptionConversor
 									.toEventRegisteredUsersExceptionXml(new EventRegisteredUsersException(e.getMessage())),
 							null);
