@@ -381,10 +381,12 @@ public class RestClientEventService implements ClientEventService {
 			HttpMethod method) throws InstanceNotFoundException,
 			OverCapacityException, InputValidationException,
 			EventRegisteredUsersException {
-
+		
+		byte[] responseBody;
 		InputStream in;
 		try {
-			in = method.getResponseBodyAsStream();
+			responseBody = method.getResponseBody();
+			in = new ByteArrayInputStream(responseBody);
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -401,6 +403,7 @@ public class RestClientEventService implements ClientEventService {
 						.fromInstanceNotFoundExceptionXml(in);
 			} catch (ParsingException e) {
 				try {
+					in = new ByteArrayInputStream(responseBody);
 					throw XmlExceptionConversor.fromEventRegisterUsersExceptionXml(in);
 				} catch (ParsingException ex) {
 					throw new RuntimeException(ex);

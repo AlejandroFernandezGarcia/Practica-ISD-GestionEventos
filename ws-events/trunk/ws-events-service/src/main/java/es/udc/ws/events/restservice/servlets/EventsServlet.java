@@ -34,7 +34,6 @@ public class EventsServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		System.out.println("DoPost de Event");
 		EventDto xmlEvent;
 		try {
 			xmlEvent = XmlEventDtoConversor.toEvent(req.getInputStream());
@@ -76,7 +75,6 @@ public class EventsServlet extends HttpServlet {
 
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		System.out.println("Actualizar");
 		String requestURI = req.getRequestURI();
 		int index = requestURI.lastIndexOf('/');
 		if (index <= 0) {
@@ -147,15 +145,13 @@ public class EventsServlet extends HttpServlet {
 													.getInstanceType())), null);
 			return;
 		} catch (EventRegisteredUsersException e) {
-			System.out.println("Actualizar excepcion");
 			ServletUtils
 					.writeServiceResponse(
 							resp,
 							HttpStatus.SC_NOT_FOUND,
 							XmlExceptionConversor
 									.toEventRegisteredUsersExceptionXml(new EventRegisteredUsersException(
-											e.getMessage())),
-							null);
+											e.getMessage())), null);
 			return;
 		}
 		ServletUtils.writeServiceResponse(resp, HttpStatus.SC_NO_CONTENT, null,
@@ -165,9 +161,8 @@ public class EventsServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
+
 		String path = req.getPathInfo();
-		System.out.println("Path: " + path);
 		if (path == null || path.length() == 0 || "/".equals(path)) {
 			String clave = req.getParameter("clave");
 			String strDateSt = req.getParameter("inicio");
@@ -186,12 +181,12 @@ public class EventsServlet extends HttpServlet {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-			}else if((!clave.equals("null")) && (strDateSt.equals("null"))
-					&& (strDateEnd.equals("null"))){
+			} else if ((!clave.equals("null")) && (strDateSt.equals("null"))
+					&& (strDateEnd.equals("null"))) {
 				inicio = null;
 				fin = null;
-			}else if((clave.equals("null")) && (!strDateSt.equals("null"))
-					&& (!strDateEnd.equals("null"))){
+			} else if ((clave.equals("null")) && (!strDateSt.equals("null"))
+					&& (!strDateEnd.equals("null"))) {
 				Date date;
 				try {
 					date = sdf.parse(strDateSt);
@@ -202,13 +197,13 @@ public class EventsServlet extends HttpServlet {
 					e.printStackTrace();
 				}
 				clave = null;
-			}else{
+			} else {
 				clave = null;
 				inicio = null;
 				fin = null;
 			}
-			
-			//si es lista vacia?
+
+			// si es lista vacia?
 			List<Event> listaEventos = EventServiceFactory.getService()
 					.findEventByKeyword(clave, inicio, fin);
 			List<EventDto> listaEventosDtos = EventToEventDtoConversor
@@ -240,13 +235,13 @@ public class EventsServlet extends HttpServlet {
 				evento = EventServiceFactory.getService().findEvent(eventId);
 			} catch (InstanceNotFoundException ex) {
 				ServletUtils
-				.writeServiceResponse(
-						resp,
-						HttpStatus.SC_NOT_FOUND,
-						XmlExceptionConversor
-								.toInstanceNotFoundExceptionXml(new InstanceNotFoundException(
-										ex.getInstanceId().toString(), ex
-												.getInstanceType())), null);
+						.writeServiceResponse(
+								resp,
+								HttpStatus.SC_NOT_FOUND,
+								XmlExceptionConversor
+										.toInstanceNotFoundExceptionXml(new InstanceNotFoundException(
+												ex.getInstanceId().toString(),
+												ex.getInstanceType())), null);
 				return;
 			}
 			EventDto eventDto = EventToEventDtoConversor.toEventDto(evento);
@@ -307,8 +302,8 @@ public class EventsServlet extends HttpServlet {
 							resp,
 							HttpStatus.SC_NOT_FOUND,
 							XmlExceptionConversor
-									.toEventRegisteredUsersExceptionXml(new EventRegisteredUsersException(e.getMessage())),
-							null);
+									.toEventRegisteredUsersExceptionXml(new EventRegisteredUsersException(
+											e.getMessage())), null);
 			return;
 		}
 		ServletUtils.writeServiceResponse(resp, HttpStatus.SC_NO_CONTENT, null,

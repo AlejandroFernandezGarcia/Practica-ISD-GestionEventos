@@ -2,9 +2,7 @@ package es.udc.ws.events.test.model.PruebaMain;
 
 import static es.udc.ws.events.model.util.ModelConstants.TEMPLATE_DATA_SOURCE;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -39,8 +37,7 @@ public class PruebaMain {
 		 * Create a simple data source and add it to "DataSourceLocator" (this
 		 * is needed to test "es.udc.ws.events.model.eventservice.EventService"
 		 */
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				System.in));
+		
 		DataSource dataSource = new SimpleDataSource();
 
 		/*
