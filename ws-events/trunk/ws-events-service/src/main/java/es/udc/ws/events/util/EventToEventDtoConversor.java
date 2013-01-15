@@ -55,13 +55,14 @@ public class EventToEventDtoConversor {
 	}
 
 	public static Calendar getCalendarFromDuration(int duration, Calendar date) {
-		Long dateEndMilis = date.getTime().getTime() + ((long)duration * (long)60000);
+		Long dateEndMilis = date.getTime().getTime()
+				+ ((long) duration * (long) 60000);
 		Calendar dateEnd = Calendar.getInstance();
 		dateEnd.setTimeInMillis(dateEndMilis);
-//		Calendar prueba1 = Calendar.getInstance();
-//		String l = "2764800000";
-//		prueba1.setTimeInMillis(Long.valueOf(l));
-//		System.out.println("Este"+prueba1.toString());
+		// Calendar prueba1 = Calendar.getInstance();
+		// String l = "2764800000";
+		// prueba1.setTimeInMillis(Long.valueOf(l));
+		// System.out.println("Este"+prueba1.toString());
 
 		return dateEnd;
 	}

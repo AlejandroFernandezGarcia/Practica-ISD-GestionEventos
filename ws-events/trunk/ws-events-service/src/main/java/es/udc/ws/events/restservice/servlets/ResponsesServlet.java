@@ -81,7 +81,8 @@ public class ResponsesServlet extends HttpServlet {
 							HttpStatus.SC_BAD_REQUEST,
 							XmlExceptionConversor
 									.toInputValidationExceptionXml(new InputValidationException(
-											"Invalid Request: "+ "parameter 'assists' is mandatory")),
+											"Invalid Request: "
+													+ "parameter 'assists' is mandatory")),
 							null);
 
 			return;
@@ -96,14 +97,22 @@ public class ResponsesServlet extends HttpServlet {
 					responseId);
 		} catch (InstanceNotFoundException ex) {
 			ServletUtils
-					.writeServiceResponse(resp,HttpStatus.SC_NOT_FOUND,
-							XmlExceptionConversor.toInstanceNotFoundExceptionXml(new InstanceNotFoundException(
-							ex.getInstanceId().toString(), ex.getInstanceType())), null);
+					.writeServiceResponse(
+							resp,
+							HttpStatus.SC_NOT_FOUND,
+							XmlExceptionConversor
+									.toInstanceNotFoundExceptionXml(new InstanceNotFoundException(
+											ex.getInstanceId().toString(), ex
+													.getInstanceType())), null);
 			return;
 		} catch (OverCapacityException ex) {
-			ServletUtils.writeServiceResponse(resp, HttpStatus.SC_GONE,
-					XmlExceptionConversor
-							.toOverCapacityExceptionXml(new OverCapacityException(ex.getMessage())), null);
+			ServletUtils
+					.writeServiceResponse(
+							resp,
+							HttpStatus.SC_GONE,
+							XmlExceptionConversor
+									.toOverCapacityExceptionXml(new OverCapacityException(
+											ex.getMessage())), null);
 			return;
 		} catch (EventRegisteredUsersException ex) {
 			ServletUtils
@@ -111,8 +120,8 @@ public class ResponsesServlet extends HttpServlet {
 							resp,
 							HttpStatus.SC_NOT_FOUND,
 							XmlExceptionConversor
-									.toEventRegisteredUsersExceptionXml(new EventRegisteredUsersException(ex.getMessage())),
-							null);
+									.toEventRegisteredUsersExceptionXml(new EventRegisteredUsersException(
+											ex.getMessage())), null);
 			return;
 		}
 		ResponseDto responseDto = ResponseToResponseDtoConversor
@@ -127,7 +136,7 @@ public class ResponsesServlet extends HttpServlet {
 		ServletUtils.writeServiceResponse(resp, HttpStatus.SC_CREATED,
 				XmlResponseDtoConversor.toXml(responseDto), headers);
 	}
-	
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -137,15 +146,15 @@ public class ResponsesServlet extends HttpServlet {
 			Long eventId = Long.valueOf(strEventId);
 			String strResp = req.getParameter("response");
 			Boolean code;
-			if (strResp.equals("null")){
+			if (strResp.equals("null")) {
 				code = null;
 			} else {
 				code = Boolean.valueOf(strResp);
 			}
 			List<Response> listResponses;
 			try {
-				listResponses = EventServiceFactory.getService()
-						.getResponses(eventId, code);
+				listResponses = EventServiceFactory.getService().getResponses(
+						eventId, code);
 			} catch (InstanceNotFoundException e) {
 				ServletUtils
 						.writeServiceResponse(
@@ -153,8 +162,7 @@ public class ResponsesServlet extends HttpServlet {
 								HttpStatus.SC_NOT_FOUND,
 								XmlExceptionConversor
 										.toInstanceNotFoundExceptionXml(new InstanceNotFoundException(
-												e.getInstanceId()
-														.toString(), e
+												e.getInstanceId().toString(), e
 														.getInstanceType())),
 								null);
 				return;
@@ -162,8 +170,8 @@ public class ResponsesServlet extends HttpServlet {
 			List<ResponseDto> listResponsesDtos = ResponseToResponseDtoConversor
 					.toResponseDtos(listResponses);
 			ServletUtils.writeServiceResponse(resp, HttpStatus.SC_OK,
-						XmlResponseDtoConversor.toXml(listResponsesDtos), null);//???
-			
+					XmlResponseDtoConversor.toXml(listResponsesDtos), null);// ???
+
 		} else {
 			String responseIdAsString = path.endsWith("/") && path.length() > 2 ? path
 					.substring(1, path.length() - 1) : path.substring(1);

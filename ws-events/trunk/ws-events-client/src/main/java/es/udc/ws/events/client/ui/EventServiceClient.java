@@ -6,7 +6,6 @@ import java.util.StringTokenizer;
 
 import es.udc.ws.events.client.service.ClientEventService;
 import es.udc.ws.events.client.service.ClientEventServiceFactory;
-import es.udc.ws.events.client.service.rest.RestClientEventService;
 import es.udc.ws.events.client.service.soap.EventDtoToSoapEventDtoConversor;
 import es.udc.ws.events.dto.EventDto;
 import es.udc.ws.events.dto.ResponseDto;
@@ -45,7 +44,8 @@ public class EventServiceClient {
 				Long eventId = clientEventService.addEvent(eventDto);
 				System.out.println("Event " + eventId + " created succesfully");
 			} catch (InputValidationException e) {
-				e.printStackTrace(System.err);
+				System.out.println("Error to add event caused by: "
+						+ e.getMessage());
 			}
 
 		} else if ("-f".equalsIgnoreCase(args[0])) {
@@ -55,7 +55,10 @@ public class EventServiceClient {
 				System.out.println(clientEventService.findEvent(
 						Long.valueOf(args[1])).toString());
 			} catch (InstanceNotFoundException e) {
-				e.printStackTrace(System.err);
+				// e.printStackTrace(System.err);
+				System.out.println("Error to find event caused by: "
+						+ e.getInstanceType() + "with instanceId "
+						+ e.getInstanceId() + "doesn't exists");
 			}
 
 		} else if ("-u".equalsIgnoreCase(args[0])) {
@@ -74,9 +77,16 @@ public class EventServiceClient {
 			try {
 				clientEventService.updateEvent(eventDto);
 				System.out.println("Event " + eventId + " modified");
-			} catch (InputValidationException | InstanceNotFoundException
-					| EventRegisteredUsersException e) {
-				e.printStackTrace(System.err);
+			} catch (InputValidationException e) {
+				System.out.println("Error to update an event caused by: "
+						+ e.getMessage() + "in event " + eventId);
+			} catch (InstanceNotFoundException e) {
+				System.out.println("Error to update an event caused by: "
+						+ e.getInstanceType() + "with instanceId "
+						+ e.getInstanceId() + "doesn't exist");
+			} catch (EventRegisteredUsersException e) {
+				System.out.println("Error to update an event caused by: "
+						+ e.getMessage() + "in event " + eventId);
 			}
 		} else if ("-r".equalsIgnoreCase(args[0])) {
 			// [remove] EventServiceClient -r <eventId>
@@ -84,10 +94,14 @@ public class EventServiceClient {
 			try {
 				clientEventService.deleteEvent(Long.valueOf(args[1]));
 				System.out.println("Event " + args[1] + " deleted sucesfully");
-			} catch (InstanceNotFoundException | EventRegisteredUsersException e) {
-				e.printStackTrace(System.err);
+			} catch (InstanceNotFoundException e) {
+				System.out.println("Error to delete an event caused by: "
+						+ e.getInstanceType() + "with instanceId "
+						+ e.getInstanceId() + "doesn't exist");
+			} catch (EventRegisteredUsersException e) {
+				System.out.println("Error to delete an event caused by: "
+						+ e.getMessage() + "in event " + Long.valueOf(args[1]));
 			}
-
 		} else if ("-fb".equalsIgnoreCase(args[0])) {
 			// [findEveBy] EventServiceClient -fb <keyword><date1><date2>
 			Calendar date1 = null;
@@ -128,9 +142,17 @@ public class EventServiceClient {
 						eventId, code);
 				System.out.println("Reponse " + responseId + ": created by "
 						+ args[1] + " in event " + eventId);
-			} catch (InstanceNotFoundException | OverCapacityException
-					| EventRegisteredUsersException e) {
-				e.printStackTrace(System.err);
+			} catch (InstanceNotFoundException e) {
+				System.out.println("Error to response an event caused by: "
+						+ e.getInstanceType() + "with instanceId "
+						+ e.getInstanceId() + "doesn't exist");
+			} catch (EventRegisteredUsersException e) {
+				System.out.println("Error to response an event caused by: "
+						+ e.getMessage() + "in event " + eventId);
+			} catch (OverCapacityException e) {
+				System.out
+						.println("Error to response an event caused by: Event "
+								+ eventId + " " + e.getMessage());
 			}
 		} else if ("-fr".equalsIgnoreCase(args[0])) {
 			// [findResp] EventServiceClient -fr <eventId><code>\n"
@@ -151,14 +173,16 @@ public class EventServiceClient {
 				int i = 0;
 				if (listResp.size() == 0) {
 					System.out.println("No matches\n");
-				}else{
+				} else {
 					while (i < listResp.size()) {
 						System.out.println(listResp.get(i).toString());
 						i++;
 					}
 				}
 			} catch (InstanceNotFoundException e) {
-				e.printStackTrace(System.err);
+				System.out.println("Error to find a response caused by: "
+						+ e.getInstanceType() + "with instanceId "
+						+ e.getInstanceId() + "doesn't exist");
 			}
 		} else if ("-frb".equalsIgnoreCase(args[0])) {
 			// [findRespBy] EventServiceClient -frb <responseId>
@@ -169,7 +193,9 @@ public class EventServiceClient {
 						.getResponsesByID(responseId);
 				System.out.println(response.toString());
 			} catch (InstanceNotFoundException e) {
-				e.printStackTrace(System.err);
+				System.out.println("Error to find a response by ID caused by: "
+						+ e.getInstanceType() + "with instanceId "
+						+ e.getInstanceId() + "doesn't exist");
 			}
 		}
 	}
@@ -217,13 +243,13 @@ public class EventServiceClient {
 			i++;
 		}
 		fecha.set(Calendar.YEAR, vectorI[2]);
-		fecha.set(Calendar.MONTH, vectorI[1]-1);
+		fecha.set(Calendar.MONTH, vectorI[1] - 1);
 		fecha.set(Calendar.DATE, vectorI[0]);
 		fecha.set(Calendar.HOUR_OF_DAY, vectorI[3]);
 		fecha.set(Calendar.MINUTE, vectorI[4]);
 		fecha.set(Calendar.SECOND, vectorI[5]);
 		fecha.set(Calendar.MILLISECOND, 0);
-		//System.out.println(fecha.toString());
+		// System.out.println(fecha.toString());
 		return fecha;
 	}
 
