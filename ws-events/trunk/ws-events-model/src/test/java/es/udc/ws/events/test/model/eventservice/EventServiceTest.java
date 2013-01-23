@@ -52,12 +52,16 @@ public class EventServiceTest {
 		responseDao = SqlResponseDaoFactory.getDao();
 
 	}
-
+	private void cleanDB(){
+		deleteEvents();
+		deleteResponses();
+	}
+	
 	private void deleteEvents() {
 		long i = 0;
 		DataSource dataSource = DataSourceLocator
 				.getDataSource(TEMPLATE_DATA_SOURCE);
-		while (i < 10) {
+		while (i < 20) {
 			try (Connection connection = dataSource.getConnection()) {
 				eventDao.delete(connection, i);
 			} catch (SQLException | InstanceNotFoundException e) {
@@ -71,7 +75,7 @@ public class EventServiceTest {
 		long i = 0;
 		DataSource dataSource = DataSourceLocator
 				.getDataSource(TEMPLATE_DATA_SOURCE);
-		while (i < 10) {
+		while (i < 20) {
 			try (Connection connection = dataSource.getConnection()) {
 				responseDao.delete(connection, i);
 			} catch (SQLException | InstanceNotFoundException e) {
@@ -84,7 +88,6 @@ public class EventServiceTest {
 	// Prueba el validateEvent y el anadir un evento correctamente
 	@Test
 	public void testAddEventAndFindEvent() {
-		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
 
@@ -94,40 +97,37 @@ public class EventServiceTest {
 				fechaIni1, fechaFin1, false, "Calle 1", (short) 20);
 		try {
 			event1 = serv.addEvent(event1);
-			Event event1b = serv.findEvent((long) 1);
+			Event event1b = serv.findEvent(event1.getEventId());
 			assertEquals("---->testAddEventAndFindEvent error<----", event1,
 					event1b);
 		} catch (InstanceNotFoundException | InputValidationException e) {
+			cleanDB();
 			assertTrue(false);
 		}
-		deleteEvents();
+		cleanDB();
 	}
 
 	// Prueba dentro del validateEvent el validateMandatoryString
 	@Test
 	public void testValidateEvent() {
-		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3, 0, 0, 0);
 		Event event1 = new Event("", "Evento1 descripcion", fechaIni1,
 				fechaFin1, false, "Calle 1", (short) 20);
 		try {
 			event1 = serv.addEvent(event1);
+			cleanDB();
 			assertTrue(false);
-			deleteEvents();
 		} catch (InputValidationException e) {
 			assertTrue(true);
 		}
-
 	}
 
 	// valida que las fechas de un evento sean correctas
 	@Test
 	public void testValidateEvent2() {
-		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
 
@@ -137,18 +137,16 @@ public class EventServiceTest {
 				fechaIni1, fechaFin1, false, "Calle 1", (short) 20);
 		try {
 			event1 = serv.addEvent(event1);
+			cleanDB();
 			assertTrue(false);
-			deleteEvents();
 		} catch (InputValidationException e) {
 			assertTrue(true);
 		}
-
 	}
 
 	// valida el campo addres
 	@Test
 	public void testValidateEvent3() {
-		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
 
@@ -158,8 +156,8 @@ public class EventServiceTest {
 				fechaIni1, fechaFin1, false, "", (short) 20);
 		try {
 			event1 = serv.addEvent(event1);
+			cleanDB();
 			assertTrue(false);
-			deleteEvents();
 		} catch (InputValidationException e) {
 			assertTrue(true);
 		}
@@ -168,7 +166,6 @@ public class EventServiceTest {
 	// valida el campo capacity
 	@Test
 	public void testValidateEvent4() {
-		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
 
@@ -178,8 +175,8 @@ public class EventServiceTest {
 				fechaIni1, fechaFin1, false, "Calle 1", (short) 0);
 		try {
 			event1 = serv.addEvent(event1);
+			cleanDB();
 			assertTrue(false);
-			deleteEvents();
 		} catch (InputValidationException e) {
 			assertTrue(true);
 		}
@@ -188,7 +185,6 @@ public class EventServiceTest {
 	// valida que la fecha de inicio sea posterior a la actual
 	@Test
 	public void testValidateEvent5() {
-		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2011, 1, 1, 0, 0, 0);
 
@@ -198,8 +194,8 @@ public class EventServiceTest {
 				fechaIni1, fechaFin1, false, "Calle 1", (short) 20);
 		try {
 			event1 = serv.addEvent(event1);
+			cleanDB();
 			assertTrue(false);
-			deleteEvents();
 		} catch (InputValidationException e) {
 			assertTrue(true);
 		}
@@ -208,7 +204,6 @@ public class EventServiceTest {
 	// valida que se actualicen correctamente los eventos
 	@Test
 	public void testUpdateEvent() {
-		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
 
@@ -219,7 +214,7 @@ public class EventServiceTest {
 		try {
 			event1 = serv.addEvent(event1);
 		} catch (InputValidationException e) {
-
+			assertTrue(false);
 		}
 		try {
 			Event event = serv.findEvent(event1.getEventId());
@@ -230,9 +225,10 @@ public class EventServiceTest {
 					event.getCapacity(), (short) 2);
 		} catch (InstanceNotFoundException | InputValidationException
 				| EventRegisteredUsersException e) {
+			cleanDB();
 			assertTrue(false);
 		}
-		deleteEvents();
+		cleanDB();
 	}
 
 	// comprueba el caso de no encontrar el event a actualizar
@@ -242,23 +238,23 @@ public class EventServiceTest {
 			Event event = serv.findEvent((long) 1);
 			event.setEventId((long) 5);
 			serv.updateEvent(event);
+			cleanDB();
 			assertTrue(false);
 		} catch (InstanceNotFoundException e) {
+			cleanDB();
 			assertTrue(true);
-		} catch (InputValidationException e) {
-			assertTrue(false);
-		} catch (EventRegisteredUsersException e) {
+		} catch (InputValidationException | EventRegisteredUsersException e) {
+			cleanDB();
 			assertTrue(false);
 		}
+		cleanDB();
 	}
 
 	// comprueba que no se pueda actualizar un evento con usuarios registrados
 	@Test
 	public void testUpdateEvent3() {
-		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -266,27 +262,21 @@ public class EventServiceTest {
 		try {
 			event1 = serv.addEvent(event1);
 		} catch (InputValidationException e) {
-
+			assertTrue(false);
 		}
 		try {
-			Event event = serv.findEvent(event1.getEventId());
-			serv.responseToEvent("Pepe", event.getEventId(), true);
-			serv.updateEvent(event);
+			serv.responseToEvent("Pepe", event1.getEventId(), true);
+			serv.updateEvent(event1);
+			cleanDB();
 			assertTrue(false);
-		} catch (InstanceNotFoundException e) {
-			System.out.println("1");
-			assertTrue(false);
-		} catch (InputValidationException e) {
-			System.out.println("2");
+		} catch (InstanceNotFoundException | InputValidationException | OverCapacityException e) {
+			cleanDB();
 			assertTrue(false);
 		} catch (EventRegisteredUsersException e) {
+			cleanDB();
 			assertTrue(true);
-		} catch (OverCapacityException e) {
-			System.out.println("4");
-			assertTrue(false);
 		}
-		deleteResponses();
-		deleteEvents();
+		cleanDB();
 	}
 
 	// elimina un evento de forma correcta
@@ -297,24 +287,26 @@ public class EventServiceTest {
 			EventService serv = EventServiceFactory.getService();
 			Calendar fechaIni1 = Calendar.getInstance();
 			fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 			Calendar fechaFin1 = Calendar.getInstance();
 			fechaFin1.set(2013, 1, 3, 0, 0, 0);
 			event1 = new Event("Prueba para borrar", "b", fechaIni1, fechaFin1,
 					false, "Calle 1", (short) 20);
-			serv.addEvent(event1);
+			event1 = serv.addEvent(event1);
 			serv.deleteEvent(event1.getEventId());
 		} catch (InstanceNotFoundException | EventRegisteredUsersException
 				| InputValidationException e) {
+			cleanDB();
 			assertTrue(false);
 		}
 		try {
 			serv.findEvent(event1.getEventId());
+			cleanDB();
 			assertTrue(false);
-			deleteEvents();
 		} catch (InstanceNotFoundException e) {
+			cleanDB();
 			assertTrue(true);
 		}
+		cleanDB();
 	}
 
 	// intenta eliminar un evento que no existe
@@ -336,28 +328,32 @@ public class EventServiceTest {
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
+		Long eventId = null;
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
 				fechaIni1, fechaFin1, false, "Calle 1", (short) 20);
 		try {
 			event1 = serv.addEvent(event1);
-			serv.responseToEvent("Milan", event1.getEventId(), true);
+			eventId = event1.getEventId();
+			serv.responseToEvent("Milan", eventId, true);
 		} catch (InputValidationException | InstanceNotFoundException
 				| OverCapacityException | EventRegisteredUsersException e) {
-
+			cleanDB();
+			assertTrue(false);
 		}
 		try {
-			serv.deleteEvent(event1.getEventId());
+			serv.deleteEvent(eventId);
+			cleanDB();
 			assertTrue(false);
 		} catch (EventRegisteredUsersException e) {
+			cleanDB();
 			assertTrue(true);
 		} catch (InstanceNotFoundException e) {
+			cleanDB();
 			assertTrue(false);
 		}
-		deleteResponses();
-		deleteEvents();
+		cleanDB();
 	}
 
 	// Comprueba que devuelve en caso de no encontrar el evento que buscaba
@@ -405,9 +401,10 @@ public class EventServiceTest {
 			assertEquals("---->testFindEventByKeywords error<----",
 					eventsFound.size(), 2);
 		} catch (InputValidationException e) {
+			cleanDB();
 			assertTrue(false);
 		}
-		deleteEvents();
+		cleanDB();
 	}
 
 	// Comprueba el caso de busqueda de eventos por fecha
@@ -444,7 +441,7 @@ public class EventServiceTest {
 			assertEquals("---->testFindEventByKeywords error<----",
 					eventsFound.size(), 2);
 		} catch (InputValidationException e) {
-
+			cleanDB();
 		}
 		Calendar dateTest1 = Calendar.getInstance();
 		dateTest1.set(2013, 1, 2);
@@ -454,12 +451,12 @@ public class EventServiceTest {
 				.findEventByKeyword(null, dateTest1, dateTest2);
 		assertEquals("---->testFindEventByKeywords2 error<----",
 				eventsFound.size(), 3);
-		deleteEvents();
+		cleanDB();
 	}
 
 	// Comprueba el caso de busqueda de eventos por fecha y clave
 	@Test
-	public void testFinEventBykeywords3() {
+	public void testFindEventBykeywords3() {
 		try {
 			Calendar fechaIni2 = Calendar.getInstance();
 			fechaIni2.set(2013, 1, 2);
@@ -491,7 +488,7 @@ public class EventServiceTest {
 			assertEquals("---->testFindEventByKeywords error<----",
 					eventsFound.size(), 2);
 		} catch (InputValidationException e) {
-
+			cleanDB();
 		}
 		Calendar dateTest3 = Calendar.getInstance();
 		dateTest3.set(2013, 1, 2);
@@ -501,12 +498,12 @@ public class EventServiceTest {
 				.findEventByKeyword("caramelo", dateTest3, dateTest4);
 		assertEquals("---->testFindEventByKeywords3 error<----",
 				eventsFound.size(), 2);
-		deleteEvents();
+		cleanDB();
 	}
 
 	// Comprueba el caso de busqueda de eventos y no encuentra ninguno
 	@Test
-	public void testFinEventBykeywords4() {
+	public void testFindEventBykeywords4() {
 		Calendar dateTest3 = Calendar.getInstance();
 		dateTest3.set(2016, 1, 2);
 		Calendar dateTest4 = Calendar.getInstance();
@@ -523,7 +520,6 @@ public class EventServiceTest {
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -531,20 +527,21 @@ public class EventServiceTest {
 		try {
 			event1 = serv.addEvent(event1);
 		} catch (InputValidationException e) {
-
+			assertTrue(false);
 		}
 		try {
 			Event event = serv.findEvent(event1.getEventId());
 			serv.responseToEvent("Alejandro", event.getEventId(), true);
 			serv.responseToEvent("Pepe2", event.getEventId(), false);
 			serv.responseToEvent("Milan", event.getEventId(), false);
+			cleanDB();
 			assertTrue(true);
 		} catch (InstanceNotFoundException | EventRegisteredUsersException
 				| OverCapacityException | InputValidationException e) {
+			cleanDB();
 			assertTrue(false);
 		}
-		deleteResponses();
-		deleteEvents();
+		cleanDB();
 	}
 
 	// Obtener las respuestas positivas a un evento.
@@ -553,7 +550,6 @@ public class EventServiceTest {
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -564,7 +560,8 @@ public class EventServiceTest {
 			serv.responseToEvent("Manolo", event1.getEventId(), true);			
 		} catch (InputValidationException | InstanceNotFoundException
 				| OverCapacityException | EventRegisteredUsersException e) {
-
+			cleanDB();
+			assertTrue(false);
 		}
 
 		try {
@@ -573,10 +570,10 @@ public class EventServiceTest {
 			assertEquals("---->testResponesToEvent2 error<----",
 					listResp.size(), 2);
 		} catch (InstanceNotFoundException e) {
+			cleanDB();
 			assertTrue(false);
 		}
-		deleteResponses();
-		deleteEvents();
+		cleanDB();
 	}
 
 	// Obtener las respuestas negativas a un evento.
@@ -585,7 +582,6 @@ public class EventServiceTest {
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -596,7 +592,8 @@ public class EventServiceTest {
 			serv.responseToEvent("Manolo", event1.getEventId(), true);			
 		} catch (InputValidationException | InstanceNotFoundException
 				| OverCapacityException | EventRegisteredUsersException e) {
-
+			cleanDB();
+			assertTrue(false);
 		}
 		try {
 			ArrayList<Response> listResp = (ArrayList<Response>) serv
@@ -604,10 +601,10 @@ public class EventServiceTest {
 			assertEquals("---->testResponesToEvent3 error<----",
 					listResp.size(), 1);
 		} catch (InstanceNotFoundException e) {
+			cleanDB();
 			assertTrue(false);
 		}
-		deleteResponses();
-		deleteEvents();
+		cleanDB();
 	}
 
 	// Obtener las respuestas positivas-negativas a un evento.
@@ -616,7 +613,6 @@ public class EventServiceTest {
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -627,7 +623,8 @@ public class EventServiceTest {
 			serv.responseToEvent("Manolo", event1.getEventId(), true);			
 		} catch (InputValidationException | InstanceNotFoundException
 				| OverCapacityException | EventRegisteredUsersException e) {
-
+			cleanDB();
+			assertTrue(false);
 		}
 		try {
 			ArrayList<Response> listResp = (ArrayList<Response>) serv
@@ -635,10 +632,10 @@ public class EventServiceTest {
 			assertEquals("---->testResponesToEvent4 error<----",
 					listResp.size(), 2);
 		} catch (InstanceNotFoundException e) {
+			cleanDB();
 			assertTrue(false);
 		}
-		deleteResponses();
-		deleteEvents();
+		cleanDB();
 	}
 
 	// Responder a un evento que ya ha excedido la capacidad
@@ -647,28 +644,29 @@ public class EventServiceTest {
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
 				fechaIni1, fechaFin1, false, "Calle 1", (short) 1);
 		try {
 			event1 = serv.addEvent(event1);
-			
 		} catch (InputValidationException e) {
-
+			cleanDB();
+			assertTrue(false);
 		}
 		try {
 			serv.responseToEvent("Alejandro", event1.getEventId(), true);
 			serv.responseToEvent("Francisco", event1.getEventId(), true);
+			cleanDB();
 			assertTrue(false);
 		} catch (InstanceNotFoundException | EventRegisteredUsersException | InputValidationException e) {
+			cleanDB();
 			assertTrue(false);
 		} catch (OverCapacityException e) {
+			cleanDB();
 			assertTrue(true);
 		}
-		deleteResponses();
-		deleteEvents();
+		cleanDB();
 	}
 
 	// comprueba el caso de responder a un evento inexistente.
@@ -690,7 +688,6 @@ public class EventServiceTest {
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -701,17 +698,18 @@ public class EventServiceTest {
 			responseId = serv.responseToEvent("Manolo", event1.getEventId(), true);			
 		} catch (InputValidationException | InstanceNotFoundException
 				| OverCapacityException | EventRegisteredUsersException e) {
-
+			cleanDB();
+			assertTrue(false);
 		}
 		try {
 			Response resp1 = serv.getResponsesByID(responseId);
 			assertEquals("---->testGetResponsesByEventID1 error<----",
-					resp1.getUsername(), "Pepe");
+					resp1.getUsername(), "Manolo");
 		} catch (InstanceNotFoundException e) {
+			cleanDB();
 			assertTrue(false);
 		}
-		deleteResponses();
-		deleteEvents();
+		cleanDB();
 	}
 
 	// Obtener respuestas por ID de un evento inexsistente
