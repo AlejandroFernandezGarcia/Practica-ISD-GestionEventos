@@ -256,7 +256,9 @@ public class RestClientEventService implements ClientEventService {
 	}
 
 	@Override
-	public Long responseToEvent(String username, Long eventId, Boolean code) throws InstanceNotFoundException, OverCapacityException, EventRegisteredUsersException {
+	public Long responseToEvent(String username, Long eventId, Boolean code)
+			throws InstanceNotFoundException, OverCapacityException,
+			EventRegisteredUsersException, InputValidationException {
 		PostMethod method = new PostMethod(getEndpointAddress() + "responses");
 		try {
 
@@ -273,9 +275,8 @@ public class RestClientEventService implements ClientEventService {
 			}
 			try {
 				validateResponse(statusCode, HttpStatus.SC_CREATED, method);
-			/*} catch (InputValidationException ex){
-				throw ex;*/
-			} catch (InstanceNotFoundException | OverCapacityException |EventRegisteredUsersException ex){
+			} catch (InstanceNotFoundException | OverCapacityException
+					| InputValidationException | EventRegisteredUsersException ex) {
 				throw ex;
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
@@ -293,14 +294,17 @@ public class RestClientEventService implements ClientEventService {
 			throws InstanceNotFoundException {
 		GetMethod method = null;
 		try {
-			if(code != null){
-				method = new GetMethod(getEndpointAddress() + "responses/?eventId="
-						+ URLEncoder.encode(Long.toString(eventId), "UTF-8") + "&response="
+			if (code != null) {
+				method = new GetMethod(getEndpointAddress()
+						+ "responses/?eventId="
+						+ URLEncoder.encode(Long.toString(eventId), "UTF-8")
+						+ "&response="
 						+ URLEncoder.encode(Boolean.toString(code), "UTF-8"));
-			}else{
-				method = new GetMethod(getEndpointAddress() + "responses/?eventId="
-						+ URLEncoder.encode(Long.toString(eventId), "UTF-8") + "&response="
-						+ URLEncoder.encode("null", "UTF-8"));
+			} else {
+				method = new GetMethod(getEndpointAddress()
+						+ "responses/?eventId="
+						+ URLEncoder.encode(Long.toString(eventId), "UTF-8")
+						+ "&response=" + URLEncoder.encode("null", "UTF-8"));
 			}
 		} catch (UnsupportedEncodingException ex) {
 			throw new RuntimeException(ex);
@@ -315,7 +319,7 @@ public class RestClientEventService implements ClientEventService {
 			}
 			try {
 				validateResponse(statusCode, HttpStatus.SC_OK, method);
-			} catch (InstanceNotFoundException ex){
+			} catch (InstanceNotFoundException ex) {
 				throw ex;
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
@@ -336,9 +340,9 @@ public class RestClientEventService implements ClientEventService {
 	@Override
 	public ResponseDto getResponsesByID(Long responseId)
 			throws InstanceNotFoundException {
-		GetMethod method = new GetMethod(getEndpointAddress()
-				+ "responses/"+responseId);
-		
+		GetMethod method = new GetMethod(getEndpointAddress() + "responses/"
+				+ responseId);
+
 		try {
 			HttpClient client = new HttpClient();
 			int statusCode;
@@ -349,7 +353,7 @@ public class RestClientEventService implements ClientEventService {
 			}
 			try {
 				validateResponse(statusCode, HttpStatus.SC_OK, method);
-			} catch (InstanceNotFoundException ex){
+			} catch (InstanceNotFoundException ex) {
 				throw ex;
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
@@ -381,7 +385,7 @@ public class RestClientEventService implements ClientEventService {
 			HttpMethod method) throws InstanceNotFoundException,
 			OverCapacityException, InputValidationException,
 			EventRegisteredUsersException {
-		
+
 		byte[] responseBody;
 		InputStream in;
 		try {
@@ -404,7 +408,8 @@ public class RestClientEventService implements ClientEventService {
 			} catch (ParsingException e) {
 				try {
 					in = new ByteArrayInputStream(responseBody);
-					throw XmlExceptionConversor.fromEventRegisterUsersExceptionXml(in);
+					throw XmlExceptionConversor
+							.fromEventRegisterUsersExceptionXml(in);
 				} catch (ParsingException ex) {
 					throw new RuntimeException(ex);
 				}
@@ -421,12 +426,11 @@ public class RestClientEventService implements ClientEventService {
 			} catch (ParsingException e) {
 				throw new RuntimeException(e);
 			}
-		/*case HttpStatus.SC_CONFLICT:
-			try {
-				throw XmlExceptionConversor.fromEventRegisterUsersExceptionXml(in);
-			} catch (ParsingException e) {
-				throw new RuntimeException(e);
-			}*/
+			/*
+			 * case HttpStatus.SC_CONFLICT: try { throw
+			 * XmlExceptionConversor.fromEventRegisterUsersExceptionXml(in); }
+			 * catch (ParsingException e) { throw new RuntimeException(e); }
+			 */
 		default:
 			if (statusCode != expectedStatusCode) {
 				throw new RuntimeException("HTTP error; status code = "

@@ -31,7 +31,7 @@ public class ResponsesServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		String eventIdParameter = req.getParameter("eventId");
-		if (eventIdParameter == null) {
+		/*if (eventIdParameter == null) {
 			ServletUtils
 					.writeServiceResponse(
 							resp,
@@ -42,7 +42,7 @@ public class ResponsesServlet extends HttpServlet {
 													+ "parameter 'eventId' is mandatory")),
 							null);
 			return;
-		}
+		}*/
 		Long eventId;
 		try {
 			eventId = Long.valueOf(eventIdParameter);
@@ -60,7 +60,7 @@ public class ResponsesServlet extends HttpServlet {
 
 			return;
 		}
-		String userName = req.getParameter("userName");
+		String userName = req.getParameter("userName");/*
 		if (userName == null) {
 			ServletUtils
 					.writeServiceResponse(
@@ -72,9 +72,9 @@ public class ResponsesServlet extends HttpServlet {
 													+ "parameter 'userName' is mandatory")),
 							null);
 			return;
-		}
+		}*/
 		String strResponse = req.getParameter("assists");
-		if (strResponse == null) {
+		/*if (strResponse == null) {
 			ServletUtils
 					.writeServiceResponse(
 							resp,
@@ -86,7 +86,7 @@ public class ResponsesServlet extends HttpServlet {
 							null);
 
 			return;
-		}
+		}*/
 		Boolean valueResponse = Boolean.valueOf(strResponse);
 		Long responseId;
 		Response response;
@@ -104,6 +104,15 @@ public class ResponsesServlet extends HttpServlet {
 									.toInstanceNotFoundExceptionXml(new InstanceNotFoundException(
 											ex.getInstanceId().toString(), ex
 													.getInstanceType())), null);
+			return;
+		} catch (InputValidationException ex) {
+			ServletUtils
+					.writeServiceResponse(
+							resp,
+							HttpStatus.SC_BAD_REQUEST,
+							XmlExceptionConversor
+									.toInputValidationExceptionXml(new InputValidationException(
+											ex.getMessage())), null);
 			return;
 		} catch (OverCapacityException ex) {
 			ServletUtils

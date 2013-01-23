@@ -47,15 +47,6 @@ public class EventDtoToSoapEventDtoConversor {
 	}
 
 	public static Calendar toCalendarFromXml(XMLGregorianCalendar xmlCalendar) {
-		/*TimeZone timeZone = xmlCalendar.getTimeZone(xmlCalendar.getTimezone());
-		Calendar calendar = Calendar.getInstance(timeZone);
-		calendar.set(Calendar.YEAR, xmlCalendar.getYear());
-		calendar.set(Calendar.MONTH, xmlCalendar.getMonth());
-		calendar.set(Calendar.DATE, xmlCalendar.getDay());
-		calendar.set(Calendar.HOUR_OF_DAY, xmlCalendar.getHour());
-		calendar.set(Calendar.MINUTE, xmlCalendar.getMinute());
-		calendar.set(Calendar.SECOND, xmlCalendar.getSecond());
-		return calendar;*/
 		return xmlCalendar.toGregorianCalendar();
 	}
 
@@ -88,12 +79,4 @@ public class EventDtoToSoapEventDtoConversor {
 		int duration = (int) (dist / 60000);
 		return duration;
 	}
-
-//	public static Calendar getCalendarFromDuration(int duration, Calendar date) {
-//		Long dateEndMilis = date.getTime().getTime() + (duration * 60000);
-//		Calendar dateEnd = Calendar.getInstance();
-//		dateEnd.setTimeInMillis(dateEndMilis);
-//
-//		return dateEnd;
-//	}
 }

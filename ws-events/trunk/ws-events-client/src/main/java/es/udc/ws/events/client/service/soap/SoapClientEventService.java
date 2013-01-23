@@ -125,7 +125,7 @@ public class SoapClientEventService implements ClientEventService {
 	@Override
 	public Long responseToEvent(String username, Long eventId, Boolean code)
 			throws InstanceNotFoundException, OverCapacityException,
-			EventRegisteredUsersException {
+			EventRegisteredUsersException,InputValidationException {
 		try {
 			return eventsProvider.responseToEvent(username, eventId, code);
 		} catch (SoapEventRegisteredUsersException e) {
@@ -135,6 +135,8 @@ public class SoapClientEventService implements ClientEventService {
 					.getInstanceId(), e.getFaultInfo().getInstanceType());
 		} catch (SoapOverCapacityException e) {
 			throw new OverCapacityException(e.getMessage());
+		}catch (SoapInputValidationException e) {
+			throw new InputValidationException(e.getMessage());
 		}
 	}
 
