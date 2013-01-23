@@ -153,6 +153,9 @@ public class EventServiceClient {
 				System.out
 						.println("Error to response an event caused by: Event "
 								+ eventId + " " + e.getMessage());
+			}catch (InputValidationException e) {
+				System.out.println("Error to response an event caused by: "
+						+ e.getMessage() + "in event " + eventId);
 			}
 		} else if ("-fr".equalsIgnoreCase(args[0])) {
 			// [findResp] EventServiceClient -fr <eventId><code>\n"

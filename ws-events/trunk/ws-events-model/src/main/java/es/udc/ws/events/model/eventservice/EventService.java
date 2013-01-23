@@ -27,7 +27,7 @@ public interface EventService {
 
 	public Long responseToEvent(String username, Long eventId, Boolean code)
 			throws InstanceNotFoundException, OverCapacityException,
-			EventRegisteredUsersException;
+			EventRegisteredUsersException, InputValidationException;
 
 	public List<Response> getResponses(Long eventId, Boolean code)
 			throws InstanceNotFoundException;

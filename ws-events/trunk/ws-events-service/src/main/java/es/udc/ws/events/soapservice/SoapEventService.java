@@ -96,7 +96,8 @@ public class SoapEventService {
 			@WebParam(name = "eventId") Long eventId,
 			@WebParam(name = "code") Boolean code)
 			throws SoapInstanceNotFoundException,
-			SoapEventRegisteredUsersException, SoapOverCapacityException {
+			SoapEventRegisteredUsersException, SoapOverCapacityException, 
+			SoapInputValidationException{
 		try {
 			return EventServiceFactory.getService().responseToEvent(username,
 					eventId, code);
@@ -108,6 +109,8 @@ public class SoapEventService {
 			throw new SoapOverCapacityException(e.getMessage());
 		} catch (EventRegisteredUsersException e) {
 			throw new SoapEventRegisteredUsersException(e.getMessage());
+		}catch (InputValidationException e) {
+			throw new SoapInputValidationException(e.getMessage());
 		}
 	}
 

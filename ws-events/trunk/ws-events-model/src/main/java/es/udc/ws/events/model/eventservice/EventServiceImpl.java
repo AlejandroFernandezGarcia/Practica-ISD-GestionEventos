@@ -46,7 +46,11 @@ public class EventServiceImpl implements EventService {
 				Calendar.getInstance());
 
 	}
-
+	
+	private void validateResponse(Response response) throws InputValidationException{
+		PropertyValidatorEvent.validateMandatoryString("username", response.getUsername());
+	}
+	
 	@Override
 	public Event addEvent(Event event) throws InputValidationException {
 
@@ -171,7 +175,7 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public Long responseToEvent(String username, Long eventId, Boolean code)
 			throws InstanceNotFoundException, OverCapacityException,
-			EventRegisteredUsersException {
+			EventRegisteredUsersException, InputValidationException {
 		try (Connection connection = dataSource.getConnection()) {
 			try {
 				connection
@@ -190,6 +194,7 @@ public class EventServiceImpl implements EventService {
 				}
 				Response response = responseDao.findResponseByEventUser(
 						connection, username, eventId);
+				validateResponse(response);
 				if (response != null) {
 					responseDao.update(
 							connection,
@@ -210,6 +215,9 @@ public class EventServiceImpl implements EventService {
 				connection.rollback();
 				throw new RuntimeException(e);
 			} catch (RuntimeException | Error e) {
+				connection.rollback();
+				throw e;
+			} catch (InputValidationException e) {
 				connection.rollback();
 				throw e;
 			}
