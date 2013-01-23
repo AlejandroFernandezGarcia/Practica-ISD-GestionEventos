@@ -687,13 +687,31 @@ public class EventServiceTest {
 	// Obtener respuestas por ID de evento
 	@Test
 	public void testGetResponsesByEventID1() {
+		EventService serv = EventServiceFactory.getService();
+		Calendar fechaIni1 = Calendar.getInstance();
+		fechaIni1.set(2013, 1, 1, 0, 0, 0);
+
+		Calendar fechaFin1 = Calendar.getInstance();
+		fechaFin1.set(2013, 1, 3, 0, 0, 0);
+		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
+				fechaIni1, fechaFin1, false, "Calle 1", (short) 4);
+		long responseId = 0;
 		try {
-			Response resp1 = serv.getResponsesByID((long) 1);
+			event1 = serv.addEvent(event1);
+			responseId = serv.responseToEvent("Manolo", event1.getEventId(), true);			
+		} catch (InputValidationException | InstanceNotFoundException
+				| OverCapacityException | EventRegisteredUsersException e) {
+
+		}
+		try {
+			Response resp1 = serv.getResponsesByID(responseId);
 			assertEquals("---->testGetResponsesByEventID1 error<----",
 					resp1.getUsername(), "Pepe");
 		} catch (InstanceNotFoundException e) {
 			assertTrue(false);
 		}
+		deleteResponses();
+		deleteEvents();
 	}
 
 	// Obtener respuestas por ID de un evento inexsistente
