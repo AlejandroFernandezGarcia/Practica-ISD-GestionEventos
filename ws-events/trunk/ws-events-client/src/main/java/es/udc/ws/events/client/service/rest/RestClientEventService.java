@@ -389,8 +389,13 @@ public class RestClientEventService implements ClientEventService {
 		byte[] responseBody;
 		InputStream in;
 		try {
-			responseBody = method.getResponseBody();
-			in = new ByteArrayInputStream(responseBody);
+			if(statusCode != HttpStatus.SC_NO_CONTENT){
+				responseBody = method.getResponseBody();
+				in = new ByteArrayInputStream(responseBody);
+			}else{
+				responseBody = null;
+				in = method.getResponseBodyAsStream();
+			}
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
