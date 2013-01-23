@@ -194,7 +194,6 @@ public class EventServiceImpl implements EventService {
 				}
 				Response response = responseDao.findResponseByEventUser(
 						connection, username, eventId);
-				validateResponse(response);
 				if (response != null) {
 					responseDao.update(
 							connection,
@@ -206,9 +205,11 @@ public class EventServiceImpl implements EventService {
 							Calendar.getInstance());
 					response = responseDao.create(connection, response);
 				}
+				validateResponse(response);
 				connection.commit();
 				return response.getId();
 			} catch (InstanceNotFoundException e) {
+				connection.commit();
 				throw new InstanceNotFoundException(eventId,
 						Event.class.getName());
 			} catch (SQLException e) {
@@ -218,7 +219,7 @@ public class EventServiceImpl implements EventService {
 				connection.rollback();
 				throw e;
 			} catch (InputValidationException e) {
-				connection.rollback();
+				connection.commit();
 				throw e;
 			}
 
