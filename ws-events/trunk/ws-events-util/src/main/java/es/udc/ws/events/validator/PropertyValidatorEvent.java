@@ -59,4 +59,25 @@ public final class PropertyValidatorEvent {
 		}
 	}
 
+	public static void validateLong(String propertyName, Long value)
+			throws InputValidationException {
+		if(value != null){
+			if (value < 1) {
+				throw new InputValidationException("Invalid " + propertyName
+						+ " the eventId must be higher than 0");
+			}
+		}else{
+			throw new InputValidationException("Invalid " + propertyName
+					+ " the eventId must be higher than 0");
+		}
+	}
+
+	public static void validateBoolean(String propertyName, Boolean value)
+			throws InputValidationException {
+		if (value == null) {
+			throw new InputValidationException("Invalid "+ propertyName
+					+ " the code must be true or false");
+		}
+	}
+
 }

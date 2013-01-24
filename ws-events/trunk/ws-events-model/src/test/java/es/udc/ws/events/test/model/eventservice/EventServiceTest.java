@@ -50,18 +50,19 @@ public class EventServiceTest {
 		DataSourceLocator.addDataSource(TEMPLATE_DATA_SOURCE, dataSource);
 		eventDao = SqlEventDaoFactory.getDao();
 		responseDao = SqlResponseDaoFactory.getDao();
+		cleanDB();
 
 	}
-	private void cleanDB(){
+	private static void cleanDB(){
 		deleteEvents();
 		deleteResponses();
 	}
 	
-	private void deleteEvents() {
+	private static void deleteEvents() {
 		long i = 0;
 		DataSource dataSource = DataSourceLocator
 				.getDataSource(TEMPLATE_DATA_SOURCE);
-		while (i < 20) {
+		while (i < 50) {
 			try (Connection connection = dataSource.getConnection()) {
 				eventDao.delete(connection, i);
 			} catch (SQLException | InstanceNotFoundException e) {
@@ -71,11 +72,11 @@ public class EventServiceTest {
 		}
 	}
 
-	private void deleteResponses() {
+	private static void deleteResponses() {
 		long i = 0;
 		DataSource dataSource = DataSourceLocator
 				.getDataSource(TEMPLATE_DATA_SOURCE);
-		while (i < 20) {
+		while (i < 50) {
 			try (Connection connection = dataSource.getConnection()) {
 				responseDao.delete(connection, i);
 			} catch (SQLException | InstanceNotFoundException e) {
@@ -88,9 +89,9 @@ public class EventServiceTest {
 	// Prueba el validateEvent y el anadir un evento correctamente
 	@Test
 	public void testAddEventAndFindEvent() {
+		cleanDB();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -110,6 +111,7 @@ public class EventServiceTest {
 	// Prueba dentro del validateEvent el validateMandatoryString
 	@Test
 	public void testValidateEvent() {
+		cleanDB();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
 		Calendar fechaFin1 = Calendar.getInstance();
@@ -128,9 +130,9 @@ public class EventServiceTest {
 	// valida que las fechas de un evento sean correctas
 	@Test
 	public void testValidateEvent2() {
+		cleanDB();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2012, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -147,9 +149,9 @@ public class EventServiceTest {
 	// valida el campo addres
 	@Test
 	public void testValidateEvent3() {
+		cleanDB();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2012, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -166,9 +168,9 @@ public class EventServiceTest {
 	// valida el campo capacity
 	@Test
 	public void testValidateEvent4() {
+		cleanDB();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2012, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -185,9 +187,9 @@ public class EventServiceTest {
 	// valida que la fecha de inicio sea posterior a la actual
 	@Test
 	public void testValidateEvent5() {
+		cleanDB();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2011, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2012, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -204,9 +206,9 @@ public class EventServiceTest {
 	// valida que se actualicen correctamente los eventos
 	@Test
 	public void testUpdateEvent() {
+		cleanDB();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
-
 		Calendar fechaFin1 = Calendar.getInstance();
 		fechaFin1.set(2013, 1, 3, 0, 0, 0);
 		Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
@@ -214,6 +216,7 @@ public class EventServiceTest {
 		try {
 			event1 = serv.addEvent(event1);
 		} catch (InputValidationException e) {
+			cleanDB();
 			assertTrue(false);
 		}
 		try {
@@ -234,10 +237,16 @@ public class EventServiceTest {
 	// comprueba el caso de no encontrar el event a actualizar
 	@Test
 	public void testUpdateEvent2() {
+		cleanDB();
 		try {
-			Event event = serv.findEvent((long) 1);
-			event.setEventId((long) 5);
-			serv.updateEvent(event);
+			Calendar fechaIni1 = Calendar.getInstance();
+			fechaIni1.set(2013, 1, 1, 0, 0, 0);
+			Calendar fechaFin1 = Calendar.getInstance();
+			fechaFin1.set(2013, 1, 3, 0, 0, 0);
+			Event event1 = new Event("tarea comer manzana", "Evento1 descripcion",
+					fechaIni1, fechaFin1, false, "Calle 1", (short) 20);
+			event1.setEventId((long) 50000);
+			serv.updateEvent(event1);
 			cleanDB();
 			assertTrue(false);
 		} catch (InstanceNotFoundException e) {
@@ -253,6 +262,7 @@ public class EventServiceTest {
 	// comprueba que no se pueda actualizar un evento con usuarios registrados
 	@Test
 	public void testUpdateEvent3() {
+		cleanDB();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
 		Calendar fechaFin1 = Calendar.getInstance();
@@ -282,6 +292,7 @@ public class EventServiceTest {
 	// elimina un evento de forma correcta
 	@Test
 	public void testdeleteEvent() {
+		cleanDB();
 		Event event1 = null;
 		try {
 			EventService serv = EventServiceFactory.getService();
@@ -312,8 +323,9 @@ public class EventServiceTest {
 	// intenta eliminar un evento que no existe
 	@Test
 	public void testdeleteEvent2() {
+		cleanDB();
 		try {
-			serv.deleteEvent((long) 19);
+			serv.deleteEvent((long) 5);
 			assertTrue(false);
 		} catch (InstanceNotFoundException e) {
 			assertTrue(true);
@@ -325,6 +337,7 @@ public class EventServiceTest {
 	// intenta eliminar un evento con usuarios registrados
 	@Test
 	public void testdeleteEvent3() {
+		cleanDB();
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
@@ -359,6 +372,7 @@ public class EventServiceTest {
 	// Comprueba que devuelve en caso de no encontrar el evento que buscaba
 	@Test
 	public void testFindEvent() {
+		cleanDB();
 		try {
 			serv.findEvent((long) 20);
 			assertTrue(false);
@@ -370,28 +384,29 @@ public class EventServiceTest {
 	// Comprueba que devuelve una busqueda correcta buscando por solo la clave
 	@Test
 	public void testFindEventByKeywords() {
+		cleanDB();
 		try {
 			Calendar fechaIni2 = Calendar.getInstance();
-			fechaIni2.set(2013, 1, 2);
+			fechaIni2.set(2013, 1, 2,15,15,15);
 			Calendar fechaFin2 = Calendar.getInstance();
-			fechaFin2.set(2013, 1, 4);
+			fechaFin2.set(2013, 1, 4,15,15,15);
 			Event event2 = new Event("manzana de caramelo",
 					"Evento2 descripcion", fechaIni2, fechaFin2, true,
 					"Calle 2", (short) 25);
 			event2 = serv.addEvent(event2);
 
 			Calendar fechaIni3 = Calendar.getInstance();
-			fechaIni3.set(2013, 1, 3);
+			fechaIni3.set(2013, 1, 3,15,15,15);
 			Calendar fechaFin3 = Calendar.getInstance();
-			fechaFin3.set(2013, 1, 5);
+			fechaFin3.set(2013, 1, 5,15,15,15);
 			Event event3 = new Event("caramelo", "Evento3 descripcion",
 					fechaIni3, fechaFin3, true, "Calle 3", (short) 10);
 			event3 = serv.addEvent(event3);
 
 			Calendar fechaIni4 = Calendar.getInstance();
-			fechaIni4.set(2013, 1, 4);
+			fechaIni4.set(2013, 1, 4,15,15,15);
 			Calendar fechaFin4 = Calendar.getInstance();
-			fechaFin4.set(2013, 1, 5);
+			fechaFin4.set(2013, 1, 5,15,15,15);
 			Event event4 = new Event("evento4", "Evento4 descripcion",
 					fechaIni4, fechaFin4, true, "Calle 4", (short) 5);
 			event4 = serv.addEvent(event4);
@@ -410,46 +425,42 @@ public class EventServiceTest {
 	// Comprueba el caso de busqueda de eventos por fecha
 	@Test
 	public void testFindEventByKeywords2() {
+		cleanDB();
 		try {
 			Calendar fechaIni2 = Calendar.getInstance();
-			fechaIni2.set(2013, 1, 2);
+			fechaIni2.set(2013, 1, 2,15,15,15);
 			Calendar fechaFin2 = Calendar.getInstance();
-			fechaFin2.set(2013, 1, 4);
+			fechaFin2.set(2013, 1, 4,15,15,15);
 			Event event2 = new Event("manzana de caramelo",
 					"Evento2 descripcion", fechaIni2, fechaFin2, true,
 					"Calle 2", (short) 25);
 			event2 = serv.addEvent(event2);
 
 			Calendar fechaIni3 = Calendar.getInstance();
-			fechaIni3.set(2013, 1, 3);
+			fechaIni3.set(2013, 1, 3,15,15,15);
 			Calendar fechaFin3 = Calendar.getInstance();
-			fechaFin3.set(2013, 1, 5);
+			fechaFin3.set(2013, 1, 5,15,15,15);
 			Event event3 = new Event("caramelo", "Evento3 descripcion",
 					fechaIni3, fechaFin3, true, "Calle 3", (short) 10);
 			event3 = serv.addEvent(event3);
 
 			Calendar fechaIni4 = Calendar.getInstance();
-			fechaIni4.set(2013, 1, 4);
+			fechaIni4.set(2013, 1, 4,15,15,15);
 			Calendar fechaFin4 = Calendar.getInstance();
-			fechaFin4.set(2013, 1, 5);
+			fechaFin4.set(2013, 1, 5,15,15,15);
 			Event event4 = new Event("evento4", "Evento4 descripcion",
 					fechaIni4, fechaFin4, true, "Calle 4", (short) 5);
 			event4 = serv.addEvent(event4);
-
-			ArrayList<Event> eventsFound = (ArrayList<Event>) serv
-					.findEventByKeyword("caramelo", null, null);
-			assertEquals("---->testFindEventByKeywords error<----",
-					eventsFound.size(), 2);
 		} catch (InputValidationException e) {
 			cleanDB();
 		}
 		Calendar dateTest1 = Calendar.getInstance();
-		dateTest1.set(2013, 1, 2);
+		dateTest1.set(2013, 1, 2,14,14,14);
 		Calendar dateTest2 = Calendar.getInstance();
-		dateTest2.set(2013, 1, 4);
+		dateTest2.set(2013, 1, 4,16,16,16);
 		ArrayList<Event> eventsFound = (ArrayList<Event>) serv
 				.findEventByKeyword(null, dateTest1, dateTest2);
-		assertEquals("---->testFindEventByKeywords2 error<----",
+		assertEquals("---->testFindEventByKeywords1 error<----",
 				eventsFound.size(), 3);
 		cleanDB();
 	}
@@ -457,43 +468,39 @@ public class EventServiceTest {
 	// Comprueba el caso de busqueda de eventos por fecha y clave
 	@Test
 	public void testFindEventBykeywords3() {
+		cleanDB();
 		try {
 			Calendar fechaIni2 = Calendar.getInstance();
-			fechaIni2.set(2013, 1, 2);
+			fechaIni2.set(2013, 1, 3,15,15,15);
 			Calendar fechaFin2 = Calendar.getInstance();
-			fechaFin2.set(2013, 1, 4);
+			fechaFin2.set(2013, 1, 4,15,15,15);
 			Event event2 = new Event("manzana de caramelo",
 					"Evento2 descripcion", fechaIni2, fechaFin2, true,
 					"Calle 2", (short) 25);
 			event2 = serv.addEvent(event2);
 
 			Calendar fechaIni3 = Calendar.getInstance();
-			fechaIni3.set(2013, 1, 3);
+			fechaIni3.set(2013, 1, 3,15,15,15);
 			Calendar fechaFin3 = Calendar.getInstance();
-			fechaFin3.set(2013, 1, 5);
+			fechaFin3.set(2013, 1, 5,15,15,15);
 			Event event3 = new Event("caramelo", "Evento3 descripcion",
 					fechaIni3, fechaFin3, true, "Calle 3", (short) 10);
 			event3 = serv.addEvent(event3);
 
 			Calendar fechaIni4 = Calendar.getInstance();
-			fechaIni4.set(2013, 1, 4);
+			fechaIni4.set(2013, 1, 4,15,15,15);
 			Calendar fechaFin4 = Calendar.getInstance();
-			fechaFin4.set(2013, 1, 5);
+			fechaFin4.set(2013, 1, 5,15,15,15);
 			Event event4 = new Event("evento4", "Evento4 descripcion",
 					fechaIni4, fechaFin4, true, "Calle 4", (short) 5);
 			event4 = serv.addEvent(event4);
-
-			ArrayList<Event> eventsFound = (ArrayList<Event>) serv
-					.findEventByKeyword("caramelo", null, null);
-			assertEquals("---->testFindEventByKeywords error<----",
-					eventsFound.size(), 2);
 		} catch (InputValidationException e) {
 			cleanDB();
 		}
 		Calendar dateTest3 = Calendar.getInstance();
-		dateTest3.set(2013, 1, 2);
+		dateTest3.set(2013, 1, 2,14,14,14);
 		Calendar dateTest4 = Calendar.getInstance();
-		dateTest4.set(2013, 1, 5);
+		dateTest4.set(2013, 1, 5,16,16,16);
 		ArrayList<Event> eventsFound = (ArrayList<Event>) serv
 				.findEventByKeyword("caramelo", dateTest3, dateTest4);
 		assertEquals("---->testFindEventByKeywords3 error<----",
@@ -504,19 +511,42 @@ public class EventServiceTest {
 	// Comprueba el caso de busqueda de eventos y no encuentra ninguno
 	@Test
 	public void testFindEventBykeywords4() {
+		cleanDB();
+		try{
+			Calendar fechaIni2 = Calendar.getInstance();
+			fechaIni2.set(2013, 1, 2,15,15,15);
+			Calendar fechaFin2 = Calendar.getInstance();
+			fechaFin2.set(2013, 1, 4,15,15,15);
+			Event event2 = new Event("manzana de caramelo",
+					"Evento2 descripcion", fechaIni2, fechaFin2, true,
+					"Calle 2", (short) 25);
+			event2 = serv.addEvent(event2);
+	
+			Calendar fechaIni3 = Calendar.getInstance();
+			fechaIni3.set(2013, 1, 3,15,15,15);
+			Calendar fechaFin3 = Calendar.getInstance();
+			fechaFin3.set(2013, 1, 5,15,15,15);
+			Event event3 = new Event("caramelo", "Evento3 descripcion",
+					fechaIni3, fechaFin3, true, "Calle 3", (short) 10);
+			event3 = serv.addEvent(event3);
+		}catch(InputValidationException e){
+			cleanDB();
+		}
 		Calendar dateTest3 = Calendar.getInstance();
-		dateTest3.set(2016, 1, 2);
+		dateTest3.set(2016, 1, 2,14,14,14);
 		Calendar dateTest4 = Calendar.getInstance();
-		dateTest4.set(2016, 1, 5);
+		dateTest4.set(2016, 1, 5,16,16,16);
 		ArrayList<Event> eventsFound = (ArrayList<Event>) serv
 				.findEventByKeyword("caramelo", dateTest3, dateTest4);
 		assertEquals("---->testFindEventByKeywords4 error<----",
 				eventsFound.size(), 0);
+		cleanDB();
 	}
 
 	// Comprueba el caso de responder a un evento correctamente.
 	@Test
 	public void testResponseToEvent1() {
+		cleanDB();
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
@@ -527,6 +557,7 @@ public class EventServiceTest {
 		try {
 			event1 = serv.addEvent(event1);
 		} catch (InputValidationException e) {
+			cleanDB();
 			assertTrue(false);
 		}
 		try {
@@ -547,6 +578,7 @@ public class EventServiceTest {
 	// Obtener las respuestas positivas a un evento.
 	@Test
 	public void testGetResponses1() {
+		cleanDB();
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
@@ -579,6 +611,7 @@ public class EventServiceTest {
 	// Obtener las respuestas negativas a un evento.
 	@Test
 	public void testGetResponses2() {
+		cleanDB();
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
@@ -610,6 +643,7 @@ public class EventServiceTest {
 	// Obtener las respuestas positivas-negativas a un evento.
 	@Test
 	public void testGetResponses3() {
+		cleanDB();
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
@@ -641,6 +675,7 @@ public class EventServiceTest {
 	// Responder a un evento que ya ha excedido la capacidad
 	@Test
 	public void testResponseToEvent2() {
+		cleanDB();
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
@@ -672,12 +707,16 @@ public class EventServiceTest {
 	// comprueba el caso de responder a un evento inexistente.
 	@Test
 	public void testResponseToEvent3() {
+		cleanDB();
 		try {
 			serv.responseToEvent("Alejandro", (long) 7, true);
+			cleanDB();
 			assertTrue(false);
 		} catch (InstanceNotFoundException e) {
+			cleanDB();
 			assertTrue(true);
 		} catch (EventRegisteredUsersException | OverCapacityException | InputValidationException e) {
+			cleanDB();
 			assertTrue(false);
 		}
 	}
@@ -685,6 +724,7 @@ public class EventServiceTest {
 	// Obtener respuestas por ID de evento
 	@Test
 	public void testGetResponsesByEventID1() {
+		cleanDB();
 		EventService serv = EventServiceFactory.getService();
 		Calendar fechaIni1 = Calendar.getInstance();
 		fechaIni1.set(2013, 1, 1, 0, 0, 0);
@@ -715,6 +755,7 @@ public class EventServiceTest {
 	// Obtener respuestas por ID de un evento inexsistente
 	@Test
 	public void testGetResponsesByEventID2() {
+		cleanDB();
 		try {
 			serv.getResponsesByID((long) 7);
 			assertTrue(false);
