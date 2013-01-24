@@ -64,7 +64,6 @@ public class XmlExceptionConversor {
 		Element messageElement = new Element("message", XML_NS);
 		messageElement.setText(e.getMessage());
 		exceptionElement.addContent(messageElement);
-		System.out.println("XML");
 		
 		Document document = new Document(exceptionElement);
 		return new XmlEntityResponseWriter(document);
@@ -120,7 +119,6 @@ public class XmlExceptionConversor {
 	public static EventRegisteredUsersException fromEventRegisterUsersExceptionXml(
 			InputStream in) throws ParsingException {
 		try {
-			System.out.println("XML2");
 
 			SAXBuilder builder = new SAXBuilder();
 			Document document = builder.build(in);
@@ -129,12 +127,8 @@ public class XmlExceptionConversor {
 
 			return new EventRegisteredUsersException(message.getText());
 		} catch (JDOMException | IOException e) {
-			System.out.println("XML2a");
-
 			throw new ParsingException(e);
 		} catch (Exception e) {
-			System.out.println("XML2b");
-
 			throw new ParsingException(e);
 		}
 	}

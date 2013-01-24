@@ -83,7 +83,7 @@ public class EventServiceClient {
 			} catch (InstanceNotFoundException e) {
 				System.out.println("Error to update an event caused by: "
 						+ e.getInstanceType() + "with instanceId "
-						+ e.getInstanceId() + "doesn't exist");
+						+ e.getInstanceId() + " doesn't exist");
 			} catch (EventRegisteredUsersException e) {
 				System.out.println("Error to update an event caused by: "
 						+ e.getMessage() + "in event " + eventId);
