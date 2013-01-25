@@ -31,18 +31,6 @@ public class ResponsesServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		String eventIdParameter = req.getParameter("eventId");
-		/*if (eventIdParameter == null) {
-			ServletUtils
-					.writeServiceResponse(
-							resp,
-							HttpStatus.SC_BAD_REQUEST,
-							XmlExceptionConversor
-									.toInputValidationExceptionXml(new InputValidationException(
-											"Invalid Request: "
-													+ "parameter 'eventId' is mandatory")),
-							null);
-			return;
-		}*/
 		Long eventId;
 		try {
 			eventId = Long.valueOf(eventIdParameter);
@@ -60,33 +48,8 @@ public class ResponsesServlet extends HttpServlet {
 
 			return;
 		}
-		String userName = req.getParameter("userName");/*
-		if (userName == null) {
-			ServletUtils
-					.writeServiceResponse(
-							resp,
-							HttpStatus.SC_BAD_REQUEST,
-							XmlExceptionConversor
-									.toInputValidationExceptionXml(new InputValidationException(
-											"Invalid Request: "
-													+ "parameter 'userName' is mandatory")),
-							null);
-			return;
-		}*/
+		String userName = req.getParameter("userName");
 		String strResponse = req.getParameter("assists");
-		/*if (strResponse == null) {
-			ServletUtils
-					.writeServiceResponse(
-							resp,
-							HttpStatus.SC_BAD_REQUEST,
-							XmlExceptionConversor
-									.toInputValidationExceptionXml(new InputValidationException(
-											"Invalid Request: "
-													+ "parameter 'assists' is mandatory")),
-							null);
-
-			return;
-		}*/
 		Boolean valueResponse = Boolean.valueOf(strResponse);
 		Long responseId;
 		Response response;

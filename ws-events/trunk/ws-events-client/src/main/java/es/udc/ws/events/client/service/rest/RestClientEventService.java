@@ -431,11 +431,6 @@ public class RestClientEventService implements ClientEventService {
 			} catch (ParsingException e) {
 				throw new RuntimeException(e);
 			}
-			/*
-			 * case HttpStatus.SC_CONFLICT: try { throw
-			 * XmlExceptionConversor.fromEventRegisterUsersExceptionXml(in); }
-			 * catch (ParsingException e) { throw new RuntimeException(e); }
-			 */
 		default:
 			if (statusCode != expectedStatusCode) {
 				throw new RuntimeException("HTTP error; status code = "
